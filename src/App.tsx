@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import ExampleTanStackQuery from '@/exampleTanStackQuery';
 import useBearStore from '@/store/store';
 
 const App = () => {
@@ -10,16 +11,23 @@ const App = () => {
 
   return (
     <div>
-      <h3>주스탠드 상태: {bears}</h3>
+      <div>
+        <h1>주스탠드 테스트</h1>
+        <h2>상태: {bears}</h2>
+        <input
+          type='number'
+          value={value}
+          onChange={(event) => {
+            setValue(parseInt(event.target.value, 10));
+          }}
+        />
+        <button onClick={() => setBear(value)}>상태 업데이트</button>
+      </div>
 
-      <input
-        type='number'
-        value={value}
-        onChange={(event) => {
-          setValue(parseInt(event.target.value, 10));
-        }}
-      />
-      <button onClick={() => setBear(value)}>주스탠드 상태업데이트</button>
+      <div>
+        <h1>텐스택쿼리 테스트</h1>
+        <ExampleTanStackQuery />
+      </div>
     </div>
   );
 };
