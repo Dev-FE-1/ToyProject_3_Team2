@@ -7,6 +7,10 @@ import {
 } from 'react-router-dom';
 
 import { PATH } from '@/constants/path';
+import RootLayout from '@/layouts/RootLayout';
+import Home from '@/pages/Home';
+import Search from '@/pages/Search';
+import Subscriptions from '@/pages/Subscriptions';
 
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
@@ -28,14 +32,16 @@ const router = createBrowserRouter([
     children: [
       { path: PATH.SIGNIN, element: <div>SignIn</div> },
       {
+        //  <RootLayout /> : 네비게이션(탭바)+콘텐츠
+        element: <RootLayout />,
         children: [
           // 해당라우트가 부모라우트의 자식이야(true)-> Home으로 가
           // 부모라우트와 정확히 일치할 때 사용
-          { index: true, element: <div>Home</div> },
-          { path: PATH.SEARCH, children: [{ index: true, element: <div>Search</div> }] },
+          { index: true, element: <Home /> },
+          { path: PATH.SEARCH, children: [{ index: true, element: <Search /> }] },
           {
             path: PATH.SUBSCRIPTIONS,
-            children: [{ index: true, element: <div>Subscriptions</div> }],
+            children: [{ index: true, element: <Subscriptions /> }],
           },
           { path: PATH.MYPAGE, children: [{ index: true, element: <div>MyPage</div> }] },
           { path: PATH.SIGNIN, children: [{ index: true, element: <div>SignIn</div> }] },
