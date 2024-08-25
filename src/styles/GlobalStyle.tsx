@@ -1,7 +1,7 @@
 import { css, Global } from '@emotion/react';
 
-import fontStyles from './globalFonts';
-import theme from '@/styles/\btheme';
+import fontStyles from '@/styles/globalFonts';
+import theme from '@/styles/theme';
 
 const baseStyles = css`
   ${fontStyles} /* @font-face */
@@ -136,9 +136,9 @@ const baseStyles = css`
     font-weight: 400;
     line-height: 1;
     font-size: ${theme.fontSizes.large}; /* 16px */
-    color: ${theme.colors.black};
+    color: ${theme.colors.white};
+    blackground-color: ${theme.colors.black};
     letter-spacing: -0.14px;
-    background-color: ${theme.colors.black};
   }
 
   input,
