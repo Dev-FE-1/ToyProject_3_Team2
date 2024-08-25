@@ -5,12 +5,14 @@ import {
   RouterProvider,
   useLocation,
 } from 'react-router-dom';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
 import Search from '@/pages/Search';
 import Subscriptions from '@/pages/Subscriptions';
+
+const queryClient = new QueryClient();
 
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
@@ -51,6 +53,11 @@ const router = createBrowserRouter([
   },
 ]);
 
-const App = () => <RouterProvider router={router} />;
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+  </QueryClientProvider>
+);
+
 
 export default App;
