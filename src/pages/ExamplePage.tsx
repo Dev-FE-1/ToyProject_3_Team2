@@ -1,12 +1,16 @@
 import { useState } from 'react';
 
+import StarToggleButton from '@/components/StarToggleButton';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
+import { useStarStore } from '@/store/starStore';
 import useBearStore from '@/store/store';
 
 const ExamplePage = () => {
   const bears = useBearStore((state) => state.bears);
   const setBear = useBearStore((state) => state.setBear);
   const [value, setValue] = useState<number>(0);
+
+  const isStarred = useStarStore((state) => state.isStarred);
 
   return (
     <div>
@@ -27,6 +31,11 @@ const ExamplePage = () => {
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
+
+      <div style={{ margin: '30px 16px' }}>
+        <StarToggleButton />
+      </div>
+      <p>Star is {isStarred ? 'filled' : 'empty'}</p>
     </div>
   );
 };
