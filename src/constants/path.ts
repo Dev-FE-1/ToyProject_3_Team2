@@ -9,5 +9,5 @@ export const PATH_TITLE = {
   HOME: '홈',
   SEARCH: '검색',
   SUBSCRIPTIONS: '구독',
-  MYPAGE: '마이페이지',
+  MYPAGE: '나',
 };
