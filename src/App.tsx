@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   createBrowserRouter,
   Navigate,
@@ -5,9 +6,10 @@ import {
   RouterProvider,
   useLocation,
 } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
+import ExamplePage from '@/pages/ExamplePage'; // Zustand와 TanStack Query 예시를 포함한 페이지
 import Home from '@/pages/Home';
 import Search from '@/pages/Search';
 import Subscriptions from '@/pages/Subscriptions';
@@ -47,6 +49,7 @@ const router = createBrowserRouter([
           },
           { path: PATH.MYPAGE, children: [{ index: true, element: <div>MyPage</div> }] },
           { path: PATH.SIGNIN, children: [{ index: true, element: <div>SignIn</div> }] },
+          { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
         ],
       },
     ],
@@ -58,6 +61,5 @@ const App = () => (
     <RouterProvider router={router} />
   </QueryClientProvider>
 );
-
 
 export default App;
