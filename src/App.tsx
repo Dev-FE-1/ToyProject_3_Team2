@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
+import FirebaseTest from '@/components/FirebaseTest';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import ExamplePage from '@/pages/ExamplePage'; // Zustand와 TanStack Query 예시를 포함한 페이지
@@ -59,6 +60,7 @@ const router = createBrowserRouter([
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
+    <FirebaseTest />
   </QueryClientProvider>
 );
 
