@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import FirebaseTest from '@/components/FirebaseTest';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
@@ -12,7 +13,9 @@ const ExamplePage = () => {
   return (
     <div>
       <div>
-        <h1>주스탠드 테스트</h1>
+        <h1 style={{ backgroundColor: 'yellow', color: 'black', fontSize: '32px' }}>
+          주스탠드 테스트
+        </h1>
         <h2>상태: {bears}</h2>
         <input
           type='number'
@@ -25,10 +28,24 @@ const ExamplePage = () => {
       </div>
 
       <div>
-        <h1>텐스택쿼리 테스트</h1>
+        <h1 style={{ backgroundColor: 'yellow', color: 'black', fontSize: '32px' }}>
+          텐스택쿼리 테스트
+        </h1>
         <ExampleTanStackQuery />
       </div>
-      <YouTubePlayerV3 videoId='7MVs26bOwUM' />
+
+      <div>
+        <h1 style={{ backgroundColor: 'yellow', color: 'black', fontSize: '32px' }}>
+          유튜브 API V3 테스트
+        </h1>
+        <YouTubePlayerV3 videoId='7MVs26bOwUM' />
+      </div>
+      <div>
+        <h1 style={{ backgroundColor: 'yellow', color: 'black', fontSize: '32px' }}>
+          파이어베이스 테스트
+        </h1>
+        <FirebaseTest />
+      </div>
     </div>
   );
 };
