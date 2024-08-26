@@ -1,4 +1,3 @@
-/** @jsxImportSource @emotion/react */
 import React from 'react';
 
 import { css } from '@emotion/react';
@@ -32,7 +31,7 @@ const textStyle = css`
 `;
 
 const switchRootStyle = css`
-  background-color: rgba(227, 229, 235, 0.5);
+  background-color: ${theme.colors.bgSwitchOff + '5a'};
   width: 32px;
   height: 16px;
   border-radius: 100px;
