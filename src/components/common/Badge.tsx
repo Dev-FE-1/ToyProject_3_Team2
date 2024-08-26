@@ -9,7 +9,7 @@ interface BadgeProps {
   text?: string;
   extra?: string;
   customStyle?: SerializedStyles;
-  isPosition?: 'corner' | 'center';
+  position?: 'corner' | 'center';
   children?: ReactNode;
 }
 
@@ -19,9 +19,9 @@ const Badge: React.FC<BadgeProps> = ({
   extra,
   children,
   customStyle,
-  isPosition = 'corner',
+  position = 'corner',
 }: BadgeProps) => (
-  <div css={[badgeStyle, positionStyle[isPosition], customStyle]}>
+  <div css={[badgeStyle, positionStyle[position], customStyle]}>
     {Icon && <Icon />}
     {text}
     <span>{children}개</span>
