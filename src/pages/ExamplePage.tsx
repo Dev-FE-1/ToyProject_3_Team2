@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
 
@@ -27,6 +28,7 @@ const ExamplePage = () => {
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
+      <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
     </div>
   );
 };
