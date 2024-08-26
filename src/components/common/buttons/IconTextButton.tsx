@@ -26,8 +26,8 @@ const IconTextButton: React.FC<IconTextButtonProps> = ({
     onClick={onClick}
     className={iconPosition}
   >
-    <Icon />
     {children}
+    <Icon />
   </button>
 );
 
