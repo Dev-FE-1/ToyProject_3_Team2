@@ -8,6 +8,7 @@ interface BadgeProps {
   Icon?: ComponentType<SVGProps<SVGSVGElement>>;
   text?: string;
   extra?: string;
+  suffix?: string;
   customStyle?: SerializedStyles;
   position?: 'corner' | 'center';
   children?: ReactNode;
@@ -15,6 +16,7 @@ interface BadgeProps {
 
 const Badge: React.FC<BadgeProps> = ({
   Icon,
+  suffix,
   text,
   extra,
   children,
@@ -24,7 +26,10 @@ const Badge: React.FC<BadgeProps> = ({
   <div css={[badgeStyle, positionStyle[position], customStyle]}>
     {Icon && <Icon />}
     {text}
-    <span>{children}개</span>
+    <span>
+      {children}
+      {suffix}
+    </span>
     {extra && <span>{extra}</span>}
   </div>
 );
