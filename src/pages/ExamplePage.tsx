@@ -28,7 +28,7 @@ const ExamplePage = () => {
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
-      <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
+      <YouTubePlayerV3 videoId='7MVs26bOwUM' />
     </div>
   );
 };
