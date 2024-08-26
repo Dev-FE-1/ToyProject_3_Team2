@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import Profile from '@/components/profile/Profile';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
@@ -29,6 +30,7 @@ const ExamplePage = () => {
         <ExampleTanStackQuery />
       </div>
       <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
+      <Profile name='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
     </div>
   );
 };
