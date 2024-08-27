@@ -1,5 +1,5 @@
-export const formatNumberToK = (count: number) => {
-  if (count < 1000) return String(count);
+export const formatNumberToK = (num: number) => {
+  if (num < 1000) return num.toString();
 
-  return (count / 1000).toFixed(1) + 'K';
+  return (num / 1000).toFixed(1) + 'K';
 };
