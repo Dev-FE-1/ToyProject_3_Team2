@@ -19,19 +19,6 @@ interface ThumBoxProps {
   type: 'main1' | 'main2' | 'details';
 }
 
-interface ThumBoxProps {
-  onClick?: () => void;
-  thumURL?: string;
-  title?: string;
-  subtitle?: string;
-  update?: string;
-  uploader?: string;
-  likes?: number;
-  comments?: number;
-  listnum?: string;
-  type: 'main1' | 'main2' | 'details';
-}
-
 const ThumBox: React.FC<ThumBoxProps> = ({
   onClick,
   thumURL,
