@@ -53,12 +53,14 @@ const ThumBox: React.FC<ThumBoxProps> = ({
   const titleStyle = css`
     ${ellipsisStyle}
     font-size: ${theme.fontSizes.normal};
+    color: ${theme.colors.white};
     height: 17px;
   `;
 
   const infoStyle = css`
     ${ellipsisStyle}
     font-size: ${theme.fontSizes.small};
+    color: ${theme.colors.disabled};
     height: 14px;
     display: flex;
   `;
@@ -66,6 +68,7 @@ const ThumBox: React.FC<ThumBoxProps> = ({
   const updateStyle = css`
     ${ellipsisStyle}
     font-size: ${theme.fontSizes.small};
+    color: ${theme.colors.disabled};
     height: 14px;
   `;
 
@@ -150,6 +153,7 @@ const ThumBox: React.FC<ThumBoxProps> = ({
     .subtitle {
       ${ellipsisStyle}
       font-size: ${theme.fontSizes.small};
+      color: ${theme.colors.disabled};
       margin-top: 11px;
       height: 28px;
     }
