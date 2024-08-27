@@ -29,7 +29,9 @@ const Toast: React.FC = () => {
     }
   }, [isVisible, hideToast]);
 
-  if (!isVisible && !isAnimating) return null;
+  if (!isVisible && !isAnimating) {
+    return null;
+  }
 
   return <div css={[toastStyle, isAnimating ? toastEnterStyle : toastLeaveStyle]}>{message}</div>;
 };
