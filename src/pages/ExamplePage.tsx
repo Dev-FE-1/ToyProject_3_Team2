@@ -1,10 +1,9 @@
 import { useState } from 'react';
 
-
 import ThumBox from '@/components/common/ThumBox';
-// import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
-//import Profile from '@/components/profile/Profile';
-//import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
+import VideoCard from '@/components/common/VideoCard';
+import Profile from '@/components/profile/Profile';
+import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
 
@@ -27,19 +26,16 @@ const ExamplePage = () => {
         />
         <button onClick={() => setBear(value)}>상태 업데이트</button>
       </div>
-
       <div>
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
-
-      {/*
       <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
       <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
       <Profile
         nickname='mini'
         profileImageSrc='https://img.freepik.com/free-vector/young-man-with-blue-hair_24877-82124.jpg?t=st=1724720053~exp=1724723653~hmac=2deb5619e93e7a773e2d7f182144cc8c65fa620d252c35388c2f3ec5adac104e&w=1480'
-*/}
+      />
       <ThumBox
         type='main1'
         thumURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
@@ -67,6 +63,17 @@ const ExamplePage = () => {
         uploader='김아무개'
         update='2일 전에 업데이드 됨'
         listnum='3'
+      />
+      <VideoCard
+        type='main'
+        thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+        time='3:45'
+      />
+      <VideoCard
+        type='underbar'
+        width='100px'
+        height='50px'
+        thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
       />
     </div>
   );
