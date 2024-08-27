@@ -7,11 +7,20 @@ import ThumBox from '@/components/common/ThumBox';
 //import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
+import { getVideoId } from '@/utils/getVideoId';
 
 const ExamplePage = () => {
   const bears = useBearStore((state) => state.bears);
   const setBear = useBearStore((state) => state.setBear);
   const [value, setValue] = useState<number>(0);
+  const [url, setUrl] = useState('');
+  const [videoId, setVideoId] = useState<string | null>('');
+
+  const getYoutubeVideoId = (url: string) => {
+    const videoId = getVideoId(url);
+    setVideoId(videoId);
+    setUrl('');
+  };
 
   return (
     <div>
@@ -33,8 +42,13 @@ const ExamplePage = () => {
         <ExampleTanStackQuery />
       </div>
 
-      {/*
-      <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
+      <div>
+        <h1>유튜브 API 테스트</h1>
+        <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
+        <button onClick={() => getYoutubeVideoId(url)}>업로드</button>
+        <YouTubePlayerV3 videoId={videoId} />
+      </div>
+
       <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
       <Profile
         nickname='mini'
