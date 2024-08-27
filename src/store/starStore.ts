@@ -2,11 +2,11 @@
 import { create } from 'zustand';
 
 interface StarState {
-  isStarred: boolean;
+  isToggled: boolean;
   toggleStar: () => void;
 }
 
 export const useStarStore = create<StarState>((set) => ({
-  isStarred: false,
-  toggleStar: () => set((state) => ({ isStarred: !state.isStarred })),
+  isToggled: false,
+  toggleStar: () => set((state) => ({ isToggled: !state.isToggled })),
 }));
