@@ -39,16 +39,12 @@ const ExamplePage = () => {
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
-
-<!--       <YouTubePlayerV3 videoId='WWHr-z6PZB0' /> -->
-
       <div>
         <h1>유튜브 API 테스트</h1>
         <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
         <button onClick={() => getYoutubeVideoId(url)}>업로드</button>
         <YouTubePlayerV3 videoId={videoId} />
       </div>
-
       <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
       <Profile
         nickname='mini'
