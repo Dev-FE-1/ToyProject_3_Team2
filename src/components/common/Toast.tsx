@@ -5,19 +5,27 @@ import { css } from '@emotion/react';
 import useToastStore from '@/store/toastStore';
 import theme from '@/styles/theme';
 
+const TOAST_VISIBLE_DURATION = 2000; // 토스트가 보이는 시간 (ms)
+const TOAST_FADE_DURATION = 200; // 토스트가 사라지는 애니메이션 시간 (ms)
+
 const Toast: React.FC = () => {
   const { isVisible, message, hideToast } = useToastStore();
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // 개선된 코드 (애니메이션 유지)
   useEffect(() => {
-    let timer: NodeJS.Timeout;
     if (isVisible) {
       setIsAnimating(true);
-      timer = setTimeout(() => {
+      const hideTimer = setTimeout(() => {
         setIsAnimating(false);
-        setTimeout(hideToast, 200);
-      }, 2000);
-      return () => clearTimeout(timer);
+      }, TOAST_VISIBLE_DURATION);
+      const removeTimer = setTimeout(() => {
+        hideToast();
+      }, TOAST_VISIBLE_DURATION + TOAST_FADE_DURATION);
+      return () => {
+        clearTimeout(hideTimer);
+        clearTimeout(removeTimer);
+      };
     }
   }, [isVisible, hideToast]);
 
