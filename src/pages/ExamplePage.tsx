@@ -30,7 +30,11 @@ const ExamplePage = () => {
         <ExampleTanStackQuery />
       </div>
       <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
-      <Profile name='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
+      <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
+      <Profile
+        nickname='mini'
+        profileImageSrc='https://img.freepik.com/free-vector/young-man-with-blue-hair_24877-82124.jpg?t=st=1724720053~exp=1724723653~hmac=2deb5619e93e7a773e2d7f182144cc8c65fa620d252c35388c2f3ec5adac104e&w=1480'
+      />
     </div>
   );
 };
