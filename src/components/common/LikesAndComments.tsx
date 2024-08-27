@@ -20,12 +20,9 @@ const LikesAndComments: React.FC<LikesAndCommentsProps> = ({
   isBackGround = true,
 }) => {
   const navigate = useNavigate();
-
   const { likeCount, handleLikeClick, isLiked } = useLikeCount(initialLikeCount);
 
-  const handleCommentClick = () => {
-    navigate(`/${playListId}/comments`);
-  };
+  const handleCommentClick = () => navigate(`/${playListId}/comments`);
 
   const formattedCommentCount = formatNumberToK(commentCount);
   const formattedLikeCount = formatNumberToK(likeCount);

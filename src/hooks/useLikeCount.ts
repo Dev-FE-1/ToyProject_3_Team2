@@ -5,10 +5,8 @@ const useLikeCount = (initialLikeCount: number) => {
   const [isLiked, setIsLiked] = useState(false);
 
   const handleLikeClick = () => {
-    if (isLiked) setLikeCount((prev: number) => prev - 1);
-    else setLikeCount((prev: number) => prev + 1);
-
-    setIsLiked(!isLiked);
+    setLikeCount((prev) => (isLiked ? prev - 1 : prev + 1));
+    setIsLiked((prev) => !prev);
   };
 
   return {
