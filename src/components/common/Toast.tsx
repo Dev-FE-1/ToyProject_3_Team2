@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import useToastStore from '@/store/toastStore';
+import createToastStore from '@/store/toastStore';
 import theme from '@/styles/theme';
 
 const TOAST_VISIBLE_DURATION = 2000; // 토스트가 보이는 시간 (ms)
 const TOAST_FADE_DURATION = 200; // 토스트가 사라지는 애니메이션 시간 (ms)
 
 const Toast: React.FC = () => {
-  const { isVisible, message, hideToast } = useToastStore();
+  const { isVisible, message, hideToast } = createToastStore();
   const [isAnimating, setIsAnimating] = useState(false);
 
   // 개선된 코드 (애니메이션 유지)
