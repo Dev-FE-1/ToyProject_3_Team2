@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import theme from '@/styles/theme';
 interface IconButtonProps {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
-  type?: string;
+  type?: 'reset' | 'button' | 'submit';
   onClick?: () => void;
 }
 
@@ -14,7 +14,7 @@ const IconButton: React.FC<IconButtonProps> = ({
   onClick,
   type = 'button',
 }: IconButtonProps) => (
-  <button css={iconButtonStyle} onClick={onClick}>
+  <button type={type} css={iconButtonStyle} onClick={onClick}>
     <Icon />
   </button>
 );
