@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getVideoData } from '@/server/youtubeApi';
+import { getVideoData } from '@/api/youtubeApi';
 
 export const useVideoData = (videoId: string) =>
   useQuery({
