@@ -16,7 +16,14 @@ const SelectBox = () => (
     </Select.Trigger>
 
     <Select.Portal>
-      <Select.Content css={SelectContent}>
+      <Select.Content
+        css={SelectContent}
+        position='popper' // 현재 화면에 맞춰 위치 자동 조정
+        side='bottom' // Trigger 하단에 표시
+        align='center' // 중앙정렬
+        sideOffset={5} // Trigger와 gap 5px
+        collisionPadding={0} // 화면 좌측에 붙임
+      >
         <Select.Viewport css={SelectViewport}>
           <Select.Group>
             <Select.Item value='public' css={SelectItem}>
