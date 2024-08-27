@@ -1,27 +1,14 @@
 import { useState } from 'react';
 
-
 import ThumBox from '@/components/common/ThumBox';
-// import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
-//import Profile from '@/components/profile/Profile';
-//import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
+import Profile from '@/components/profile/Profile';
+import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
-import { getVideoId } from '@/utils/getVideoId';
-
 const ExamplePage = () => {
   const bears = useBearStore((state) => state.bears);
   const setBear = useBearStore((state) => state.setBear);
   const [value, setValue] = useState<number>(0);
-  const [url, setUrl] = useState('');
-  const [videoId, setVideoId] = useState<string | null>('');
-
-  const getYoutubeVideoId = (url: string) => {
-    const videoId = getVideoId(url);
-    setVideoId(videoId);
-    setUrl('');
-  };
-
   return (
     <div>
       <div>
@@ -36,24 +23,12 @@ const ExamplePage = () => {
         />
         <button onClick={() => setBear(value)}>상태 업데이트</button>
       </div>
-
       <div>
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
-
-      <div>
-        <h1>유튜브 API 테스트</h1>
-        <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
-        <button onClick={() => getYoutubeVideoId(url)}>업로드</button>
-        <YouTubePlayerV3 videoId={videoId} />
-      </div>
-
+      <YouTubePlayerV3 videoId='WWHr-z6PZB0' />
       <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
-      <Profile
-        nickname='mini'
-        profileImageSrc='https://img.freepik.com/free-vector/young-man-with-blue-hair_24877-82124.jpg?t=st=1724720053~exp=1724723653~hmac=2deb5619e93e7a773e2d7f182144cc8c65fa620d252c35388c2f3ec5adac104e&w=1480'
-*/}
       <ThumBox
         type='main1'
         thumURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
