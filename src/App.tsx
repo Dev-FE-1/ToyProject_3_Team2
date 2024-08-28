@@ -9,10 +9,10 @@ import {
 
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
-import ExamplePage from '@/pages/ExamplePage'; // Zustand와 TanStack Query 예시를 포함한 페이지
 import Home from '@/pages/Home';
 import Search from '@/pages/Search';
 import Subscriptions from '@/pages/Subscriptions';
+import ExamplePage from '@/pages/Test/ExamplePage'; // Zustand와 TanStack Query 예시를 포함한 페이지
 
 const queryClient = new QueryClient();
 
