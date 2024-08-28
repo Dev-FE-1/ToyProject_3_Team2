@@ -31,7 +31,7 @@ const SignIn = () => {
         setErrorMessage('아이디가 존재하지 않습니다.');
       } else if (username === id && password !== pw) {
         console.log('Fail Sign in with:', username, password);
-        setErrorMessage('비닐번호가 일치하지 않습니다.');
+        setErrorMessage('비밀번호가 일치하지 않습니다.');
       } else {
         console.log('Sign in with:', username, password);
         setErrorMessage('');
