@@ -2,14 +2,14 @@ import SelectBox from '@/components/common/SelectBox';
 
 // SelectBox에 들어갈 내용
 const items = [
-  { value: '공개', label: 'public' },
-  { value: '비공개', label: 'private' },
+  { value: 'public', label: '공개' },
+  { value: 'private', label: '비공개' },
 ];
 const items2 = [
-  { value: '스포츠', label: 'sport' },
-  { value: '음악', label: 'music' },
-  { value: '댄스', label: 'dance' },
-  { value: '먹방', label: 'mukbang' },
+  { value: 'sport', label: '스포츠' },
+  { value: 'music', label: '음악' },
+  { value: 'dance', label: '춤' },
+  { value: 'mukbang', label: '먹방' },
 ];
 
 const Home = () => (
