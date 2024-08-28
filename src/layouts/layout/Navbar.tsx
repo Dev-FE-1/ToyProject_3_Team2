@@ -55,6 +55,7 @@ const navStyle = css`
   width: 100vw;
   height: 80px;
   border-top: 1px solid ${theme.colors.tertiary};
+  background-color: ${theme.colors.black};
 `;
 const ulStyle = css`
   display: flex;
