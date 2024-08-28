@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
-config/serviceAccountKey.json
+.gitignore
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +24,4 @@ config/serviceAccountKey.json
 *.sln
 *.sw?
 .env
+
