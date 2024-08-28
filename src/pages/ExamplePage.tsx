@@ -6,10 +6,21 @@ import Profile from '@/components/profile/Profile';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
+import { getVideoId } from '@/utils/getVideoId';
+
 const ExamplePage = () => {
   const bears = useBearStore((state) => state.bears);
   const setBear = useBearStore((state) => state.setBear);
   const [value, setValue] = useState<number>(0);
+  const [url, setUrl] = useState('');
+  const [videoId, setVideoId] = useState<string | null>('');
+
+  const getYoutubeVideoId = (url: string) => {
+    const videoId = getVideoId(url);
+    setVideoId(videoId);
+    setUrl('');
+  };
+
   return (
     <div>
       <div>

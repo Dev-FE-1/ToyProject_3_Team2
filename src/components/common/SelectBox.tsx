@@ -6,11 +6,13 @@ import * as Select from '@radix-ui/react-select';
 
 import theme from '@/styles/theme';
 
+type Item = {
+  value: string;
+  label: string;
+};
+
 interface SelectBoxProps {
-  items: {
-    value: string;
-    label: string;
-  }[];
+  items: Item[];
 }
 
 const SelectBox: React.FC<SelectBoxProps> = ({ items }: SelectBoxProps) => (
