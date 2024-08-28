@@ -63,7 +63,7 @@ import React, { useEffect, useState } from 'react';
 import { getPlaylists, getUserById, User, Playlist } from '@/firebase/firebaseService';
 
 const FirebaseTest: React.FC = () => {
-  const [userInfo, setUserInfo] = useState<User | null>([]);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
 
   useEffect(() => {

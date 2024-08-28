@@ -1,17 +1,3 @@
-// import { collection, getDocs, DocumentData } from 'firebase/firestore';
-
-// import { db } from './firebase';
-
-// export const fetchCollection = async (collectionName: string): Promise<DocumentData[]> => {
-//   try {
-//     const querySnapshot = await getDocs(collection(db, collectionName));
-//     const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-//     return data;
-//   } catch (error) {
-//     console.error(`Error fetching collection ${collectionName}:`, error);
-//     throw error;
-//   }
-// };
 import { getFirestore, collection, doc, getDocs, getDoc } from 'firebase/firestore';
 
 import { app } from './firebase'; // Firebase 앱 초기화 파일
@@ -43,7 +29,6 @@ export const getUserById = async (userId: string): Promise<User | null> => {
     return null;
   }
   const data = userDoc.data();
-  // console.log(data);
   return {
     id: userDoc.id,
     username: data?.username || '',
