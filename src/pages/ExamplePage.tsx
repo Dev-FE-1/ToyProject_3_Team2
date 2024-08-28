@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import BottomSheet from '@/components/common/modals/BottomSheet';
 import ThumBox from '@/components/common/ThumBox';
 import VideoCard from '@/components/common/VideoCard';
 import Profile from '@/components/profile/Profile';
@@ -14,11 +15,22 @@ const ExamplePage = () => {
   const [value, setValue] = useState<number>(0);
   const [url, setUrl] = useState('');
   const [videoId, setVideoId] = useState<string | null>('');
+  const [bottomSheetType, setBottomSheetType] = useState<
+    'saveToPlaylist' | 'deleteFromPlaylist' | false
+  >(false);
 
   const getYoutubeVideoId = (url: string) => {
     const videoId = getVideoId(url);
     setVideoId(videoId);
     setUrl('');
+  };
+
+  const openBottomSheet = (type: 'saveToPlaylist' | 'deleteFromPlaylist') => {
+    setBottomSheetType(type);
+  };
+
+  const closeBottomSheet = () => {
+    setBottomSheetType(false);
   };
 
   return (
@@ -44,6 +56,17 @@ const ExamplePage = () => {
         <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
         <button onClick={() => getYoutubeVideoId(url)}>업로드</button>
         <YouTubePlayerV3 videoId={videoId} />
+      </div>
+      <div>
+        <h1>바텀 시트 테스트</h1>
+        <button onClick={() => openBottomSheet('saveToPlaylist')}>플레이리스트에 저장</button>
+        <button onClick={() => openBottomSheet('deleteFromPlaylist')}>재생목록에서 삭제</button>
+
+        <BottomSheet
+          isOpen={!!bottomSheetType}
+          onClose={closeBottomSheet}
+          contentType={bottomSheetType || 'saveToPlaylist'} // 기본값으로 saveToPlaylist 설정
+        />
       </div>
       <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
       <Profile
