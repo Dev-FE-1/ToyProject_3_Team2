@@ -10,14 +10,14 @@ interface PlaylistItemProps {
   thumURL: string;
   title: string;
   isPublic: boolean;
-  isInitiallyBookmarked: boolean;
+  isBookmarked: boolean;
 }
 
 const PlaylistItem: React.FC<PlaylistItemProps> = ({
   title,
   isPublic,
   thumURL,
-  isInitiallyBookmarked,
+  isBookmarked,
   onClick,
 }) => (
   <div css={itemStyle} onClick={onClick}>
@@ -26,7 +26,7 @@ const PlaylistItem: React.FC<PlaylistItemProps> = ({
       <p css={titleStyle}>{title}</p>
       <p css={subtitleStyle}>{isPublic ? '공개' : '비공개'}</p>
     </div>
-    {isInitiallyBookmarked ? <GoBookmarkFill css={iconStyle} /> : <GoBookmark css={iconStyle} />}
+    {isBookmarked ? <GoBookmarkFill css={iconStyle} /> : <GoBookmark css={iconStyle} />}
   </div>
 );
 
