@@ -6,6 +6,7 @@ import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
 import theme from '@/styles/theme';
 
+//임시 test용 하드코딩 아이디
 const pw = 'a12345678';
 const id = 'example@gmail.com';
 
@@ -41,7 +42,7 @@ const SignIn = () => {
   return (
     <div css={container}>
       <img src='/logo.svg' alt='Logo' css={logoStyle} />
-      <InputForm onInputChange={handleInputChange} onSubmit={handleSignIn} />
+      <InputForm onInputChange={handleInputChange} />
       {errorMessage && <p css={errorMessageStyle}>{errorMessage}</p>}
       {isFormValid ? (
         <Button customStyle={buttonStyle} onClick={handleSignIn}>

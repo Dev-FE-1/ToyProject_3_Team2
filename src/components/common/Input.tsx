@@ -7,10 +7,9 @@ import { validateEmail } from '@/utils/ValidateEmail';
 
 interface InputFormProps {
   onInputChange: (_isValid: boolean, _username: string, _password: string) => void;
-  onSubmit: (_e: React.FormEvent) => void;
 }
 
-const InputForm: React.FC<InputFormProps> = ({ onInputChange, onSubmit }) => {
+const InputForm: React.FC<InputFormProps> = ({ onInputChange }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState('');
@@ -35,6 +34,9 @@ const InputForm: React.FC<InputFormProps> = ({ onInputChange, onSubmit }) => {
       setPasswordError('');
     }
   };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+  };
 
   useEffect(() => {
     const isValid = username.length > 0 && password.length >= 8 && validateEmail(username);
@@ -42,7 +44,7 @@ const InputForm: React.FC<InputFormProps> = ({ onInputChange, onSubmit }) => {
   }, [username, password, onInputChange]);
 
   return (
-    <form css={formStyle} onSubmit={onSubmit}>
+    <form css={formStyle} onSubmit={handleSubmit}>
       <div>
         <input
           type='text'
