@@ -5,12 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import theme from '@/styles/theme';
 import { formatNumberToK } from '@/utils/formatNumberToK';
 
-interface CommentsProps {
+interface CommentsButtonProps {
   playListId: string;
   commentCount?: number;
 }
 
-const Comments: React.FC<CommentsProps> = ({ playListId, commentCount = 0 }) => {
+const CommentsButton: React.FC<CommentsButtonProps> = ({ playListId, commentCount = 0 }) => {
   const navigate = useNavigate();
 
   const handleCommentClick = () => navigate(`/${playListId}/comments`);
@@ -52,14 +52,14 @@ const buttonStyle = css`
   }
 `;
 
-export default Comments;
+export default CommentsButton;
 
 // 사용방법
 // 아래처럼 container와 divider이 필요
 // <div css={containerStyle} key={playlist.playListId}>
-//    <Comments playListId={playlist.playListId} commentCount={playlist.commentCount} />
+//    <CommentsButton playListId={playlist.playListId} commentCount={playlist.commentCount} />
 //    <div css={dividerStyle} />
-//    <Likes initialLikeCount={playlist.initialLikeCount} />
+//    <LikesButton initialLikeCount={playlist.initialLikeCount} />
 // </div>
 
 // '좋아요'와 '댓글' 컴포넌트를 사용하는 부모 컴포넌트에서 아래 스타일을 추가

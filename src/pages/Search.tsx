@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
-import Comments from '@/components/common/Comments';
-import Likes from '@/components/common/Likes';
+import CommentsButton from '@/components/common/buttons/CommentsButton';
+import LikesButton from '@/components/common/buttons/LikesButton';
 import useLikeStore from '@/store/LikeStore';
 import theme from '@/styles/theme';
 
@@ -49,9 +49,9 @@ const Search = () => {
       <p>Search</p>
       {playlists.map((playlist) => (
         <div css={containerStyle} key={playlist.playlistId}>
-          <Comments playListId={playlist.playlistId} commentCount={playlist.commentCount} />
+          <CommentsButton playListId={playlist.playlistId} commentCount={playlist.commentCount} />
           <div css={dividerStyle} />
-          <Likes
+          <LikesButton
             playlistId={playlist.playlistId}
             likeCount={likes[playlist.playlistId] || playlist.initialLikeCount}
             handleLikeClick={() => handleLikeClick(playlist.playlistId)}

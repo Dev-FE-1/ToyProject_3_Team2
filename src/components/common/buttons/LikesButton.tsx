@@ -51,3 +51,36 @@ const buttonStyle = css`
 `;
 
 export default React.memo(Likes);
+
+// 사용방법
+// 아래처럼 container와 divider이 필요
+// <div css={containerStyle} key={playlist.playListId}>
+//    <CommentsButton playListId={playlist.playListId} commentCount={playlist.commentCount} />
+//    <div css={dividerStyle} />
+//    <LikesButton initialLikeCount={playlist.initialLikeCount} />
+// </div>
+
+// '좋아요'와 '댓글' 컴포넌트를 사용하는 부모 컴포넌트에서 아래 스타일을 추가
+// 1. 배경이 없는 경우,
+// containerStyle의 background-color를 transparent로 수정
+// dividerStyle 제거
+
+// const containerStyle = css`
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   width: 150px;
+//   height: ${theme.heights.short};
+//   background-color: ${theme.colors.tertiary};
+//   border-radius: 22px;
+//   font-size: ${theme.fontSizes.normal};
+//   color: ${theme.colors.white};
+//   overflow: hidden;
+// `;
+
+// const dividerStyle = css`
+//   width: 1px;
+//   height: 23px;
+//   background-color: ${theme.colors.white};
+//   opacity: 0.3;
+// `;
