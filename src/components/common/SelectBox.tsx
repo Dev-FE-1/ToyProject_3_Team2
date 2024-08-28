@@ -6,10 +6,17 @@ import * as Select from '@radix-ui/react-select';
 
 import theme from '@/styles/theme';
 
-const SelectBox = () => (
+interface SelectBoxProps {
+  items: {
+    value: string;
+    label: string;
+  }[];
+}
+
+const SelectBox: React.FC<SelectBoxProps> = ({ items }: SelectBoxProps) => (
   <Select.Root>
     <Select.Trigger css={SelectTrigger}>
-      <Select.Value placeholder='선택하세요' />
+      <Select.Value placeholder='선택하세요.' />
       <Select.Icon css={TriggerIcon}>
         <ChevronDownIcon />
       </Select.Icon>
@@ -26,18 +33,14 @@ const SelectBox = () => (
       >
         <Select.Viewport css={SelectViewport}>
           <Select.Group>
-            <Select.Item value='public' css={SelectItem}>
-              <Select.ItemText>공개</Select.ItemText>
-              <Select.ItemIndicator css={SelectItemIndicator}>
-                <CheckIcon />
-              </Select.ItemIndicator>
-            </Select.Item>
-            <Select.Item value='private' css={SelectItem}>
-              <Select.ItemText>비공개</Select.ItemText>
-              <Select.ItemIndicator css={SelectItemIndicator}>
-                <CheckIcon />
-              </Select.ItemIndicator>
-            </Select.Item>
+            {items.map((item) => (
+              <Select.Item key={item.value} value={item.value} css={SelectItem}>
+                <Select.ItemText>{item.value}</Select.ItemText>
+                <Select.ItemIndicator css={SelectItemIndicator}>
+                  <CheckIcon />
+                </Select.ItemIndicator>
+              </Select.Item>
+            ))}
           </Select.Group>
         </Select.Viewport>
       </Select.Content>
@@ -68,7 +71,6 @@ const TriggerIcon = css`
 const SelectContent = css`
   z-index: 1;
   width: 106px;
-  // transform: translate(-10px, 35px); //컨텐츠 위치조정
 `;
 
 const SelectViewport = css`
