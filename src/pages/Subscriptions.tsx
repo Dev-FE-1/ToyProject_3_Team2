@@ -4,15 +4,22 @@ import { css } from '@emotion/react';
 import { GoStar, GoStarFill } from 'react-icons/go';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import Toast from '@/components/common/Toast';
 import Profile from '@/components/profile/Profile';
 import Header from '@/layouts/layout/Header';
+import useToastStore from '@/store/useToastStore';
 import theme from '@/styles/theme';
 
 const Subscriptions = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const showToast = useToastStore((state) => state.showToast);
 
   const handleClick = () => {
     setIsSubscribed(!isSubscribed);
+
+    isSubscribed
+      ? showToast('구독 목록에서 해제되었습니다.')
+      : showToast('구독 목록에 추가되었습니다.');
   };
 
   return (
@@ -288,6 +295,7 @@ const Subscriptions = () => {
           </div>
         </div>
       </div>
+      <Toast />
     </div>
   );
 };
