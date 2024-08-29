@@ -17,28 +17,28 @@ interface SelectBoxProps {
 
 const SelectBox: React.FC<SelectBoxProps> = ({ items }: SelectBoxProps) => (
   <Select.Root>
-    <Select.Trigger css={SelectTrigger}>
+    <Select.Trigger css={TriggerStyle}>
       <Select.Value placeholder='선택하세요.' />
-      <Select.Icon css={TriggerIcon}>
+      <Select.Icon css={TriggerIconStyle}>
         <ChevronDownIcon />
       </Select.Icon>
     </Select.Trigger>
 
     <Select.Portal>
       <Select.Content
-        css={SelectContent}
+        css={ContentStyle}
         position='popper' // 현재 화면에 맞춰 위치 자동 조정
         side='bottom' // Trigger 하단에 표시
         align='center' // 중앙정렬
         sideOffset={5} // Trigger와 gap 5px
         collisionPadding={0} // 화면 좌측에 붙임
       >
-        <Select.Viewport css={SelectViewport}>
+        <Select.Viewport css={ViewportStyle}>
           <Select.Group>
             {items.map((item) => (
-              <Select.Item key={item.value} value={item.value} css={SelectItem}>
+              <Select.Item key={item.value} value={item.value} css={ItemStyle}>
                 <Select.ItemText>{item.label}</Select.ItemText>
-                <Select.ItemIndicator css={SelectItemIndicator}>
+                <Select.ItemIndicator css={ItemStyleIndicator}>
                   <CheckIcon />
                 </Select.ItemIndicator>
               </Select.Item>
@@ -50,7 +50,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({ items }: SelectBoxProps) => (
   </Select.Root>
 );
 
-const SelectTrigger = css`
+const TriggerStyle = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -65,23 +65,23 @@ const SelectTrigger = css`
   font-size: ${theme.fontSizes.small};
 `;
 
-const TriggerIcon = css`
+const TriggerIconStyle = css`
   display: flex;
   color: ${theme.colors.darkGray};
 `;
 
-const SelectContent = css`
+const ContentStyle = css`
   z-index: 1;
   width: 106px;
 `;
 
-const SelectViewport = css`
+const ViewportStyle = css`
   border: 1px solid ${theme.colors.bgSwitchOff};
   border-radius: 4px;
   background-color: ${theme.colors.black};
 `;
 
-const SelectItem = css`
+const ItemStyle = css`
   display: flex;
   align-items: center;
   outline: 0;
@@ -95,7 +95,7 @@ const SelectItem = css`
   }
 `;
 
-const SelectItemIndicator = css`
+const ItemStyleIndicator = css`
   display: flex;
   padding-left: 5px;
 `;
