@@ -154,11 +154,11 @@ const overlayStyle = css`
   background-color: rgba(0, 0, 0, 0.5);
   position: fixed;
   inset: 0;
-  z-index: 5;
+  z-index: 999;
 `;
 
 const sheetContainerStyle = css`
-  padding: 0 8px;
+  padding: 0 0.5rem;
   margin: 0 auto;
   width: 100%;
   max-width: 500px;
@@ -177,14 +177,14 @@ const sheetStyle = (isClosing: boolean) => css`
   left: 50%;
   transform: translateX(-50%);
   border-radius: 10px 10px 0 0;
-  padding: 16px;
+  padding: 1rem;
   z-index: 1000;
   box-sizing: border-box;
   animation: ${isClosing ? slideDown : slideUp} 0.3s ease-out;
 `;
 
 const titleStyle = css`
-  color: white;
+  color: ${theme.colors.white};
   font-size: ${theme.fontSizes.large};
 `;
 
@@ -202,7 +202,6 @@ const actionButtonStyle = css`
 `;
 
 const iconStyle = css`
-  font-size: 24px;
   height: 24px;
 `;
 
