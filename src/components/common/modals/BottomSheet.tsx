@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { css } from '@emotion/react';
+import { css, keyframes } from '@emotion/react';
 import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
 
+import PlaylistItem from '../PlaylistItem';
 import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
@@ -10,28 +11,77 @@ interface BottomSheetProps {
   contentType: 'saveToPlaylist' | 'deleteFromPlaylist';
   isOpen: boolean;
   onClose: () => void;
+  playlists: {
+    id: string;
+    title: string;
+    isPublic: boolean;
+    isBookmarked: boolean;
+    thumURL: string;
+  }[];
+  // eslint-disable-next-line no-unused-vars
+  onPlaylistClick: (playlistId: string) => void;
 }
 
-const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, contentType }) => {
+const BottomSheet: React.FC<BottomSheetProps> = ({
+  isOpen,
+  onClose,
+  contentType,
+  playlists,
+  onPlaylistClick,
+}) => {
   const [step, setStep] = useState<'initial' | 'choosePlaylist'>('initial');
+  const [localPlaylists, setLocalPlaylists] = useState(playlists);
+  const [isClosing, setIsClosing] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setStep('initial');
+    } else {
+      setLocalPlaylists(playlists);
+    }
+  }, [isOpen, playlists]);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsClosing(false);
+      onClose();
+    }, 300);
+  };
+
+  const handlePlaylistClick = (playlistId: string) => {
+    setLocalPlaylists((prevPlaylists) =>
+      prevPlaylists.map((playlist) =>
+        playlist.id === playlistId
+          ? { ...playlist, isBookmarked: !playlist.isBookmarked }
+          : playlist
+      )
+    );
+    onPlaylistClick(playlistId);
+    setTimeout(() => {
+      handleClose();
+    }, 500);
+  };
 
   const renderContent = () => {
     if (contentType === 'saveToPlaylist' && step === 'choosePlaylist') {
       return (
         <div css={listStyle}>
           <p css={titleStyle}>플레이리스트에 저장</p>
-          <ul>
-            <li>Music</li>
-            <li>Jazz 힙합</li>
-            <li>뉴질랜드 가족여행</li>
+          <ul css={listitemStyle}>
+            {localPlaylists.map((playlist) => (
+              <li key={playlist.id}>
+                <PlaylistItem
+                  title={playlist.title}
+                  isPublic={playlist.isPublic}
+                  isBookmarked={playlist.isBookmarked}
+                  thumURL={playlist.thumURL}
+                  onClick={() => handlePlaylistClick(playlist.id)}
+                />
+              </li>
+            ))}
           </ul>
-          <Button
-            styleType='secondary'
-            onClick={() => {
-              // 새로운 재생목록 생성 로직 연결위치
-              onClose();
-            }}
-          >
+          <Button styleType='secondary' onClick={handleClose}>
             새 재생목록 만들기
           </Button>
         </div>
@@ -51,9 +101,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, contentType 
           <button
             css={actionButtonStyle}
             onClick={() => {
-              onClose();
-              // 토스트를 띄우는 로직을 추가
-              alert('삭제되었습니다.'); // 여기에 토스트 로직을 연결
+              onPlaylistClick(localPlaylists[0].id);
+              handleClose();
             }}
           >
             <RiBookmarkFill css={iconStyle} />
@@ -69,15 +118,37 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ isOpen, onClose, contentType 
   if (!isOpen) return null;
 
   return (
-    <div css={overlayStyle} onClick={onClose}>
+    <div css={overlayStyle} onClick={handleClose}>
       <div css={sheetContainerStyle}>
-        <div css={sheetStyle} onClick={(e) => e.stopPropagation()}>
+        <div css={sheetStyle(isClosing)} onClick={(e) => e.stopPropagation()}>
           {renderContent()}
         </div>
       </div>
     </div>
   );
 };
+
+const slideUp = keyframes`
+  from {
+    bottom: -100%;
+    opacity: 0;
+  }
+  to {
+    bottom: 0;
+    opacity: 1;
+  }
+`;
+
+const slideDown = keyframes`
+  from {
+    bottom: 0;
+    opacity: 1;
+  }
+  to {
+    bottom: -100%;
+    opacity: 0;
+  }
+`;
 
 const overlayStyle = css`
   background-color: rgba(0, 0, 0, 0.5);
@@ -95,7 +166,7 @@ const sheetContainerStyle = css`
   box-sizing: border-box;
 `;
 
-const sheetStyle = css`
+const sheetStyle = (isClosing: boolean) => css`
   width: calc(100% - 1rem);
   max-width: 486px;
   min-height: 130px;
@@ -109,6 +180,7 @@ const sheetStyle = css`
   padding: 16px;
   z-index: 1000;
   box-sizing: border-box;
+  animation: ${isClosing ? slideDown : slideUp} 0.3s ease-out;
 `;
 
 const titleStyle = css`
@@ -137,6 +209,11 @@ const iconStyle = css`
 const listStyle = css`
   padding: 1.5rem 0.6rem;
   list-style: none;
+`;
+
+const listitemStyle = css`
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 `;
 
 export default BottomSheet;
