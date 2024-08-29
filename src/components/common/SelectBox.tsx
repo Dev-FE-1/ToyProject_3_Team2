@@ -38,7 +38,7 @@ const SelectBox: React.FC<SelectBoxProps> = ({ items }: SelectBoxProps) => (
             {items.map((item) => (
               <Select.Item key={item.value} value={item.value} css={ItemStyle}>
                 <Select.ItemText>{item.label}</Select.ItemText>
-                <Select.ItemIndicator css={ItemStyleIndicator}>
+                <Select.ItemIndicator css={ItemIndicatorStyle}>
                   <CheckIcon />
                 </Select.ItemIndicator>
               </Select.Item>
@@ -95,7 +95,7 @@ const ItemStyle = css`
   }
 `;
 
-const ItemStyleIndicator = css`
+const ItemIndicatorStyle = css`
   display: flex;
   padding-left: 5px;
 `;
