@@ -46,15 +46,17 @@ const StarAnimation: React.FC<StarAnimationProps> = ({ isActive }) => {
   const [stars, setStars] = useState<React.ReactNode[]>([]);
 
   useEffect(() => {
+    console.log('isActive changed:', isActive); // 디버깅용 로그
+
     if (!isActive) {
       setStars([]);
       return;
     }
 
     const addStar = () => {
-      const size = Math.floor(Math.random() * 7) + 2; /* 별 크기 : 2 ~ 9px */
-      const top = Math.floor(Math.random() * 40); /* 별이 나타나는 범위 , 작을수록 좁음 */
-      const left = Math.floor(Math.random() * 120); /* 별이 나타나는 범위 , 작을수록 좁음 */
+      const size = Math.floor(Math.random() * 7) + 2;
+      const top = Math.floor(Math.random() * 40);
+      const left = Math.floor(Math.random() * 120);
 
       const star = (
         <span
@@ -73,18 +75,26 @@ const StarAnimation: React.FC<StarAnimationProps> = ({ isActive }) => {
         </span>
       );
 
-      setStars((prevStars) => [...prevStars.slice(-19), star]); // Increased to 20 stars
+      setStars((prevStars) => [...prevStars.slice(-19), star]);
     };
 
-    const interval = setInterval(
-      () => {
-        addStar();
-      },
-      Math.random() * 30 + 20 // Increased frequency
-    );
+    const interval = setInterval(addStar, 50); // 고정된 간격으로 별 추가
 
-    return () => clearInterval(interval);
+    // 전체 애니메이션 지속 시간을 2초로 설정
+    const animationDuration = 2000;
+
+    const timer = setTimeout(() => {
+      clearInterval(interval);
+      console.log('Animation ended'); // 디버깅용 로그
+    }, animationDuration);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timer);
+    };
   }, [isActive]);
+
+  console.log('Number of stars:', stars.length); // 디버깅용 로그
 
   return <div css={containerStyle}>{stars}</div>;
 };
