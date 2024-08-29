@@ -37,7 +37,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -64,7 +67,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA0MTBfMzMg%2FMDAxNzEyNzA2NTYzMzQ2.LJjblzvIEqxPO_5qBiB4Sk4RtCMhhySYiPgsrtUrp24g.5LiOVYy3D4ZuKA9NEWFPHBvpDv-i-gai52dRszy9DhMg.JPEG%2F1.jpg&type=sc960_832'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -91,7 +97,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -118,7 +127,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -145,7 +157,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -172,7 +187,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -199,7 +217,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -226,7 +247,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -253,7 +277,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -280,7 +307,10 @@ const Subscriptions = () => {
           </IconTextButton>
         </div>
         <div css={middle}>
-          <img src='' alt='썸네일' />
+          <img
+            src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
+            alt='썸네일'
+          />
         </div>
         <div css={bottom}>
           <h1>개쩌는 플레이리스트 볼사람 여기여기 모여라</h1>
@@ -322,13 +352,11 @@ const middle = css`
   aspect-ratio: 1/1;
   font-size: ${theme.fontSizes.xlarge};
   font-weight: 700;
-  color: #000; //alt 텍스트 보이기 위함 -> 사진들어가면 삭제
 
   img {
     width: 100%;
     height: 100%;
-    background-color: ${theme.colors.white};
-    margin-bottom: 15px;
+    object-fit: contain;
   }
 `;
 
@@ -339,6 +367,7 @@ const bottom = css`
     height: 21px;
     color: ${theme.colors.white};
     font-size: ${theme.fontSizes.xlarge};
+    margin-top: 15px;
   }
 
   h2 {
