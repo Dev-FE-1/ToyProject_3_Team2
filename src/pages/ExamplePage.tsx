@@ -1,23 +1,19 @@
 import { useEffect, useState } from 'react';
 
-
-import MyPlaylists from '@/components/mypage/MyPlaylists';
-
 import Button from '@/components/common/buttons/Button';
-
 import ThumBox from '@/components/common/ThumBox';
 import Toast from '@/components/common/Toast';
 import VideoCard from '@/components/common/VideoCard';
+import MyPlaylists from '@/components/mypage/MyPlaylists';
 import StarToggleButton from '@/components/playlist/StarToggleButton';
 import Profile from '@/components/profile/Profile';
+import SubsToggleButton from '@/components/subscriptions/SubsToggleButton';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
 import useToastStore from '@/store/useToastStore'; // zustand 상태관리 ✅
 import useToggleStore from '@/store/useToggleStore';
-
 import { getVideoId } from '@/utils/getVideoId';
-
 
 const ExamplePage = () => {
   const bears = useBearStore((state) => state.bears);
@@ -26,21 +22,14 @@ const ExamplePage = () => {
   const [url, setUrl] = useState('');
   const [videoId, setVideoId] = useState<string | null>('');
 
-
-  const getYoutubeVideoId = (url: string) => {
-    const videoId = getVideoId(url);
-    setVideoId(videoId);
-    setUrl('');
-  };
-
   const isToggled = useToggleStore((state) => state.isToggled);
   const showToast = useToastStore((state) => state.showToast);
 
-  const getYoutubeVideoId = (url: string) => {
-    const videoId = getYoutubeVideoId(url);
-    setVideoId(videoId);
-    setUrl('');
-  };
+  // const getYoutubeVideoId = (url: string) => {
+  //   const videoId = getYoutubeVideoId(url);
+  //   setVideoId(videoId);
+  //   setUrl('');
+  // };
   // 일반 버튼
   const handleButtonClick = () => {
     console.log('Button clicked!');
@@ -72,11 +61,12 @@ const ExamplePage = () => {
       </div>
 
       <MyPlaylists />
+      <SubsToggleButton />
 
       <div>
         <h1>유튜브 API 테스트</h1>
         <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
-        <button onClick={() => getYoutubeVideoId(url)}>업로드</button>
+        {/* <button onClick={() => getYoutubeVideoId(url)}>업로드</button> */}
         <YouTubePlayerV3 videoId={videoId} />
       </div>
       <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
@@ -123,14 +113,12 @@ const ExamplePage = () => {
         height='50px'
         thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
       />
-       </div>
 
       <div>
         <StarToggleButton />
         <Button onClick={handleButtonClick}>Click me!</Button>
       </div>
       <Toast />
-
     </div>
   );
 };
