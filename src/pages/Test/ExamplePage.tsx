@@ -1,12 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import Button from '@/components/common/buttons/Button';
 import ThumBox from '@/components/common/ThumBox';
+import Toast from '@/components/common/Toast';
 import VideoCard from '@/components/common/VideoCard';
+import MyPlaylists from '@/components/mypage/MyPlaylists';
+import StarToggleButton from '@/components/playlist/StarToggleButton';
 import Profile from '@/components/profile/Profile';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/pages/Test/ExampleTanStackQuery';
 import FirebaseTest from '@/pages/Test/FirebaseTest';
 import useBearStore from '@/store/store';
+import useToastStore from '@/store/useToastStore'; // zustand 상태관리 ✅
+import useToggleStore from '@/store/useToggleStore';
 import { getVideoId } from '@/utils/getVideoId';
 
 const ExamplePage = () => {
@@ -22,34 +28,29 @@ const ExamplePage = () => {
     setUrl('');
   };
 
+  const isToggled = useToggleStore((state) => state.isToggled);
+  const showToast = useToastStore((state) => state.showToast);
+
+  const getYoutubeVideoId = (url: string) => {
+    const videoId = getYoutubeVideoId(url);
+    setVideoId(videoId);
+    setUrl('');
+  };
+  // 일반 버튼
+  const handleButtonClick = () => {
+    console.log('Button clicked!');
+    showToast('Button clicked!'); // ✅
+  };
+
+  useEffect(() => {
+    if (isToggled) {
+      showToast('내 재생목록에 저장되었습니다.');
+    }
+  }, [isToggled, showToast]);
   return (
     <div>
-      {/* <div>
-        <h1 style={{ backgroundColor: 'yellow', color: 'black', fontSize: '32px' }}>
-          주스탠드 테스트
-        </h1>
-        <h2>상태: {bears}</h2>
-        <input
-          type='number'
-          value={value}
-          onChange={(event) => {
-            setValue(parseInt(event.target.value, 10));
-          }}
-        />
-        <button onClick={() => setBear(value)}>상태 업데이트</button>
-      </div>
-      <div>
-        <h1 style={{ backgroundColor: 'yellow', color: 'black', fontSize: '32px' }}>
-          텐스택쿼리 테스트
-        </h1>
-        <ExampleTanStackQuery />
-      </div> */}
-      <div>
-        <h1>유튜브 API 테스트</h1>
-        <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
-        <button onClick={() => getYoutubeVideoId(url)}>업로드</button>
-        <YouTubePlayerV3 videoId={videoId} />
-      </div>
+      {/* {/* <div>
+        
       {/* <Profile nickname='김승민32ㄴㅇㅎㅁㅇㄴㅎ' />
       <Profile
         nickname='mini'
@@ -94,7 +95,6 @@ const ExamplePage = () => {
         height='50px'
         thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
       /> */}
-      <FirebaseTest />
     </div>
   );
 };
