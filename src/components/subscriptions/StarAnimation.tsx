@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { css, keyframes } from '@emotion/react';
+
+import theme from '@/styles/theme';
 
 interface StarAnimationProps {
   isActive: boolean;
@@ -28,7 +30,6 @@ const containerStyle = css`
   top: 0%;
   transform: translate(-14px, -4px);
   pointer-events: none;
-  overflow: hidden;
 `;
 
 const starStyle = css`
@@ -44,17 +45,20 @@ const starStyle = css`
 
 const StarAnimation: React.FC<StarAnimationProps> = ({ isActive }) => {
   const [stars, setStars] = useState<React.ReactNode[]>([]);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    console.log('isActive changed:', isActive); // 디버깅용 로그
-
     if (!isActive) {
       setStars([]);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       return;
     }
 
     const addStar = () => {
-      const size = Math.floor(Math.random() * 7) + 2;
+      const size = Math.floor(Math.random() * 9) + 2;
       const top = Math.floor(Math.random() * 40);
       const left = Math.floor(Math.random() * 120);
 
@@ -70,7 +74,7 @@ const StarAnimation: React.FC<StarAnimationProps> = ({ isActive }) => {
           ]}
         >
           <svg width={size} height={size} viewBox='0 0 68 68' fill='none'>
-            <path d={svgPath} fill='#FFC700' />
+            <path d={svgPath} fill={theme.colors.goldStar} />
           </svg>
         </span>
       );
@@ -78,23 +82,23 @@ const StarAnimation: React.FC<StarAnimationProps> = ({ isActive }) => {
       setStars((prevStars) => [...prevStars.slice(-19), star]);
     };
 
-    const interval = setInterval(addStar, 50); // 고정된 간격으로 별 추가
-
-    // 전체 애니메이션 지속 시간을 2초로 설정
-    const animationDuration = 2000;
+    intervalRef.current = setInterval(addStar, Math.random() * 50 + 20);
 
     const timer = setTimeout(() => {
-      clearInterval(interval);
-      console.log('Animation ended'); // 디버깅용 로그
-    }, animationDuration);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    }, 1000);
 
     return () => {
-      clearInterval(interval);
       clearTimeout(timer);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     };
   }, [isActive]);
-
-  console.log('Number of stars:', stars.length); // 디버깅용 로그
 
   return <div css={containerStyle}>{stars}</div>;
 };
