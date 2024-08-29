@@ -43,7 +43,6 @@ const SignIn = () => {
     <div css={container}>
       <img src='/logo.svg' alt='Logo' css={logoStyle} />
       <InputForm onInputChange={handleInputChange} />
-      {errorMessage && <p css={errorMessageStyle}>{errorMessage}</p>}
       {isFormValid ? (
         <Button customStyle={buttonStyle} onClick={handleSignIn}>
           로그인
@@ -53,6 +52,7 @@ const SignIn = () => {
           로그인
         </Button>
       )}
+      {errorMessage && <p css={errorMessageStyle}>{errorMessage}</p>}
     </div>
   );
 };
