@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 
 
+import MyPlaylists from '@/components/mypage/MyPlaylists';
+
 import Button from '@/components/common/buttons/Button';
+
 import ThumBox from '@/components/common/ThumBox';
 import Toast from '@/components/common/Toast';
 import VideoCard from '@/components/common/VideoCard';
@@ -67,6 +70,9 @@ const ExamplePage = () => {
         <h1>텐스택쿼리 테스트</h1>
         <ExampleTanStackQuery />
       </div>
+
+      <MyPlaylists />
+
       <div>
         <h1>유튜브 API 테스트</h1>
         <input type='text' value={url} onChange={(e) => setUrl(e.target.value)} />
