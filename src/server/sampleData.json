@@ -1,0 +1,66 @@
+{
+  "users": {
+    "user1": {
+      "username": "John Doe",
+      "email": "john@example.com",
+      "profileImg": "https://example.com/john.jpg"
+    },
+    "user2": {
+      "username": "Jane Smith",
+      "email": "jane@example.com",
+      "profileImg": "https://example.com/jane.jpg"
+    }
+  },
+  "playlists": {
+    "user1": {
+      "playlist1": {
+        "title": "My Favorite Songs",
+        "createdAt": "2023-05-01T00:00:00Z",
+        "likes": 5,
+        "commentCount": 2,
+        "thumbnailUrl": "https://example.com/playlist1.jpg",
+        "videos": {
+          "video1": {
+            "addedAt": "2023-05-01T00:00:00Z",
+            "order": 1
+          },
+          "video2": {
+            "addedAt": "2023-05-01T00:00:00Z",
+            "order": 2
+          }
+        }
+      }
+    }
+  },
+  "videos": {
+    "video1": {
+      "title": "Amazing Song",
+      "thumbnailUrl": "https://example.com/video1.jpg",
+      "uploader": "Famous Artist"
+    },
+    "video2": {
+      "title": "Great Music Video",
+      "thumbnailUrl": "https://example.com/video2.jpg",
+      "uploader": "Popular Band"
+    }
+  },
+  "forkedPlaylists": {
+    "user2": {
+      "playlist1": true
+    }
+  },
+  "likedPlaylists": {
+    "user2": {
+      "playlist1": true
+    }
+  },
+  "comments": {
+    "playlist1": {
+      "comment1": {
+        "userId": "user2",
+        "content": "Great playlist!",
+        "createdAt": "2023-05-02T00:00:00Z"
+      }
+    }
+  }
+}
