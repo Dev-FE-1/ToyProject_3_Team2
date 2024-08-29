@@ -1,14 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 import MyPlaylists from '@/components/mypage/MyPlaylists';
+
+import Button from '@/components/common/buttons/Button';
+
 import ThumBox from '@/components/common/ThumBox';
+import Toast from '@/components/common/Toast';
 import VideoCard from '@/components/common/VideoCard';
+import StarToggleButton from '@/components/playlist/StarToggleButton';
 import Profile from '@/components/profile/Profile';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/ExampleTanStackQuery';
 import useBearStore from '@/store/store';
+import useToastStore from '@/store/useToastStore'; // zustand 상태관리 ✅
+import useToggleStore from '@/store/useToggleStore';
+
 import { getVideoId } from '@/utils/getVideoId';
+
 
 const ExamplePage = () => {
   const bears = useBearStore((state) => state.bears);
@@ -17,12 +26,32 @@ const ExamplePage = () => {
   const [url, setUrl] = useState('');
   const [videoId, setVideoId] = useState<string | null>('');
 
+
   const getYoutubeVideoId = (url: string) => {
     const videoId = getVideoId(url);
     setVideoId(videoId);
     setUrl('');
   };
 
+  const isToggled = useToggleStore((state) => state.isToggled);
+  const showToast = useToastStore((state) => state.showToast);
+
+  const getYoutubeVideoId = (url: string) => {
+    const videoId = getYoutubeVideoId(url);
+    setVideoId(videoId);
+    setUrl('');
+  };
+  // 일반 버튼
+  const handleButtonClick = () => {
+    console.log('Button clicked!');
+    showToast('Button clicked!'); // ✅
+  };
+
+  useEffect(() => {
+    if (isToggled) {
+      showToast('내 재생목록에 저장되었습니다.');
+    }
+  }, [isToggled, showToast]);
   return (
     <div>
       <div>
@@ -94,6 +123,13 @@ const ExamplePage = () => {
         height='50px'
         thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
       />
+       </div>
+
+      <div>
+        <StarToggleButton />
+        <Button onClick={handleButtonClick}>Click me!</Button>
+      </div>
+      <Toast />
 
     </div>
   );

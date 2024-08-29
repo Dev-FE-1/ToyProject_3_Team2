@@ -12,6 +12,7 @@ import RootLayout from '@/layouts/RootLayout';
 import ExamplePage from '@/pages/ExamplePage'; // Zustand와 TanStack Query 예시를 포함한 페이지
 import Home from '@/pages/Home';
 import Search from '@/pages/Search';
+import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
 
 const queryClient = new QueryClient();
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
     path: PATH.HOME,
     element: <AuthProtectedRoute />,
     children: [
-      { path: PATH.SIGNIN, element: <div>SignIn</div> },
+      { path: PATH.SIGNIN, element: <SignIn /> },
       {
         //  <RootLayout /> : 네비게이션(탭바)+콘텐츠
         element: <RootLayout />,
@@ -48,7 +49,7 @@ const router = createBrowserRouter([
             children: [{ index: true, element: <Subscriptions /> }],
           },
           { path: PATH.MYPAGE, children: [{ index: true, element: <div>MyPage</div> }] },
-          { path: PATH.SIGNIN, children: [{ index: true, element: <div>SignIn</div> }] },
+          { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
           { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
         ],
       },
