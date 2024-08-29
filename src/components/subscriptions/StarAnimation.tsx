@@ -80,7 +80,7 @@ const StarAnimation: React.FC<StarAnimationProps> = ({ isActive }) => {
       () => {
         addStar();
       },
-      Math.random() * 50 + 25 // Increased frequency
+      Math.random() * 30 + 20 // Increased frequency
     );
 
     return () => clearInterval(interval);
