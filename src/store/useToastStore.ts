@@ -1,14 +1,14 @@
 // store/toastStore.ts
 import { create } from 'zustand';
 
-interface ToastState {
+interface ToastProps {
   isVisible: boolean;
   message: string;
   showToast: (message: string) => void;
   hideToast: () => void;
 }
 
-const createToastStore = create<ToastState>((set) => ({
+const useToastStore = create<ToastProps>((set) => ({
   isVisible: false,
   message: '',
   showToast: (message: string) => {
@@ -17,4 +17,4 @@ const createToastStore = create<ToastState>((set) => ({
   hideToast: () => set({ isVisible: false, message: '' }),
 }));
 
-export default createToastStore;
+export default useToastStore;
