@@ -15,25 +15,26 @@ const InputForm: React.FC<InputFormProps> = ({ onInputChange }) => {
   const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
-  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newUsername = e.target.value;
-    setUsername(newUsername);
-    if (newUsername && !validateEmail(newUsername)) {
-      setUsernameError('이메일 주소가 올바르지 않습니다.');
-    } else {
-      setUsernameError('');
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+
+    if (id === 'username') {
+      setUsername(value);
+      if (value && !validateEmail(value)) {
+        setUsernameError('이메일 주소가 올바르지 않습니다.');
+      } else {
+        setUsernameError('');
+      }
+    } else if (id === 'password') {
+      setPassword(value);
+      if (value && value.length < 8) {
+        setPasswordError('비밀번호는 최소 8자 이상이어야 합니다.');
+      } else {
+        setPasswordError('');
+      }
     }
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-    if (newPassword && newPassword.length < 8) {
-      setPasswordError('비밀번호는 최소 8자 이상이어야 합니다.');
-    } else {
-      setPasswordError('');
-    }
-  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
@@ -50,7 +51,7 @@ const InputForm: React.FC<InputFormProps> = ({ onInputChange }) => {
           type='text'
           id='username'
           value={username}
-          onChange={handleUsernameChange}
+          onChange={handleInputChange}
           required
           placeholder='아이디를 입력하세요'
           css={inputStyle}
@@ -62,7 +63,7 @@ const InputForm: React.FC<InputFormProps> = ({ onInputChange }) => {
           type='password'
           id='password'
           value={password}
-          onChange={handlePasswordChange}
+          onChange={handleInputChange}
           required
           placeholder='비밀번호를 입력하세요'
           css={inputStyle}
