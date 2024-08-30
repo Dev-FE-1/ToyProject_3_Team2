@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
 interface HeaderProps {
-  Icon?: ComponentType<SVGProps<SVGSVGElement>>;
+  Icon?: ComponentType<SVGProps<SVGElement>>;
   children?: React.ReactNode;
   onBack?: () => void;
 }
@@ -49,6 +49,7 @@ const buttonStyle = css`
   svg {
     width: 24px;
     height: 24px;
+  }
 `;
 const titleStyle = css`
   position: absolute;

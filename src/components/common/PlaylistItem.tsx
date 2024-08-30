@@ -33,7 +33,7 @@ const PlaylistItem: React.FC<PlaylistItemProps> = ({
 const itemStyle = css`
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: 0.5rem 0;
   cursor: pointer;
 `;
 

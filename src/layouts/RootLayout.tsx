@@ -13,7 +13,7 @@ const RootLayout = () => (
   </div>
 );
 const wrapperStyle = css`
-  max-width: 500px;
+  max-width: 498px;
   min-height: 100vh;
   margin: 0 auto;
 
