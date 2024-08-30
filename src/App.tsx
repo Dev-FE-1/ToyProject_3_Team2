@@ -10,6 +10,7 @@ import {
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
+import Onboarding from '@/pages/Onboarding';
 import Search from '@/pages/Search';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
           },
           { path: PATH.MYPAGE, children: [{ index: true, element: <div>MyPage</div> }] },
           { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
+          { path: PATH.ONBOARDING, children: [{ index: true, element: <Onboarding /> }] },
           { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
         ],
       },
