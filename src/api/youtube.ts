@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const youtubeApi = axios.create({
+const fetchYoutubeData = axios.create({
   baseURL: 'https://www.googleapis.com/youtube/v3',
   params: {
     key: import.meta.env.VITE_YOUTUBE_API_KEY,
@@ -8,7 +8,7 @@ const youtubeApi = axios.create({
 });
 
 export const getVideoData = async (videoId: string) => {
-  const response = await youtubeApi.get('/videos', {
+  const response = await fetchYoutubeData.get('/videos', {
     params: {
       part: 'snippet,statistics,player',
       id: videoId,

@@ -116,6 +116,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     // Prettier 포맷팅 규칙을 ESLint 에러로 취급 (endOfLine은 auto로 설정하여 OS에 맞게 자동으로 줄 끝 문자를 처리)
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+    'react/prop-types': 'off',
   },
   settings: {
     react: {
