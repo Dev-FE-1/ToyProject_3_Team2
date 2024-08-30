@@ -1,150 +1,153 @@
-// import React, { useEffect, useState } from 'react';
-
-// import { fetchCollection } from '@/firebase/firebaseService';
-
-// interface User {
-//   id: string;
-//   username: string;
-//   email: string;
-//   profileImg: string;
-// }
-
-// export const UserList: React.FC = () => {
-//   const [users, setUsers] = useState<User[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   useEffect(() => {
-//     const loadUsers = async () => {
-//       try {
-//         const userData = await fetchCollection('users');
-//         // fetchCollection()의 타입은 DocumentData[]
-//         // 타입 오류 해결의 가장 쉬운 방법은 타입 단언: setUsers(userData as User[]);
-//         // 아래 방법은 반환된 값 중 필요한 속성만 추출하여 User 객체를 명시적으로 생성 (데이터 매핑)
-//         setUsers(
-//           userData.map((doc) => ({
-//             id: doc.id,
-//             username: doc.username,
-//             email: doc.email,
-//             profileImg: doc.profileImg,
-//           }))
-//         );
-//         setLoading(false);
-//       } catch (err) {
-//         setError('Failed to fetch users');
-//         setLoading(false);
-//       }
-//     };
-
-//     loadUsers();
-//   }, []);
-
-//   if (loading) return <div>Loading...</div>;
-//   if (error) return <div>Error: {error}</div>;
-
-//   return (
-//     <div>
-//       <h2>User List</h2>
-//       <ul>
-//         {users.map((user) => (
-//           <li key={user.id}>
-//             <img src={user.profileImg} alt={user.username} width='50' height='50' />
-//             {user.username} ({user.email})
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   );
-// };
 import React, { useEffect, useState } from 'react';
 
-// import { useQuery } from '@tanstack/react-query';
-
-import { getPlaylists, Playlist } from '@/api/playlist';
+import { getAllPlaylists, getForkedPlaylists, Playlist } from '@/api/playlist';
 import { getUserData, User } from '@/api/user';
+
+interface Video {
+  videoId: string;
+  videoUrl: string;
+  title: string;
+  thumbnailUrl: string;
+  duration: number;
+}
 
 const FirebaseTest: React.FC = () => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [forkedPlaylists, setForkedPlaylists] = useState<Playlist[]>([]);
+  const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      const fetchedPlaylists = await getPlaylists();
+      const fetchedPlaylists = await getAllPlaylists();
       setPlaylists(fetchedPlaylists);
     };
-
-    fetchPlaylists();
-  }, []);
-
-  useEffect(() => {
     const fetchUsers = async () => {
-      const fetchedUserInfo = await getUserData('user1');
+      const fetchedUserInfo = await getUserData('user101');
       setUserInfo(fetchedUserInfo);
     };
 
+    const fetchForkedPlaylists = async () => {
+      const forkedPlaylists = await getForkedPlaylists('user101');
+      setForkedPlaylists(forkedPlaylists);
+    };
+
+    fetchPlaylists();
     fetchUsers();
+    fetchForkedPlaylists();
   }, []);
-  ///////// 아래부분은 TanStack Query를 사용할 시
-  // const {
-  //   data: userInfo,
-  //   error,
-  //   isLoading,
-  // } = useQuery<User | null, Error>(
-  //   ['user', 'user1'], // 쿼리 키: user와 userId로 구성
-  //   () => getUserById('user1') // 쿼리 함수: userId를 전달하여 사용자 정보 가져오기
-  // );
+  console.log(forkedPlaylists);
+  const handlePlaylistClick = (playlist: Playlist) => {
+    setSelectedPlaylist(playlist);
+    console.log('클릭됐다!!!!!!');
+  };
 
-  // if (isLoading) {
-  //   return <div>Loading user...</div>;
-  // }
-
-  // if (error) {
-  //   return <div>{error.message}</div>;
-  // }
-
-  // if (!userInfo) {
-  //   return <div>No user found.</div>;
-  // }
-
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+    <div>
       {userInfo && (
-        <div>
-          <h2>이름: {userInfo?.username}</h2>
-          <h2>플리 개수: {userInfo?.playlistCount}</h2>
-          <h2>총 좋아요수: {userInfo?.totalLikes}</h2>
-        </div>
-      )}
-      {playlists?.map((playlist: Playlist) => (
         <div
-          key={playlist.id}
           style={{
-            width: '200px',
-            backgroundColor: '#e0f0ff',
-            borderRadius: '10px',
+            marginBottom: '20px',
             padding: '10px',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+            backgroundColor: '#333',
+            borderRadius: '5px',
           }}
         >
-          {playlist.thumbnailUrl && (
-            <img
-              src={playlist.thumbnailUrl}
-              alt={playlist.title}
+          <h2>이름: {userInfo.username}</h2>
+          <p>이메일: {userInfo.email}</p>
+          <p>플레이리스트 수: {userInfo.playlistCount}</p>
+          <p>총 좋아요 수: {userInfo.totalLikes}</p>
+          <p>총 포크 수: {userInfo.totalForks}</p>
+          <img
+            src={userInfo.profileImg}
+            alt={userInfo.username}
+            style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+          />
+        </div>
+      )}
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+        {playlists.map((playlist: Playlist) => (
+          <div
+            key={playlist.playlistId}
+            style={{
+              width: '200px',
+              backgroundColor: '#e0f0ff',
+              borderRadius: '10px',
+              padding: '10px',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+              cursor: 'pointer',
+            }}
+            onClick={() => handlePlaylistClick(playlist)}
+          >
+            {playlist.thumbnailUrl && (
+              <img
+                src={playlist.thumbnailUrl}
+                alt={playlist.title}
+                style={{
+                  width: '100%',
+                  height: '150px',
+                  objectFit: 'cover',
+                  borderRadius: '5px',
+                }}
+              />
+            )}
+            <h3 style={{ margin: '10px 0 5px' }}>{playlist.title}</h3>
+            <p style={{ fontSize: '0.9em', color: '#666' }}>{playlist.description}</p>
+            <p style={{ fontSize: '0.8em', color: '#888', marginTop: '5px' }}>
+              동영상 {playlist.videoCount}개 | 좋아요 {playlist.likeCount} | 댓글{' '}
+              {playlist.commentCount}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {selectedPlaylist && (
+        <div
+          style={{
+            marginTop: '30px',
+            padding: '20px',
+            backgroundColor: '#333',
+            borderRadius: '10px',
+          }}
+        >
+          <h2>{selectedPlaylist.title} - 비디오 목록</h2>
+          {selectedPlaylist.videos.map((video: Video) => (
+            <div
+              key={video.videoId}
               style={{
-                width: '100%',
-                height: '150px',
-                objectFit: 'cover',
+                display: 'flex',
+                alignItems: 'center',
+                marginBottom: '10px',
+                padding: '10px',
+                backgroundColor: '#333',
                 borderRadius: '5px',
               }}
-            />
-          )}
-          <h3 style={{ margin: '10px 0 5px' }}>{playlist.title}</h3>
-          <p style={{ fontSize: '0.9em', color: '#666' }}>{playlist.description}</p>
-          <p style={{ fontSize: '0.8em', color: '#888', marginTop: '5px' }}>
-            동영상 {playlist.videoCount}개
-          </p>
+            >
+              <img
+                src={video.thumbnailUrl}
+                alt={video.title}
+                style={{ width: '120px', height: '67px', marginRight: '10px' }}
+              />
+              <div>
+                <h4 style={{ margin: '0 0 5px' }}>
+                  <a href={video.videoUrl} target='_blank'>
+                    {video.title}
+                  </a>
+                </h4>
+                <p style={{ fontSize: '0.8em', color: '#888' }}>
+                  재생 시간: {formatDuration(video.duration)}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
     </div>
   );
 };
