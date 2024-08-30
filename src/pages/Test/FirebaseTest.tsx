@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { getPlaylists, Playlist } from '@/api/playlist';
+import { getAllPlaylists, getForkedPlaylists, Playlist } from '@/api/playlist';
 import { getUserData, User } from '@/api/user';
 
 interface Video {
@@ -14,23 +14,29 @@ interface Video {
 const FirebaseTest: React.FC = () => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [forkedPlaylists, setForkedPlaylists] = useState<Playlist[]>([]);
   const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(null);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
-      const fetchedPlaylists = await getPlaylists();
+      const fetchedPlaylists = await getAllPlaylists();
       setPlaylists(fetchedPlaylists);
     };
-
     const fetchUsers = async () => {
       const fetchedUserInfo = await getUserData('user101');
       setUserInfo(fetchedUserInfo);
     };
 
+    const fetchForkedPlaylists = async () => {
+      const forkedPlaylists = await getForkedPlaylists('user101');
+      setForkedPlaylists(forkedPlaylists);
+    };
+
     fetchPlaylists();
     fetchUsers();
+    fetchForkedPlaylists();
   }, []);
-
+  console.log(forkedPlaylists);
   const handlePlaylistClick = (playlist: Playlist) => {
     setSelectedPlaylist(playlist);
     console.log('클릭됐다!!!!!!');
@@ -41,7 +47,6 @@ const FirebaseTest: React.FC = () => {
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
-
   return (
     <div>
       {userInfo && (
@@ -131,7 +136,7 @@ const FirebaseTest: React.FC = () => {
               />
               <div>
                 <h4 style={{ margin: '0 0 5px' }}>
-                  <a href={video.videoUrl} target='_blank' rel='noopener noreferrer'>
+                  <a href={video.videoUrl} target='_blank'>
                     {video.title}
                   </a>
                 </h4>

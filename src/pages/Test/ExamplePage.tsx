@@ -87,7 +87,7 @@ const ExamplePage = () => {
         height='50px'
         thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
       /> */}
-      <FirebaseTest />
+      {/* <FirebaseTest /> */}
     </div>
   );
 };
