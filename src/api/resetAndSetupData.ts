@@ -1,6 +1,6 @@
 import { doc, setDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
 
-import { data } from '../constants/data';
+import { data } from '../mock/data';
 import { db } from '@/api';
 
 // 파이어스토어 데이터 초기화
