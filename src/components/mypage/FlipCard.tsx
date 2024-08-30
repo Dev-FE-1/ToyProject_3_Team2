@@ -10,14 +10,24 @@ import { shortenString } from '@/utils/stringUtils';
 
 interface FlipCardProps {
   id: string;
+  title: string;
   isFlipped: boolean;
   onFlip: () => void;
   front?: React.ReactNode;
   back?: React.ReactNode;
   image?: string;
+  category: string;
 }
 
-const FlipCard: React.FC<FlipCardProps> = ({ id, isFlipped, onFlip, front, back, image }) => {
+const FlipCard: React.FC<FlipCardProps> = ({
+  title,
+  isFlipped,
+  onFlip,
+  front,
+  back,
+  image,
+  category,
+}) => {
   const [size, setSize] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -37,26 +47,24 @@ const FlipCard: React.FC<FlipCardProps> = ({ id, isFlipped, onFlip, front, back,
   }, []);
 
   const handleClick = () => {
-    navigate(`/playlist`);
+    navigate(`/playlist/\${id}`);
   };
-
-  const title = '플레이리스트 들어볼사람 여기여기 붙어라 붙어라 붙어라 붙어라';
 
   const defaultImageUrl =
     'https://img.freepik.com/free-vector/music-streaming-design_53876-90530.jpg?t=st=1724784091~exp=1724787691~hmac=42d73983e0851ae2b41e1442ed58033866983f634b9ae3cc9f93d056e5e06b4f&w=1380';
-
+  const imageUrl = image && image.trim() !== '' ? image : defaultImageUrl;
   return (
     <div ref={containerRef} css={containerStyle(size)} onClick={onFlip}>
       <div css={[innerStyle, isFlipped && flippedStyle]}>
         <div css={frontStyle}>
-          {front || <img src={image || defaultImageUrl} alt='Playlist cover' />}
+          {front || <img src={imageUrl} alt='Playlist cover' />}
           <div css={overlayStyle} />
         </div>
         <div css={backStyle}>
           {back || (
             <>
-              <h1 css={titleStyle}>{shortenString(title)}</h1>
-              <span css={tagStyle}>#스포츠</span>
+              <h1 css={titleStyle}>{title ? shortenString(title) : 'No Title'}</h1>
+              {category && <span css={tagStyle}>{`#${category}`}</span>}
               <IconTextButton Icon={RiArrowRightSLine} variant='transparent' onClick={handleClick}>
                 자세히 보기
               </IconTextButton>
