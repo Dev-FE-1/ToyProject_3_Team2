@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 
 import Toast from '@/components/common/Toast';
-import PlaylistBox from '@/components/playlist/playlistBox';
+import PlaylistBox from '@/components/playlist/PlaylistBox';
 import useToastStore from '@/store/useToastStore';
 import theme from '@/styles/theme';
 
