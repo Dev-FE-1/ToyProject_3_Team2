@@ -1,53 +1,439 @@
 {
   "users": {
-    "<userId>": {
-      "username": "사용자 이름",
-      "email": "이메일",
-      "profileImg": "프로필 이미지 URL",
-      "playlistCount": 0,
-      "totalLikes": 0,
-      "totalForks": 0
+    "user101": {
+      "username": "엄마튜버",
+      "email": "momtuber@example.com",
+      "profileImg": "https://example.com/profiles/user101.jpg",
+      "playlistCount": 5,
+      "totalLikes": 1200,
+      "totalForks": 80
+    },
+    "user102": {
+      "username": "여행왕",
+      "email": "travelking@example.com",
+      "profileImg": "https://example.com/profiles/user102.jpg",
+      "playlistCount": 5,
+      "totalLikes": 1500,
+      "totalForks": 100
     }
   },
   "playlists": {
-    "<playlistId>": {
-      "userId": "<userId>",
-      "title": "플레이리스트 제목",
-      "description": "설명",
-      "category": "카테고리",
-      "createdAt": "타임스탬프",
-      "updatedAt": "타임스탬프",
-      "likeCount": 0,
-      "forkCount": 0,
-      "commentCount": 0,
-      "videoCount": 0,
-      "thumbnailUrl": "썸네일 URL",
+    "playlist101": {
+      "playlistId": "playlist101",
+      "userId": "user101",
+      "title": "우리 아이 교육용 영상 모음",
+      "description": "핑크퐁과 뽀로로로 배우는 즐거운 학습!",
+      "category": "키즈",
+      "createdAt": "2023-08-15T10:00:00Z",
+      "updatedAt": "2023-08-20T15:30:00Z",
+      "likeCount": 300,
+      "forkCount": 20,
+      "commentCount": 50,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist101.jpg",
       "isPublic": true,
       "videos": [
         {
-          "videoId": "유튜브 비디오 ID",
-          "title": "비디오 제목",
-          "thumbnailUrl": "비디오 썸네일 URL",
+          "videoId": "pinkfong001",
+          "title": "핑크퐁 상어가족",
+          "thumbnailUrl": "https://example.com/thumbnails/pinkfong001.jpg",
+          "duration": 120
+        },
+        {
+          "videoId": "pororo001",
+          "title": "뽀로로와 친구들의 모험",
+          "thumbnailUrl": "https://example.com/thumbnails/pororo001.jpg",
+          "duration": 180
+        },
+        {
+          "videoId": "cocomong001",
+          "title": "코코몽과 함께하는 영어 학습",
+          "thumbnailUrl": "https://example.com/thumbnails/cocomong001.jpg",
+          "duration": 150
+        }
+      ]
+    },
+    "playlist102": {
+      "playlistId": "playlist102",
+      "userId": "user101",
+      "title": "잔잔한 클래식 음악",
+      "description": "마음을 편안하게 해주는 클래식 음악 모음",
+      "category": "음악",
+      "createdAt": "2023-09-01T14:00:00Z",
+      "updatedAt": "2023-09-10T09:45:00Z",
+      "likeCount": 250,
+      "forkCount": 15,
+      "commentCount": 30,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist102.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "classic001",
+          "title": "모차르트 - 피아노 협주곡 21번",
+          "thumbnailUrl": "https://example.com/thumbnails/classic001.jpg",
+          "duration": 1800
+        },
+        {
+          "videoId": "classic002",
+          "title": "베토벤 - 월광 소나타",
+          "thumbnailUrl": "https://example.com/thumbnails/classic002.jpg",
+          "duration": 900
+        },
+        {
+          "videoId": "classic003",
+          "title": "쇼팽 - 녹턴 Op.9 No.2",
+          "thumbnailUrl": "https://example.com/thumbnails/classic003.jpg",
+          "duration": 270
+        }
+      ]
+    },
+    "playlist103": {
+      "playlistId": "playlist103",
+      "userId": "user101",
+      "title": "일상 브이로그",
+      "description": "평범한 일상의 소소한 행복",
+      "category": "라이프",
+      "createdAt": "2023-09-15T11:30:00Z",
+      "updatedAt": "2023-09-25T16:20:00Z",
+      "likeCount": 180,
+      "forkCount": 10,
+      "commentCount": 40,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist103.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "vlog001",
+          "title": "아침 루틴 브이로그",
+          "thumbnailUrl": "https://example.com/thumbnails/vlog001.jpg",
+          "duration": 600
+        },
+        {
+          "videoId": "vlog002",
+          "title": "주말 나들이 브이로그",
+          "thumbnailUrl": "https://example.com/thumbnails/vlog002.jpg",
+          "duration": 720
+        },
+        {
+          "videoId": "vlog003",
+          "title": "홈카페 브이로그",
+          "thumbnailUrl": "https://example.com/thumbnails/vlog003.jpg",
+          "duration": 540
+        }
+      ]
+    },
+    "playlist104": {
+      "playlistId": "playlist104",
+      "userId": "user101",
+      "title": "강아지 영상 모음",
+      "description": "귀여운 강아지들의 일상",
+      "category": "동물",
+      "createdAt": "2023-10-01T09:00:00Z",
+      "updatedAt": "2023-10-10T13:15:00Z",
+      "likeCount": 400,
+      "forkCount": 25,
+      "commentCount": 70,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist104.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "dog001",
+          "title": "골든리트리버 퍼피의 하루",
+          "thumbnailUrl": "https://example.com/thumbnails/dog001.jpg",
+          "duration": 360
+        },
+        {
+          "videoId": "dog002",
+          "title": "시바견과 산책하기",
+          "thumbnailUrl": "https://example.com/thumbnails/dog002.jpg",
+          "duration": 480
+        },
+        {
+          "videoId": "dog003",
+          "title": "귀여운 강아지 모음",
+          "thumbnailUrl": "https://example.com/thumbnails/dog003.jpg",
           "duration": 300
+        }
+      ]
+    },
+    "playlist105": {
+      "playlistId": "playlist105",
+      "userId": "user101",
+      "title": "영어 회화 강의",
+      "description": "초보자를 위한 영어 회화 강의 시리즈",
+      "category": "강의",
+      "createdAt": "2023-10-15T08:00:00Z",
+      "updatedAt": "2023-10-25T14:30:00Z",
+      "likeCount": 220,
+      "forkCount": 18,
+      "commentCount": 45,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist105.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "english001",
+          "title": "영어 회화 기초 1강",
+          "thumbnailUrl": "https://example.com/thumbnails/english001.jpg",
+          "duration": 1200
+        },
+        {
+          "videoId": "english002",
+          "title": "일상 영어 표현 배우기",
+          "thumbnailUrl": "https://example.com/thumbnails/english002.jpg",
+          "duration": 900
+        },
+        {
+          "videoId": "english003",
+          "title": "영어로 자기소개하기",
+          "thumbnailUrl": "https://example.com/thumbnails/english003.jpg",
+          "duration": 1080
+        }
+      ]
+    },
+    "playlist201": {
+      "playlistId": "playlist201",
+      "userId": "user102",
+      "title": "뉴질랜드 여행 브이로그",
+      "description": "2주간의 뉴질랜드 여행 기록",
+      "category": "여행",
+      "createdAt": "2023-11-01T12:00:00Z",
+      "updatedAt": "2023-11-15T18:45:00Z",
+      "likeCount": 350,
+      "forkCount": 30,
+      "commentCount": 80,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist201.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "nz001",
+          "title": "뉴질랜드 도착 첫날",
+          "thumbnailUrl": "https://example.com/thumbnails/nz001.jpg",
+          "duration": 900
+        },
+        {
+          "videoId": "nz002",
+          "title": "퀸스타운 번지점프 도전",
+          "thumbnailUrl": "https://example.com/thumbnails/nz002.jpg",
+          "duration": 720
+        },
+        {
+          "videoId": "nz003",
+          "title": "밀포드 사운드 크루즈 여행",
+          "thumbnailUrl": "https://example.com/thumbnails/nz003.jpg",
+          "duration": 1080
+        }
+      ]
+    },
+    "playlist202": {
+      "playlistId": "playlist202",
+      "userId": "user102",
+      "title": "인기 영화 리뷰",
+      "description": "최신 개봉 영화 리뷰 모음",
+      "category": "영화",
+      "createdAt": "2023-11-20T10:30:00Z",
+      "updatedAt": "2023-11-30T16:15:00Z",
+      "likeCount": 280,
+      "forkCount": 20,
+      "commentCount": 60,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist202.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "movie001",
+          "title": "어벤저스: 엔드게임 리뷰",
+          "thumbnailUrl": "https://example.com/thumbnails/movie001.jpg",
+          "duration": 720
+        },
+        {
+          "videoId": "movie002",
+          "title": "기생충 영화 분석",
+          "thumbnailUrl": "https://example.com/thumbnails/movie002.jpg",
+          "duration": 900
+        },
+        {
+          "videoId": "movie003",
+          "title": "인셉션 결말 해석",
+          "thumbnailUrl": "https://example.com/thumbnails/movie003.jpg",
+          "duration": 1080
+        }
+      ]
+    },
+    "playlist203": {
+      "playlistId": "playlist203",
+      "userId": "user102",
+      "title": "무한도전 명장면 모음",
+      "description": "레전드 무한도전 에피소드 모음집",
+      "category": "엔터",
+      "createdAt": "2023-12-05T09:00:00Z",
+      "updatedAt": "2023-12-15T14:30:00Z",
+      "likeCount": 500,
+      "forkCount": 40,
+      "commentCount": 120,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist203.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "mudo001",
+          "title": "무한도전 – 돈가방을 옮겨라",
+          "thumbnailUrl": "https://example.com/thumbnails/mudo001.jpg",
+          "duration": 1800
+        },
+        {
+          "videoId": "mudo002",
+          "title": "무한도전 – 과거 여행",
+          "thumbnailUrl": "https://example.com/thumbnails/mudo002.jpg",
+          "duration": 2100
+        },
+        {
+          "videoId": "mudo003",
+          "title": "무한도전 – 가요제 특집",
+          "thumbnailUrl": "https://example.com/thumbnails/mudo003.jpg",
+          "duration": 3600
+        }
+      ]
+    },
+    "playlist204": {
+      "playlistId": "playlist204",
+      "userId": "user102",
+      "title": "고양이 영상 모음",
+      "description": "귀여운 고양이들의 일상",
+      "category": "동물",
+      "createdAt": "2023-12-20T11:00:00Z",
+      "updatedAt": "2023-12-30T17:45:00Z",
+      "likeCount": 450,
+      "forkCount": 35,
+      "commentCount": 90,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist204.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "cat001",
+          "title": "아기 고양이의 첫 산책",
+          "thumbnailUrl": "https://example.com/thumbnails/cat001.jpg",
+          "duration": 300
+        },
+        {
+          "videoId": "cat002",
+          "title": "고양이와 강아지의 우정",
+          "thumbnailUrl": "https://example.com/thumbnails/cat002.jpg",
+          "duration": 420
+        },
+        {
+          "videoId": "cat003",
+          "title": "장난감에 미친 고양이들",
+          "thumbnailUrl": "https://example.com/thumbnails/cat003.jpg",
+          "duration": 360
+        }
+      ]
+    },
+    "playlist205": {
+      "playlistId": "playlist205",
+      "userId": "user102",
+      "title": "K-POP 인기 뮤직비디오",
+      "description": "최신 K-POP 히트곡 모음",
+      "category": "음악",
+      "createdAt": "2024-01-05T13:00:00Z",
+      "updatedAt": "2024-01-15T19:30:00Z",
+      "likeCount": 600,
+      "forkCount": 50,
+      "commentCount": 150,
+      "videoCount": 3,
+      "thumbnailUrl": "https://example.com/thumbnails/playlist205.jpg",
+      "isPublic": true,
+      "videos": [
+        {
+          "videoId": "kpop001",
+          "title": "BTS - Dynamite",
+          "thumbnailUrl": "https://example.com/thumbnails/kpop001.jpg",
+          "duration": 220
+        },
+        {
+          "videoId": "kpop002",
+          "title": "BLACKPINK - How You Like That",
+          "thumbnailUrl": "https://example.com/thumbnails/kpop002.jpg",
+          "duration": 240
+        },
+        {
+          "videoId": "kpop003",
+          "title": "IU - Celebrity",
+          "thumbnailUrl": "https://example.com/thumbnails/kpop003.jpg",
+          "duration": 200
         }
       ]
     }
   },
   "userPlaylists": {
-    "<userId>": {
-      "created": ["<playlistId1>", "<playlistId2>"],
-      "forked": ["<playlistId5>", "<playlistId6>"],
-      "liked": ["<playlistId3>", "<playlistId4>"]
+    "user101": {
+      "created": ["playlist101", "playlist102", "playlist103", "playlist104", "playlist105"],
+      "forked": ["playlist203", "playlist205"],
+      "liked": ["playlist201", "playlist203"]
+    },
+    "user102": {
+      "created": ["playlist201", "playlist202", "playlist203", "playlist204", "playlist205"],
+      "forked": ["playlist101", "playlist104"],
+      "liked": ["playlist102", "playlist104", "playlist105"]
     }
   },
   "comments": {
-    "<playlistId>": {
-      "<commentId>": {
-        "userId": "<userId>",
-        "username": "사용자 이름",
-        "content": "댓글 내용",
-        "createdAt": "타임스탬프",
-        "updatedAt": "타임스탬프"
+    "playlist101": {
+      "comment1": {
+        "commentId": "comment701",
+        "userId": "user102",
+        "username": "여행왕",
+        "content": "아이들이 정말 좋아하네요! 감사합니다.",
+        "createdAt": "2023-08-21T09:30:00Z",
+        "updatedAt": "2023-08-21T09:30:00Z"
+      },
+      "comment2": {
+        "commentId": "comment702",
+        "userId": "user103",
+        "username": "육아맘",
+        "content": "핑크퐁 노래가 제일 좋아요!",
+        "createdAt": "2023-08-22T14:15:00Z",
+        "updatedAt": "2023-08-22T14:15:00Z"
+      }
+    },
+    "playlist201": {
+      "comment1": {
+        "commentId": "comment703",
+        "userId": "user101",
+        "username": "엄마튜버",
+        "content": "뉴질랜드 너무 가보고 싶어요. 좋은 정보 감사합니다!",
+        "createdAt": "2023-11-16T10:00:00Z",
+        "updatedAt": "2023-11-16T10:00:00Z"
+      },
+      "comment2": {
+        "commentId": "comment704",
+        "userId": "user104",
+        "username": "백패커",
+        "content": "퀸스타운 번지점프 꼭 해보고 싶네요.",
+        "createdAt": "2023-11-17T18:30:00Z",
+        "updatedAt": "2023-11-17T18:30:00Z"
+      },
+      "comment3": {
+        "commentId": "comment705",
+        "userId": "user105",
+        "username": "여행초보",
+        "content": "2주 일정 너무 알차 보여요. 참고하겠습니다!",
+        "createdAt": "2023-11-18T09:45:00Z",
+        "updatedAt": "2023-11-18T09:45:00Z"
+      }
+    },
+    "playlist203": {
+      "comment1": {
+        "commentId": "comment706",
+        "userId": "user106",
+        "username": "예능매니아",
+        "content": "무한도전 레전드 에피소드만 모아놓으셨네요. 굿!",
+        "createdAt": "2023-12-16T20:00:00Z",
+        "updatedAt": "2023-12-16T20:00:00Z"
       }
     }
   }

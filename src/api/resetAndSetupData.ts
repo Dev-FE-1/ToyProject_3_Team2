@@ -1,17 +1,20 @@
 import { doc, setDoc, collection, addDoc, deleteDoc, getDocs } from 'firebase/firestore';
 
-import { db } from './firebase';
+import { db } from '@/api';
 
-const resetAndSetupData = async () => {
-  // // 기존 데이터 삭제
+// 기존 데이터 초기화
+export const resetData = async () => {
   const collections = ['users', 'playlists', 'userPlaylists', 'comments'];
   for (const collectionName of collections) {
     const querySnapshot = await getDocs(collection(db, collectionName));
     const deletePromises = querySnapshot.docs.map((doc) => deleteDoc(doc.ref));
     await Promise.all(deletePromises);
-    console.log(`Deleted all documents in ${collectionName}`);
+    // console.log(`Deleted all documents in ${collectionName}`);
   }
+};
 
+// 새로운 데이터 셋업
+export const setUpData = async () => {
   // 사용자 추가
   const users = [
     { id: 'user1', username: '음악좋아', email: 'music@example.com' },
@@ -105,7 +108,8 @@ const resetAndSetupData = async () => {
     });
   }
 
-  console.log('Data reset and setup completed');
+  // console.log('Data setup completed');
 };
 
-resetAndSetupData().catch(console.error);
+resetData().catch(console.error);
+setUpData().catch(console.error);

@@ -60,7 +60,8 @@ import React, { useEffect, useState } from 'react';
 
 // import { useQuery } from '@tanstack/react-query';
 
-import { getPlaylists, getUserById, User, Playlist } from '@/firebase/firebaseService';
+import { getPlaylists, Playlist } from '@/api/playlist';
+import { getUserData, User } from '@/api/user';
 
 const FirebaseTest: React.FC = () => {
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -77,7 +78,7 @@ const FirebaseTest: React.FC = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const fetchedUserInfo = await getUserById('user1');
+      const fetchedUserInfo = await getUserData('user1');
       setUserInfo(fetchedUserInfo);
     };
 

@@ -30,7 +30,6 @@ const Search = () => {
   useEffect(() => {
     initializeLikes(playlists);
   }, []);
-  console.log(likes);
 
   const handleLikeClick = (playlistId: string) => {
     // 좋아요 클릭 여부를 저장하는 객체 상태에 있다면, -1

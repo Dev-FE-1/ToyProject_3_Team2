@@ -10,14 +10,11 @@ import Profile from '@/components/profile/Profile';
 import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import ExampleTanStackQuery from '@/pages/Test/ExampleTanStackQuery';
 import FirebaseTest from '@/pages/Test/FirebaseTest';
-import useBearStore from '@/store/store';
 import useToastStore from '@/store/useToastStore'; // zustand 상태관리 ✅
 import useToggleStore from '@/store/useToggleStore';
 import { getVideoId } from '@/utils/getVideoId';
 
 const ExamplePage = () => {
-  const bears = useBearStore((state) => state.bears);
-  const setBear = useBearStore((state) => state.setBear);
   const [value, setValue] = useState<number>(0);
   const [url, setUrl] = useState('');
   const [videoId, setVideoId] = useState<string | null>('');
@@ -31,11 +28,6 @@ const ExamplePage = () => {
   const isToggled = useToggleStore((state) => state.isToggled);
   const showToast = useToastStore((state) => state.showToast);
 
-  const getYoutubeVideoId = (url: string) => {
-    const videoId = getYoutubeVideoId(url);
-    setVideoId(videoId);
-    setUrl('');
-  };
   // 일반 버튼
   const handleButtonClick = () => {
     console.log('Button clicked!');
@@ -95,6 +87,7 @@ const ExamplePage = () => {
         height='50px'
         thumbURL='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
       /> */}
+      <FirebaseTest />
     </div>
   );
 };
