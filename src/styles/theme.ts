@@ -16,6 +16,7 @@ const colors = {
   bgSwitchOff: '#E3E5EB', // 스위치 off 배경색
   darkGray: '#8B95A1', // placeholder
   bgMypage: '#353535', // 마이페이지 프로필 배경색
+  goldStar: '#FFC700', // 별점 색상
 };
 
 const fontSizes = {
