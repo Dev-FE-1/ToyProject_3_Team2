@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import { getVideoId } from '@/utils/getVideoId';
+
 const fetchYoutubeData = axios.create({
   baseURL: 'https://www.googleapis.com/youtube/v3',
   params: {
@@ -7,7 +9,8 @@ const fetchYoutubeData = axios.create({
   },
 });
 
-export const getVideoData = async (videoId: string) => {
+export const getVideoData = async (url: string) => {
+  const videoId = getVideoId(url);
   const response = await fetchYoutubeData.get('/videos', {
     params: {
       part: 'snippet,statistics,player',

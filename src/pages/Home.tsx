@@ -1,6 +1,7 @@
 import React from 'react';
 
 import SelectBox from '@/components/common/SelectBox';
+import YouTubePlayerV3 from '@/components/YouTubePlayerV3';
 import { useAuthStatus } from '@/hooks/useAuthStaus';
 // SelectBox에 들어갈 내용
 const items = [
