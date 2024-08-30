@@ -23,10 +23,6 @@ const Subscriptions = () => {
       : showToast('구독 목록에 추가되었습니다.');
   };
 
-  const handlePlayListClick = () => {
-    navigate('/');
-  };
-
   return (
     <div>
       {/* <Header>내가 구독중인 플레이리스트</Header> */}
@@ -44,7 +40,7 @@ const Subscriptions = () => {
             플리 구독 중
           </IconTextButton>
         </div>
-        <div css={clickEventStyle} onClick={handlePlayListClick}>
+        <div css={clickEventStyle} onClick={() => navigate('/')}>
           <div css={middle}>
             <img
               src='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
@@ -76,7 +72,7 @@ const Subscriptions = () => {
             플리 구독 중
           </IconTextButton>
         </div>
-        <div css={clickEventStyle} onClick={handlePlayListClick}>
+        <div css={clickEventStyle} onClick={() => navigate('/')}>
           <div css={middle}>
             <img
               src='https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA0MTBfMzMg%2FMDAxNzEyNzA2NTYzMzQ2.LJjblzvIEqxPO_5qBiB4Sk4RtCMhhySYiPgsrtUrp24g.5LiOVYy3D4ZuKA9NEWFPHBvpDv-i-gai52dRszy9DhMg.JPEG%2F1.jpg&type=sc960_832'
@@ -108,7 +104,7 @@ const Subscriptions = () => {
             플리 구독 중
           </IconTextButton>
         </div>
-        <div css={clickEventStyle} onClick={handlePlayListClick}>
+        <div css={clickEventStyle} onClick={() => navigate('/')}>
           <div css={middle}>
             <img
               src='https://static.displate.com/857x1200/displate/2023-07-04/8bdb31c1949b22406cb2a9c257dae6f4_45fcb4a5a3d57eab739d4a610fb77ab2.jpg'
