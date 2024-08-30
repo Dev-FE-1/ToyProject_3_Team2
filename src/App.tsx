@@ -13,6 +13,7 @@ import ExamplePage from '@/pages/ExamplePage'; // Zustand와 TanStack Query 예�
 import Home from '@/pages/Home';
 import MyPage from '@/pages/MyPage';
 import Search from '@/pages/Search';
+import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
 
@@ -51,7 +52,10 @@ const router = createBrowserRouter([
           },
           {
             path: PATH.MYPAGE,
-            children: [{ index: true, element: <MyPage /> }],
+            children: [
+              { index: true, element: <MyPage /> },
+              { path: PATH.SETTINGS, element: <Settings /> },
+            ],
           },
           { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
           { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
