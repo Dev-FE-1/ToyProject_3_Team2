@@ -37,7 +37,7 @@ const Subscriptions = () => {
             variant='dark'
             onClick={handleSubBtnClick}
           >
-            플리 구독 중
+            {isSubscribed ? '플리 구독 중' : '플리 구독'}
           </IconTextButton>
         </div>
         <div css={clickEventStyle} onClick={() => navigate('/')}>
