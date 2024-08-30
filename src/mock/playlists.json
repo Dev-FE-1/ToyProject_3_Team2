@@ -1,0 +1,501 @@
+[
+  {
+    "playlistId": "playlist001",
+    "userId": "user001",
+    "title": "클래식 명곡 모음",
+    "description": "시간을 초월한 클래식 음악의 정수",
+    "category": "음악",
+    "createdAt": "2023-07-15T09:00:00Z",
+    "updatedAt": "2023-08-01T14:20:00Z",
+    "likeCount": 300,
+    "forkCount": 50,
+    "commentCount": 45,
+    "videoCount": 3,
+    "thumbnailUrl": "https://img.freepik.com/free-vector/music-streaming-design_53876-90530.jpg?t=st=1724784091~exp=1724787691~hmac=42d73983e0851ae2b41e1442ed58033866983f634b9ae3cc9f93d056e5e06b4f&w=1380",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "GRxofEmo3HA",
+        "title": "Beethoven - Symphony No. 5",
+        "thumbnailUrl": "https://example.com/thumbnails/video3.jpg",
+        "duration": 1920
+      },
+      {
+        "videoId": "3G4NKzmfC-Q",
+        "title": "Mozart - Eine kleine Nachtmusik",
+        "thumbnailUrl": "https://example.com/thumbnails/video4.jpg",
+        "duration": 1080
+      },
+      {
+        "videoId": "O6NRLYUThrY",
+        "title": "Tchaikovsky - 1812 Overture",
+        "thumbnailUrl": "https://example.com/thumbnails/video5.jpg",
+        "duration": 1140
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist002",
+    "userId": "user001",
+    "title": "재즈의 밤",
+    "description": "감미로운 재즈 선율로 채워지는 편안한 밤",
+    "category": "음악",
+    "createdAt": "2023-09-01T20:00:00Z",
+    "updatedAt": "2023-09-10T15:30:00Z",
+    "likeCount": 250,
+    "forkCount": 30,
+    "commentCount": 40,
+    "videoCount": 4,
+    "thumbnailUrl": "https://img.freepik.com/free-psd/gradient-y2k-template-design_23-2150362895.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "ZM5_6js19eM",
+        "title": "Miles Davis - So What",
+        "thumbnailUrl": "https://example.com/thumbnails/video6.jpg",
+        "duration": 565
+      },
+      {
+        "videoId": "qJi03NqXfk8",
+        "title": "John Coltrane - My Favorite Things",
+        "thumbnailUrl": "https://example.com/thumbnails/video7.jpg",
+        "duration": 810
+      },
+      {
+        "videoId": "CWzrABouyeE",
+        "title": "Ella Fitzgerald - Summertime",
+        "thumbnailUrl": "https://example.com/thumbnails/video8.jpg",
+        "duration": 240
+      },
+      {
+        "videoId": "vmDDOFXSgAs",
+        "title": "Duke Ellington - Take the A Train",
+        "thumbnailUrl": "https://example.com/thumbnails/video9.jpg",
+        "duration": 185
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist003",
+    "userId": "user001",
+    "title": "90년대 팝 히트곡",
+    "description": "90년대를 풍미했던 팝 음악 모음",
+    "category": "음악",
+    "createdAt": "2023-08-15T14:20:00Z",
+    "updatedAt": "2023-09-05T10:15:00Z",
+    "likeCount": 420,
+    "forkCount": 75,
+    "commentCount": 60,
+    "videoCount": 5,
+    "thumbnailUrl": "https://img.freepik.com/free-psd/pop-up-store-template-design_23-2150956410.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "6Oj79WGfQec",
+        "title": "Nirvana - Smells Like Teen Spirit",
+        "thumbnailUrl": "https://example.com/thumbnails/video10.jpg",
+        "duration": 301
+      },
+      {
+        "videoId": "6PN78PS_QsI",
+        "title": "Backstreet Boys - I Want It That Way",
+        "thumbnailUrl": "https://example.com/thumbnails/video11.jpg",
+        "duration": 219
+      },
+      {
+        "videoId": "NMNgbISmF4I",
+        "title": "Spice Girls - Wannabe",
+        "thumbnailUrl": "https://example.com/thumbnails/video12.jpg",
+        "duration": 173
+      },
+      {
+        "videoId": "fPO76Jlnz6c",
+        "title": "Mariah Carey - Fantasy",
+        "thumbnailUrl": "https://example.com/thumbnails/video13.jpg",
+        "duration": 244
+      },
+      {
+        "videoId": "3JWTaaS7LdU",
+        "title": "Whitney Houston - I Will Always Love You",
+        "thumbnailUrl": "https://example.com/thumbnails/video14.jpg",
+        "duration": 273
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist004",
+    "userId": "user001",
+    "title": "명상을 위한 자연의 소리",
+    "description": "마음의 평화를 찾아주는 자연의 소리 모음",
+    "category": "웰빙",
+    "createdAt": "2023-07-20T09:30:00Z",
+    "updatedAt": "2023-09-01T16:45:00Z",
+    "likeCount": 180,
+    "forkCount": 25,
+    "commentCount": 30,
+    "videoCount": 4,
+    "thumbnailUrl": "https://img.freepik.com/free-psd/cyber-monday-youtube-cover-template_23-2150825918.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": false,
+    "videos": [
+      {
+        "videoId": "eKFTSSKCzWA",
+        "title": "Relaxing Ocean Waves",
+        "thumbnailUrl": "https://example.com/thumbnails/video15.jpg",
+        "duration": 3600
+      },
+      {
+        "videoId": "eKFTSSKCzWA",
+        "title": "Peaceful Forest Ambience",
+        "thumbnailUrl": "https://example.com/thumbnails/video16.jpg",
+        "duration": 3000
+      },
+      {
+        "videoId": "eKFTSSKCzWA",
+        "title": "Gentle Rain Sounds",
+        "thumbnailUrl": "https://example.com/thumbnails/video17.jpg",
+        "duration": 2700
+      },
+      {
+        "videoId": "eKFTSSKCzWA",
+        "title": "Soothing Bird Songs",
+        "thumbnailUrl": "https://example.com/thumbnails/video18.jpg",
+        "duration": 1800
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist005",
+    "userId": "user001",
+    "title": "홈트레이닝 초보자 가이드",
+    "description": "집에서 쉽게 따라할 수 있는 운동 모음",
+    "category": "건강",
+    "createdAt": "2023-08-01T11:00:00Z",
+    "updatedAt": "2023-09-10T13:20:00Z",
+    "likeCount": 550,
+    "forkCount": 100,
+    "commentCount": 80,
+    "videoCount": 5,
+    "thumbnailUrl": "https://img.freepik.com/premium-photo/rear-view-young-woman-wearing-sports-clothing-standing-road-against-sky_1048944-25336906.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "UBMk30rjy0o",
+        "title": "10분 전신 스트레칭",
+        "thumbnailUrl": "https://example.com/thumbnails/video19.jpg",
+        "duration": 600
+      },
+      {
+        "videoId": "ml6cT4AZdqI",
+        "title": "초보자를 위한 HIIT 운동",
+        "thumbnailUrl": "https://example.com/thumbnails/video20.jpg",
+        "duration": 900
+      },
+      {
+        "videoId": "eBm5TdBGZTY",
+        "title": "홈트레이닝 기초 근력 운동",
+        "thumbnailUrl": "https://example.com/thumbnails/video21.jpg",
+        "duration": 1200
+      },
+      {
+        "videoId": "1f8yoFFdkcY",
+        "title": "요가 for 비기너",
+        "thumbnailUrl": "https://example.com/thumbnails/video22.jpg",
+        "duration": 1500
+      },
+      {
+        "videoId": "gC_L9qAHVJ8",
+        "title": "집에서 하는 유산소 운동",
+        "thumbnailUrl": "https://example.com/thumbnails/video23.jpg",
+        "duration": 1800
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist006",
+    "userId": "user001",
+    "title": "세계 각국의 길거리 음식",
+    "description": "전 세계 길거리 음식 탐방 영상 모음",
+    "category": "음식",
+    "createdAt": "2023-07-25T16:40:00Z",
+    "updatedAt": "2023-09-08T09:10:00Z",
+    "likeCount": 680,
+    "forkCount": 120,
+    "commentCount": 95,
+    "videoCount": 6,
+    "thumbnailUrl": "https://img.freepik.com/free-vector/flat-design-korean-food-illustration_23-2149285208.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "5k5FqgOlGZ0",
+        "title": "태국 방콕의 길거리 음식",
+        "thumbnailUrl": "https://example.com/thumbnails/video24.jpg",
+        "duration": 720
+      },
+      {
+        "videoId": "ZoVJYXIUxfs",
+        "title": "일본 오사카의 타코야키",
+        "thumbnailUrl": "https://example.com/thumbnails/video25.jpg",
+        "duration": 540
+      },
+      {
+        "videoId": "5wMcHSPRrOI",
+        "title": "멕시코 시티의 타코 스탠드",
+        "thumbnailUrl": "https://example.com/thumbnails/video26.jpg",
+        "duration": 660
+      },
+      {
+        "videoId": "QuZT9RRJmNE",
+        "title": "터키 이스탄불의 케밥",
+        "thumbnailUrl": "https://example.com/thumbnails/video27.jpg",
+        "duration": 600
+      },
+      {
+        "videoId": "Z0HzHDZDIXY",
+        "title": "뉴욕의 핫도그 카트",
+        "thumbnailUrl": "https://example.com/thumbnails/video28.jpg",
+        "duration": 480
+      },
+      {
+        "videoId": "2aHJ45V7RhY",
+        "title": "인도 뭄바이의 밀크티",
+        "thumbnailUrl": "https://example.com/thumbnails/video29.jpg",
+        "duration": 420
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist007",
+    "userId": "user001",
+    "title": "프로그래밍 기초 강좌",
+    "description": "코딩 입문자를 위한 프로그래밍 기초 강의",
+    "category": "교육",
+    "createdAt": "2023-08-10T13:15:00Z",
+    "updatedAt": "2023-09-12T11:30:00Z",
+    "likeCount": 780,
+    "forkCount": 200,
+    "commentCount": 150,
+    "videoCount": 5,
+    "thumbnailUrl": "https://img.freepik.com/free-photo/programming-background-with-person-working-with-codes-computer_23-2150010125.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": false,
+    "videos": [
+      {
+        "videoId": "kWW4cvnZ9Hs",
+        "title": "프로그래밍 기초: 변수와 데이터 타입",
+        "thumbnailUrl": "https://example.com/thumbnails/video30.jpg",
+        "duration": 1800
+      },
+      {
+        "videoId": "N4mEzFDjqtA",
+        "title": "조건문과 반복문",
+        "thumbnailUrl": "https://example.com/thumbnails/video31.jpg",
+        "duration": 2100
+      },
+      {
+        "videoId": "T1-2ImBHkZU",
+        "title": "함수의 개념과 사용법",
+        "thumbnailUrl": "https://example.com/thumbnails/video32.jpg",
+        "duration": 1920
+      },
+      {
+        "videoId": "rfscVS0vtbw",
+        "title": "객체지향 프로그래밍 소개",
+        "thumbnailUrl": "https://example.com/thumbnails/video33.jpg",
+        "duration": 2400
+      },
+      {
+        "videoId": "ZDa-Z5JzLYM",
+        "title": "간단한 프로젝트 만들기",
+        "thumbnailUrl": "https://example.com/thumbnails/video34.jpg",
+        "duration": 3000
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist008",
+    "userId": "user001",
+    "title": "세계 명작 영화 컬렉션",
+    "description": "시대를 초월한 세계 명작 영화 모음",
+    "category": "영화",
+    "createdAt": "2023-07-30T18:20:00Z",
+    "updatedAt": "2023-09-15T14:50:00Z",
+    "likeCount": 920,
+    "forkCount": 180,
+    "commentCount": 210,
+    "videoCount": 5,
+    "thumbnailUrl": "https://img.freepik.com/free-vector/hand-drawn-cinema-festival-invitation_23-2149978029.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "LvUj7BXYK0o",
+        "title": "The Godfather (1972) - Trailer",
+        "thumbnailUrl": "https://example.com/thumbnails/video35.jpg",
+        "duration": 180
+      },
+      {
+        "videoId": "tGpTpVyI_OQ",
+        "title": "Schindler's List (1993) - Trailer",
+        "thumbnailUrl": "https://example.com/thumbnails/video36.jpg",
+        "duration": 150
+      },
+      {
+        "videoId": "eZXEqXiE5qk",
+        "title": "Pulp Fiction (1994) - Trailer",
+        "thumbnailUrl": "https://example.com/thumbnails/video37.jpg",
+        "duration": 170
+      },
+      {
+        "videoId": "EXeTwQWrcwY",
+        "title": "The Shawshank Redemption (1994) - Trailer",
+        "thumbnailUrl": "https://example.com/thumbnails/video38.jpg",
+        "duration": 140
+      },
+      {
+        "videoId": "GokKUqLcvD8",
+        "title": "Forrest Gump (1994) - Trailer",
+        "thumbnailUrl": "https://example.com/thumbnails/video39.jpg",
+        "duration": 160
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist009",
+    "userId": "user001",
+    "title": "DIY 인테리어 아이디어",
+    "description": "집을 아름답게 꾸미는 DIY 인테리어 팁",
+    "category": "라이프스타일",
+    "createdAt": "2023-08-05T10:45:00Z",
+    "updatedAt": "2023-09-18T12:30:00Z",
+    "likeCount": 650,
+    "forkCount": 110,
+    "commentCount": 85,
+    "videoCount": 4,
+    "thumbnailUrl": "https://img.freepik.com/free-photo/mockup-frames-living-room-interior-with-chair-decorscandinavian-style_41470-5148.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "xxi9RpOr9I4",
+        "title": "작은 공간 활용 인테리어",
+        "thumbnailUrl": "https://example.com/thumbnails/video40.jpg",
+        "duration": 900
+      },
+      {
+        "videoId": "8T7WghKMDPo",
+        "title": "DIY 벽 데코레이션",
+        "thumbnailUrl": "https://example.com/thumbnails/video41.jpg",
+        "duration": 720
+      },
+      {
+        "videoId": "vZH7Y8jZbTI",
+        "title": "손쉬운 가구 리폼",
+        "thumbnailUrl": "https://example.com/thumbnails/video42.jpg",
+        "duration": 840
+      },
+      {
+        "videoId": "7ZjPHJLYCLk",
+        "title": "식물을 활용한 인테리어",
+        "thumbnailUrl": "https://example.com/thumbnails/video43.jpg",
+        "duration": 780
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist010",
+    "userId": "user001",
+    "title": "세계 각국의 전통 춤",
+    "description": "다양한 문화의 전통 춤을 소개합니다",
+    "category": "문화",
+    "createdAt": "2023-08-20T14:30:00Z",
+    "updatedAt": "2023-09-20T09:15:00Z",
+    "likeCount": 540,
+    "forkCount": 80,
+    "commentCount": 70,
+    "videoCount": 5,
+    "thumbnailUrl": "https://img.freepik.com/free-vector/gaucho-cowboy-dancing-illustration_23-2149210092.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": true,
+    "videos": [
+      {
+        "videoId": "4kbvXHnd9fM",
+        "title": "스페인 플라멩코",
+        "thumbnailUrl": "https://example.com/thumbnails/video44.jpg",
+        "duration": 420
+      },
+      {
+        "videoId": "YJVmu6yttiw",
+        "title": "아르헨티나 탱고",
+        "thumbnailUrl": "https://example.com/thumbnails/video45.jpg",
+        "duration": 380
+      },
+      {
+        "videoId": "TT-_lGRgbvw",
+        "title": "하와이 훌라",
+        "thumbnailUrl": "https://example.com/thumbnails/video46.jpg",
+        "duration": 350
+      },
+      {
+        "videoId": "6qgvRzrsfgQ",
+        "title": "인도 kathak",
+        "thumbnailUrl": "https://example.com/thumbnails/video47.jpg",
+        "duration": 400
+      },
+      {
+        "videoId": "Ec6u_kWVb9Y",
+        "title": "아일랜드 스텝 댄스",
+        "thumbnailUrl": "https://example.com/thumbnails/video48.jpg",
+        "duration": 390
+      }
+    ]
+  },
+  {
+    "playlistId": "playlist011",
+    "userId": "user001",
+    "title": "심리학 입문",
+    "description": "기초부터 배우는 심리학 강의",
+    "category": "교육",
+    "createdAt": "2023-09-01T11:00:00Z",
+    "updatedAt": "2023-09-22T16:45:00Z",
+    "likeCount": 820,
+    "forkCount": 150,
+    "commentCount": 130,
+    "videoCount": 6,
+    "thumbnailUrl": "https://img.freepik.com/free-vector/mental-health-logos-collection_23-2149049603.jpg?ga=GA1.2.450104204.1724340880&semt=ais_hybrid",
+    "isPublic": false,
+    "videos": [
+      {
+        "videoId": "vo4pMVb0R6M",
+        "title": "심리학이란 무엇인가",
+        "thumbnailUrl": "https://example.com/thumbnails/video49.jpg",
+        "duration": 1200
+      },
+      {
+        "videoId": "nYPJrFp6t_E",
+        "title": "인지심리학 기초",
+        "thumbnailUrl": "https://example.com/thumbnails/video50.jpg",
+        "duration": 1500
+      },
+      {
+        "videoId": "8nz2dtv-90g",
+        "title": "발달심리학 개요",
+        "thumbnailUrl": "https://example.com/thumbnails/video51.jpg",
+        "duration": 1350
+      },
+      {
+        "videoId": "pMKyGzeVPBw",
+        "title": "사회심리학의 이해",
+        "thumbnailUrl": "https://example.com/thumbnails/video52.jpg",
+        "duration": 1400
+      },
+      {
+        "videoId": "VqcrybukvYM",
+        "title": "성격심리학 탐구",
+        "thumbnailUrl": "https://example.com/thumbnails/video53.jpg",
+        "duration": 1320
+      },
+      {
+        "videoId": "7n_8cOVvMbw",
+        "title": "이상심리학 소개",
+        "thumbnailUrl": "https://example.com/thumbnails/video54.jpg",
+        "duration": 1440
+      }
+    ]
+  }
+]

@@ -10,7 +10,9 @@ import {
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
+import MyPage from '@/pages/MyPage';
 import Search from '@/pages/Search';
+import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
 import ExamplePage from '@/pages/Test/ExamplePage'; // Zustand와 TanStack Query 예시를 포함한 페이지
@@ -48,7 +50,13 @@ const router = createBrowserRouter([
             path: PATH.SUBSCRIPTIONS,
             children: [{ index: true, element: <Subscriptions /> }],
           },
-          { path: PATH.MYPAGE, children: [{ index: true, element: <div>MyPage</div> }] },
+          {
+            path: PATH.MYPAGE,
+            children: [
+              { index: true, element: <MyPage /> },
+              { path: PATH.SETTINGS, element: <Settings /> },
+            ],
+          },
           { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
           { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
         ],
