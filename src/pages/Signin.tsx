@@ -1,20 +1,24 @@
 import React, { useState } from 'react';
 
 import { css } from '@emotion/react';
+import { FirebaseError } from 'firebase/app';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 
+import { auth } from '@/api/index';
 import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
+import { PATH } from '@/constants/path';
+import { useAuthStore } from '@/store/authStore';
 import theme from '@/styles/theme';
-
-//임시 test용 하드코딩 아이디
-const pw = 'a12345678';
-const id = 'example@gmail.com';
 
 const SignIn = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+  const login = useAuthStore((state) => state.login);
 
   const handleInputChange = (isValid: boolean, newUsername: string, newPassword: string) => {
     setIsFormValid(isValid);
@@ -22,19 +26,27 @@ const SignIn = () => {
     setPassword(newPassword);
   };
 
-  const handleSignIn = (e?: React.FormEvent) => {
+  const handleSignIn = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
 
     if (isFormValid) {
-      if (username !== id) {
-        console.log('Fail Sign in with:', username, password);
-        setErrorMessage('아이디가 존재하지 않습니다.');
-      } else if (username === id && password !== pw) {
-        console.log('Fail Sign in with:', username, password);
-        setErrorMessage('비밀번호가 일치하지 않습니다.');
-      } else {
-        console.log('Sign in with:', username, password);
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, username, password);
+        console.log('로그인 성공:', userCredential.user.email);
         setErrorMessage('');
+        login(userCredential.user.email!);
+        navigate(PATH.HOME);
+      } catch (error) {
+        console.error('로그인 실패: ', error);
+        if (error instanceof FirebaseError) {
+          if (error.code === 'auth/invalid-credential') {
+            setErrorMessage('이메일 주소 또는 비밀번호가 올바르지 않습니다.');
+          } else {
+            setErrorMessage('로그인에 실패했습니다. 다시 시도해주세요.');
+          }
+        } else {
+          setErrorMessage('오류가 발생했습니다.');
+        }
       }
     }
   };
