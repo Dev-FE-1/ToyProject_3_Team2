@@ -15,6 +15,7 @@ const colors = {
   bgBadge: '#616161', // 마이페이지 배지 배경색
   bgSwitchOff: '#E3E5EB', // 스위치 off 배경색
   darkGray: '#8B95A1', // placeholder
+  goldStar: '#FFC700', // 별점 색상
 };
 
 const fontSizes = {
