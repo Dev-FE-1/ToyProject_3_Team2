@@ -20,6 +20,6 @@ const initFireStore = async () => {
   await resetFireStoreData();
   await setUpFireStoreData();
 };
-// initFireStore()
+// initFireStore();
 
 export { app, db };
