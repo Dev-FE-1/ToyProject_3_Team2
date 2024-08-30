@@ -1,5 +1,7 @@
-import SelectBox from '@/components/common/SelectBox';
+import React from 'react';
 
+import SelectBox from '@/components/common/SelectBox';
+import { useAuthStatus } from '@/hooks/useAuthStaus';
 // SelectBox에 들어갈 내용
 const items = [
   { value: 'public', label: '공개' },
@@ -12,14 +14,24 @@ const items2 = [
   { value: 'mukbang', label: '먹방' },
 ];
 
-const Home = () => (
-  <div>
-    <h1>Logo</h1>
-    <p>Home</p>
-    <p>selectbox 테스트</p>
-    <SelectBox items={items} />
-    <SelectBox items={items2} />
-  </div>
-);
+const Home = () => {
+  const { isLoggedIn, userEmail } = useAuthStatus();
+
+  return (
+    <div>
+      <h1>Logo</h1>
+      <p>Home</p>
+      <p>selectbox 테스트</p>
+      <SelectBox items={items} />
+      <SelectBox items={items2} />
+
+      <div>
+        <h2>인증 상태</h2>
+        <p>로그인 상태: {isLoggedIn ? '로그인됨' : '로그인되지 않음'}</p>
+        <p>사용자 이메일: {userEmail || '없음'}</p>
+      </div>
+    </div>
+  );
+};
 
 export default Home;

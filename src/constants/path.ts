@@ -4,6 +4,7 @@ export const PATH = {
   SUBSCRIPTIONS: '/subscriptions',
   MYPAGE: '/mypage',
   SIGNIN: '/signin',
+  ONBOARDING: '/onboarding',
 };
 export const PATH_TITLE = {
   HOME: '홈',
