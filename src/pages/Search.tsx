@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import axios from 'axios';
 
-import { getAllPlaylists, Playlist } from '@/api/playlist';
-import ThumBox from '@/components/common/ThumBox';
-import theme from '@/styles/theme';
+// import { getAllPlaylists } from '@/api/playlist';
+import CategoryButtons from '@/components/search/CategoryButtons';
+import FilteredPlaylists from '@/components/search/FilteredPlaylists';
+import { Playlist } from '@/types/playlist';
 
 const Search = () => {
   const [playlists, setPlaylists] = useState<Playlist[] | null>([]);
@@ -26,48 +27,26 @@ const Search = () => {
     fetchPlaylists();
   }, []);
 
-  console.log(playlists);
-
   return (
     <div>
-      <input type='text' />
-      {playlists &&
-        playlists.map((playlist) => (
-          <ThumBox
-            key={playlist.playlistId}
-            type='details'
-            thumURL={playlist.thumbnailUrl}
-            title={playlist.title}
-            subtitle={playlist.description}
-            likes={playlist.likeCount}
-            comments={playlist.commentCount}
-            uploader={playlist.username}
-            update='2일 전에 업데이드 됨'
-            listnum='3'
-          />
-        ))}
+      <div css={containerStyle}>
+        <input type='text' css={inputStyle} placeholder='검색어를 입력해주세요' />
+      </div>
+      <CategoryButtons />
+      <FilteredPlaylists playlists={playlists} />
     </div>
   );
 };
 
 const containerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
-  height: ${theme.heights.short};
-  background-color: ${theme.colors.tertiary};
-  border-radius: 22px;
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.white};
-  overflow: hidden;
+  /* margin: 30px; */
 `;
-
-const dividerStyle = css`
-  width: 1px;
-  height: 23px;
-  background-color: ${theme.colors.white};
-  opacity: 0.3;
+const inputStyle = css`
+  /* margin: 30px; */
+  width: 343px;
+  height: 50px;
+  padding: 4px 8px;
+  align-items: center;
 `;
 
 export default Search;
