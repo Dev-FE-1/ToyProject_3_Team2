@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { css } from '@emotion/react';
 import { RiSettings5Line } from 'react-icons/ri'; // setting 아이콘
 import { useNavigate } from 'react-router-dom';
@@ -8,13 +6,6 @@ import defaultAvatar from '@/assets/images/default-avatar-woman.svg';
 import Badge from '@/components/common/Badge';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
-import { User } from '@/types/user';
-
-const fetchUser = async (): Promise<User[]> => {
-  const response = await fetch('/src/mock/users.json');
-  const data = await response.json();
-  return data;
-};
 
 const MyProfile = () => {
   const navigate = useNavigate();
