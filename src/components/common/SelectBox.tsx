@@ -13,12 +13,24 @@ type Item = {
 
 interface SelectBoxProps {
   items: Item[];
+  placeholder?: string;
+  onChange?: (value: string) => void;
+  value?: string;
+  name?: string;
+  disabled?: boolean;
 }
 
-const SelectBox: React.FC<SelectBoxProps> = ({ items }: SelectBoxProps) => (
-  <Select.Root>
+const SelectBox: React.FC<SelectBoxProps> = ({
+  items,
+  placeholder = '선택하세요.',
+  onChange,
+  value,
+  name,
+  disabled = false,
+}: SelectBoxProps) => (
+  <Select.Root onValueChange={onChange} value={value} name={name} disabled={disabled}>
     <Select.Trigger css={TriggerStyle}>
-      <Select.Value placeholder='선택하세요.' />
+      <Select.Value placeholder={placeholder} />
       <Select.Icon css={TriggerIconStyle}>
         <ChevronDownIcon />
       </Select.Icon>
@@ -60,9 +72,9 @@ const TriggerStyle = css`
   border: 1px solid ${theme.colors.bgSwitchOff};
   color: ${theme.colors.white};
   cursor: pointer;
-  width: 106px;
+  width: 125px;
   height: ${theme.heights.short};
-  font-size: ${theme.fontSizes.small};
+  font-size: ${theme.fontSizes.normal};
 `;
 
 const TriggerIconStyle = css`
@@ -72,7 +84,7 @@ const TriggerIconStyle = css`
 
 const ContentStyle = css`
   z-index: 1;
-  width: 106px;
+  width: 125px;
 `;
 
 const ViewportStyle = css`
@@ -87,7 +99,7 @@ const ItemStyle = css`
   outline: 0;
   padding: 7px;
   margin: 5px;
-  font-size: ${theme.fontSizes.small};
+  font-size: ${theme.fontSizes.normal};
 
   &:hover {
     background-color: ${theme.colors.tertiary};
@@ -97,7 +109,7 @@ const ItemStyle = css`
 
 const ItemIndicatorStyle = css`
   display: flex;
-  padding-left: 5px;
+  padding-left: 10px;
 `;
 
 export default SelectBox;
