@@ -5,14 +5,20 @@ import * as Switch from '@radix-ui/react-switch';
 
 import theme from '@/styles/theme';
 
-interface SwitchToggleProps {
-  onClick?: () => void;
+interface ToggleSwitchProps {
+  checked: boolean;
+  onCheckedChange: () => void;
 }
 
-const SwitchToggle: React.FC<SwitchToggleProps> = ({ onClick }) => (
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onCheckedChange }) => (
   <div css={flexStyle}>
     <div css={textStyle}>공개</div>
-    <Switch.Root defaultChecked onClick={onClick} css={switchRootStyle}>
+    <Switch.Root
+      defaultChecked
+      checked={checked}
+      onCheckedChange={onCheckedChange}
+      css={switchRootStyle}
+    >
       <Switch.Thumb css={switchThumbStyle} />
     </Switch.Root>
   </div>
@@ -58,4 +64,4 @@ const switchThumbStyle = css`
   }
 `;
 
-export default SwitchToggle;
+export default ToggleSwitch;

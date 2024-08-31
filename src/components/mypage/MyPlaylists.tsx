@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
-import * as Switch from '@radix-ui/react-switch';
 
+import ToggleSwitch from '@/components/common/ToggleSwitch';
 import FlipCard from '@/components/mypage/FlipCard';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
@@ -45,9 +45,7 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
         </div>
         <div css={flexStyle}>
           <div css={textStyle}>공개</div>
-          <Switch.Root checked={isToggled} onCheckedChange={toggle} css={switchRootStyle}>
-            <Switch.Thumb css={switchThumbStyle} />
-          </Switch.Root>
+          <ToggleSwitch checked={isToggled} onCheckedChange={toggle} />
         </div>
       </header>
       <div css={flipContainerStyle}>
@@ -106,31 +104,4 @@ const textStyle = css`
   font-weight: 500;
 `;
 
-const switchRootStyle = css`
-  background-color: ${theme.colors.bgSwitchOff + '5a'};
-  width: 32px;
-  height: 16px;
-  border-radius: 100px;
-  position: relative;
-  border: 1px solid ${theme.colors.bgSwitchOff};
-  cursor: pointer;
-
-  &[data-state='checked'] {
-    background-color: ${theme.colors.primary};
-  }
-`;
-
-const switchThumbStyle = css`
-  display: block;
-  width: 15px;
-  height: 15px;
-  background-color: ${theme.colors.whiteText};
-  border-radius: 100px;
-  transition: transform 200ms;
-  transform: translateY(-0.5px);
-
-  [data-state='checked'] & {
-    transform: translateX(15px) translateY(-0.5px);
-  }
-`;
 export default MyPlaylists;
