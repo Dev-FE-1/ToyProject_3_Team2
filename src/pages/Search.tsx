@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
-import useLikeStore from '@/store/useLikeStore';
+import { useLikeStore } from '@/store/useLikeStore';
 import theme from '@/styles/theme';
 
 interface PlaylistItem {

@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import * as Switch from '@radix-ui/react-switch';
 
 import FlipCard from '@/components/mypage/FlipCard';
-import useToggleStore from '@/store/useToggleStore';
+import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
 import { Playlist } from '@/types/playlist';
 
