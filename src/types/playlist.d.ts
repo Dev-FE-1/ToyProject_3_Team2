@@ -12,10 +12,5 @@ export interface Playlist {
   videoCount: number;
   thumbnailUrl: string;
   isPublic: boolean;
-  videos: Array<{
-    videoId: string;
-    title: string;
-    thumbnailUrl: string;
-    duration: number;
-  }>;
+  videos: Array[];
 }
