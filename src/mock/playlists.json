@@ -2,6 +2,7 @@
   {
     "playlistId": "playlist001",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "클래식 명곡 모음",
     "description": "시간을 초월한 클래식 음악의 정수",
     "category": "음악",
@@ -37,6 +38,7 @@
   {
     "playlistId": "playlist002",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "재즈의 밤",
     "description": "감미로운 재즈 선율로 채워지는 편안한 밤",
     "category": "음악",
@@ -78,6 +80,7 @@
   {
     "playlistId": "playlist003",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "90년대 팝 히트곡",
     "description": "90년대를 풍미했던 팝 음악 모음",
     "category": "음악",
@@ -125,6 +128,7 @@
   {
     "playlistId": "playlist004",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "명상을 위한 자연의 소리",
     "description": "마음의 평화를 찾아주는 자연의 소리 모음",
     "category": "웰빙",
@@ -166,6 +170,7 @@
   {
     "playlistId": "playlist005",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "홈트레이닝 초보자 가이드",
     "description": "집에서 쉽게 따라할 수 있는 운동 모음",
     "category": "건강",
@@ -213,6 +218,7 @@
   {
     "playlistId": "playlist006",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "세계 각국의 길거리 음식",
     "description": "전 세계 길거리 음식 탐방 영상 모음",
     "category": "음식",
@@ -266,6 +272,7 @@
   {
     "playlistId": "playlist007",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "프로그래밍 기초 강좌",
     "description": "코딩 입문자를 위한 프로그래밍 기초 강의",
     "category": "교육",
@@ -313,6 +320,7 @@
   {
     "playlistId": "playlist008",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "세계 명작 영화 컬렉션",
     "description": "시대를 초월한 세계 명작 영화 모음",
     "category": "영화",
@@ -360,6 +368,7 @@
   {
     "playlistId": "playlist009",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "DIY 인테리어 아이디어",
     "description": "집을 아름답게 꾸미는 DIY 인테리어 팁",
     "category": "라이프스타일",
@@ -401,6 +410,7 @@
   {
     "playlistId": "playlist010",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "세계 각국의 전통 춤",
     "description": "다양한 문화의 전통 춤을 소개합니다",
     "category": "문화",
@@ -448,6 +458,7 @@
   {
     "playlistId": "playlist011",
     "userId": "user001",
+    "username": "엄마튜브",
     "title": "심리학 입문",
     "description": "기초부터 배우는 심리학 강의",
     "category": "교육",

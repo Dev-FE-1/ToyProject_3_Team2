@@ -12,6 +12,7 @@ export interface User {
 export interface Playlist {
   playlistId: string;
   userId: string;
+  username: string;
   title: string;
   description: string;
   category: string;
@@ -81,6 +82,7 @@ export const data: Data = {
     playlist101: {
       playlistId: 'playlist101',
       userId: 'user101',
+      username: '엄마튜버',
       title: '우리 아이 교육용 영상 모음',
       description: '핑크퐁과 뽀로로로 배우는 즐거운 학습!',
       category: '키즈',
@@ -121,6 +123,7 @@ export const data: Data = {
     playlist102: {
       playlistId: 'playlist102',
       userId: 'user101',
+      username: '엄마튜버',
       title: '잔잔한 클래식 음악',
       description: '마음을 편안하게 해주는 클래식 음악 모음',
       category: '음악',
@@ -160,6 +163,7 @@ export const data: Data = {
     playlist103: {
       playlistId: 'playlist103',
       userId: 'user101',
+      username: '엄마튜버',
       title: '일상 브이로그',
       description: '평범한 일상의 소소한 행복',
       category: '라이프',
@@ -199,6 +203,7 @@ export const data: Data = {
     playlist104: {
       playlistId: 'playlist104',
       userId: 'user101',
+      username: '엄마튜버',
       title: '강아지 영상 모음',
       description: '귀여운 강아지들의 일상',
       category: '동물',
@@ -238,6 +243,7 @@ export const data: Data = {
     playlist105: {
       playlistId: 'playlist105',
       userId: 'user101',
+      username: '엄마튜버',
       title: '영어 회화 강의',
       description: '초보자를 위한 영어 회화 강의 시리즈',
       category: '강의',
@@ -277,6 +283,7 @@ export const data: Data = {
     playlist201: {
       playlistId: 'playlist201',
       userId: 'user102',
+      username: '여행왕',
       title: '뉴질랜드 여행 브이로그',
       description: '2주간의 뉴질랜드 여행 기록',
       category: '여행',
@@ -316,6 +323,7 @@ export const data: Data = {
     playlist202: {
       playlistId: 'playlist202',
       userId: 'user102',
+      username: '여행왕',
       title: '인기 영화 리뷰',
       description: '최신 개봉 영화 리뷰 모음',
       category: '영화',
@@ -355,6 +363,7 @@ export const data: Data = {
     playlist203: {
       playlistId: 'playlist203',
       userId: 'user102',
+      username: '여행왕',
       title: '무한도전 명장면 모음',
       description: '레전드 무한도전 에피소드 모음집',
       category: '엔터',
@@ -394,6 +403,7 @@ export const data: Data = {
     playlist204: {
       playlistId: 'playlist204',
       userId: 'user102',
+      username: '여행왕',
       title: '고양이 영상 모음',
       description: '귀여운 고양이들의 일상',
       category: '동물',
@@ -433,6 +443,7 @@ export const data: Data = {
     playlist205: {
       playlistId: 'playlist205',
       userId: 'user102',
+      username: '여행왕',
       title: 'K-POP 인기 뮤직비디오',
       description: '최신 K-POP 히트곡 모음',
       category: '음악',

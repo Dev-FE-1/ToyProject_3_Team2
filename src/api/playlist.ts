@@ -46,6 +46,8 @@ export const getAllPlaylists = async (limitCount: number = 10): Promise<Playlist
     const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'), limit(limitCount));
     const playlistSnapshot = await getDocs(playlistQuery);
 
+    // console.log('Playlists completely fetched');
+
     return playlistSnapshot.docs.map((doc) => {
       const data = doc.data();
       return {

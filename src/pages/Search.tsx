@@ -1,63 +1,51 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import axios from 'axios';
 
-import CommentsButton from '@/components/common/buttons/CommentsButton';
-import LikesButton from '@/components/common/buttons/LikesButton';
-import useLikeStore from '@/store/useLikeStore';
+import { getAllPlaylists, Playlist } from '@/api/playlist';
+import ThumBox from '@/components/common/ThumBox';
 import theme from '@/styles/theme';
 
-interface PlaylistItem {
-  playlistId: string;
-  initialLikeCount: number;
-  commentCount: number;
-}
-
 const Search = () => {
-  const playlists: PlaylistItem[] = [
-    { playlistId: 'pl1', initialLikeCount: 2334, commentCount: 233 },
-    { playlistId: 'pl2', initialLikeCount: 100, commentCount: 150 },
-    { playlistId: 'pl3', initialLikeCount: 50, commentCount: 75 },
-  ];
-
-  const likes = useLikeStore((state) => state.likes);
-  const isLiked = useLikeStore((state) => state.isLiked);
-  const initializeLikes = useLikeStore((state) => state.initializeLikes);
-  const incrementLike = useLikeStore((state) => state.incrementLike);
-  const decrementLike = useLikeStore((state) => state.decrementLike);
-  const toggleLiked = useLikeStore((state) => state.toggleLiked);
+  const [playlists, setPlaylists] = useState<Playlist[] | null>([]);
 
   useEffect(() => {
-    initializeLikes(playlists);
+    // const fetchPlaylists = async () => {
+    //   const fetchedPlaylists = await getAllPlaylists();
+    //   setPlaylists(fetchedPlaylists);
+    // };
+
+    // fetchPlaylists();
+
+    const fetchPlaylists = async () => {
+      const response = await axios.get('/src/mock/playlists.json');
+      setPlaylists(response.data);
+    };
+
+    fetchPlaylists();
   }, []);
 
-  const handleLikeClick = (playlistId: string) => {
-    // 좋아요 클릭 여부를 저장하는 객체 상태에 있다면, -1
-    if (isLiked[playlistId]) {
-      decrementLike(playlistId);
-      // 아니라면 +1
-    } else {
-      incrementLike(playlistId);
-    }
-
-    toggleLiked(playlistId);
-  };
+  console.log(playlists);
 
   return (
     <div>
-      <p>Search</p>
-      {playlists.map((playlist) => (
-        <div css={containerStyle} key={playlist.playlistId}>
-          <CommentsButton playListId={playlist.playlistId} commentCount={playlist.commentCount} />
-          <div css={dividerStyle} />
-          <LikesButton
-            playlistId={playlist.playlistId}
-            likeCount={likes[playlist.playlistId] || playlist.initialLikeCount}
-            handleLikeClick={() => handleLikeClick(playlist.playlistId)}
-            isLiked={isLiked[playlist.playlistId] || false}
+      <input type='text' />
+      {playlists &&
+        playlists.map((playlist) => (
+          <ThumBox
+            key={playlist.playlistId}
+            type='details'
+            thumURL={playlist.thumbnailUrl}
+            title={playlist.title}
+            subtitle={playlist.description}
+            likes={playlist.likeCount}
+            comments={playlist.commentCount}
+            uploader={playlist.username}
+            update='2일 전에 업데이드 됨'
+            listnum='3'
           />
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
