@@ -2,30 +2,31 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
+import { getAllPlaylists } from '@/api/playlist';
 import MyPlaylists from '@/components/mypage/MyPlaylists';
 import MyProfile from '@/components/mypage/MyProfile';
 import { Playlist } from '@/types/playlist';
 
-const fetchMyPlaylists = async (): Promise<Playlist[]> => {
-  const response = await fetch('/src/mock/playlists.json');
-  const data = await response.json();
-  return data;
-};
-
 const MyPage = () => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchPlaylists = async () => {
       try {
-        const data = await fetchMyPlaylists();
+        setIsLoading(true);
+        const data = await getAllPlaylists();
         setPlaylists(data);
       } catch (error) {
-        console.error('Error fetching playlists:', error);
+        setError(error instanceof Error ? error : new Error('알 수 없는 에러 발생!'));
+      } finally {
+        setIsLoading(false);
       }
     };
-
-    fetchData();
+    fetchPlaylists();
   }, []);
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   return (
     <div css={containerStyle}>
       <MyProfile />
@@ -33,7 +34,6 @@ const MyPage = () => {
     </div>
   );
 };
-
 const containerStyle = css`
   padding-bottom: 80px;
 `;
