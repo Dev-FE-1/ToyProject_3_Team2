@@ -56,9 +56,9 @@ const containerStyle = css`
   padding-bottom: 80px;
 `;
 const floatAddButtonStyle = css`
-  position: fixed;
-  right: 1rem;
-  bottom: 96px;
+  position: absolute;
+  right: 1.5rem;
+  top: calc(100vh - 150px);
   z-index: 100;
   transition: all 0.3s ease;
   &:hover {
