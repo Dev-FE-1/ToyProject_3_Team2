@@ -8,9 +8,11 @@ import {
   doc,
   getDoc,
   where,
+  addDoc,
 } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
+import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 
 const db = getFirestore(app);
 
@@ -40,31 +42,19 @@ export interface Playlist {
 }
 
 // 전체 플레이리스트 가져오기
-export const getAllPlaylists = async (limitCount: number = 10): Promise<Playlist[]> => {
+export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
   try {
     const playlistsCol = collection(db, 'playlists');
-    const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'), limit(limitCount));
+    const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'));
     const playlistSnapshot = await getDocs(playlistQuery);
 
-    return playlistSnapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        playlistId: doc.id,
-        userId: data.userId,
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        videoCount: data.videoCount,
-        likeCount: data.likeCount,
-        forkCount: data.forkCount,
-        commentCount: data.commentCount,
-        thumbnailUrl: data.thumbnailUrl,
-        isPublic: data.isPublic,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-        videos: data.videos,
-      };
-    });
+    return playlistSnapshot.docs.map(
+      (doc) =>
+        ({
+          playlistId: doc.id,
+          ...doc.data(),
+        }) as PlaylistModel
+    );
   } catch (error) {
     console.error('Error fetching playlists:', error);
     return [];
@@ -116,5 +106,23 @@ export const getForkedPlaylists = async (userId: string): Promise<Playlist[]> =>
   } catch (error) {
     console.error('Error fetching forked playlists:', error);
     return [];
+  }
+};
+
+// 새 플레이리스트 만들기
+export const addPlaylist = async (playlistData: PlaylistFormDataModel): Promise<string> => {
+  try {
+    const playlistsRef = collection(db, 'playlists');
+
+    // 서버 타임스탬프 사용 및 필요한 필드 추가
+    const playlistToAdd = {
+      ...playlistData,
+    };
+    const docRef = await addDoc(playlistsRef, playlistToAdd);
+    console.log('Document written with ID: ', docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding playlist:', error);
+    throw error; // Add a throw statement to propagate the error
   }
 };
