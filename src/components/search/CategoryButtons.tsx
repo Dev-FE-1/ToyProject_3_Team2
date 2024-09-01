@@ -1,15 +1,26 @@
+import { Dispatch, SetStateAction } from 'react';
+
 import { css } from '@emotion/react';
 
+import { categories } from '@/constants/playlist';
 import theme from '@/styles/theme';
+interface CategoryButtonsProps {
+  setSelectedCategory: Dispatch<SetStateAction<string>>;
+}
 
-const CategoryButtons = () => {
-  const categories = ['키즈', '음악', '라이프', '영화', '엔터', '동물', '강의', '여행'];
+const CategoryButtons: React.FC<CategoryButtonsProps> = ({ setSelectedCategory }) => {
+  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const buttonText = e.currentTarget.textContent;
+    if (!buttonText) return;
+
+    setSelectedCategory(e.currentTarget.textContent as string);
+  };
 
   return (
     <div css={buttonsStyle}>
       {categories &&
         categories.map((category) => (
-          <button key={category} css={buttonStyle}>
+          <button key={category} css={buttonStyle} onClick={handleButtonClick}>
             {category}
           </button>
         ))}
