@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { css } from '@emotion/react';
 
-import { categories } from '@/constants/playlist';
+import { playlistCategories } from '@/constants/playlist';
 import theme from '@/styles/theme';
 interface CategoryButtonsProps {
   setSelectedCategory: Dispatch<SetStateAction<string>>;
@@ -11,15 +11,16 @@ interface CategoryButtonsProps {
 const CategoryButtons: React.FC<CategoryButtonsProps> = ({ setSelectedCategory }) => {
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const buttonText = e.currentTarget.textContent;
-    if (!buttonText) return;
 
-    setSelectedCategory(e.currentTarget.textContent as string);
+    if (buttonText) {
+      setSelectedCategory(buttonText);
+    }
   };
 
   return (
     <div css={buttonsStyle}>
-      {categories &&
-        categories.map((category) => (
+      {playlistCategories &&
+        playlistCategories.map((category) => (
           <button key={category} css={buttonStyle} onClick={handleButtonClick}>
             {category}
           </button>

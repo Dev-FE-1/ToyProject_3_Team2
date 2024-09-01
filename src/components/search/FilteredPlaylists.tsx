@@ -1,16 +1,17 @@
 import ThumBox from '@/components/common/ThumBox';
 import { Playlist } from '@/types/playlist';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface FilteredPlaylistsProps {
   displayedPlaylists: Playlist[] | null;
 }
 const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylists }) => {
-  const pl = displayedPlaylists;
-  console.log(pl);
+  const playlists = displayedPlaylists;
+
   return (
     <div>
-      {pl &&
-        pl.map((pl) => (
+      {playlists &&
+        playlists.map((pl) => (
           <ThumBox
             key={pl.playlistId}
             type='details'
@@ -20,7 +21,7 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
             likes={pl.likeCount}
             comments={pl.commentCount}
             uploader={pl.userName}
-            update='2일 전에 업데이드 됨'
+            update={formatTimeWithUpdated(pl.updatedAt)}
             listnum={pl.videos.length}
           />
         ))}
