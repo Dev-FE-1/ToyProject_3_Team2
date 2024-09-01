@@ -2,6 +2,7 @@
 
 export interface User {
   userName: string;
+  userBio: string;
   email: string;
   profileImg: string;
   playlistCount: number;
@@ -61,6 +62,7 @@ export const data: Data = {
   users: {
     user101: {
       userName: '엄마튜버',
+      userBio: '1일 1운동 챌린지 중입니다:)',
       email: 'momtuber@example.com',
       profileImg:
         'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80',
@@ -70,6 +72,7 @@ export const data: Data = {
     },
     user102: {
       userName: '여행왕',
+      userBio: '지리는 플리만 만듭니다(따봉)',
       email: 'travelking@example.com',
       profileImg:
         'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80',

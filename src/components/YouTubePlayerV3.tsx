@@ -4,11 +4,11 @@ import { css } from '@emotion/react';
 import { useVideoData } from '@/hooks/useVideoData';
 
 interface YouTubePlayerProps {
-  videoId: string | null;
+  url: string | null;
 }
 
-const YouTubePlayerV3 = ({ videoId }: YouTubePlayerProps) => {
-  const { data: videoData, isLoading, error } = useVideoData(videoId as string);
+const YouTubePlayerV3 = ({ url }: YouTubePlayerProps) => {
+  const { data: videoData, isLoading, error } = useVideoData(url as string);
 
   if (isLoading) {
     return <div css={loadingStyle}>Loading...</div>;
