@@ -1,5 +1,4 @@
-import React from 'react';
-
+import CustomDialog from '@/components/common/modals/Dialog';
 import SelectBox from '@/components/common/SelectBox';
 import { useAuthStatus } from '@/hooks/useAuthStaus';
 // SelectBox에 들어갈 내용
@@ -13,10 +12,11 @@ const items2 = [
   { value: 'dance', label: '춤' },
   { value: 'mukbang', label: '먹방' },
 ];
-
 const Home = () => {
   const { isLoggedIn, userEmail } = useAuthStatus();
-
+  const handle = () => {
+    console.log('hi');
+  };
   return (
     <div>
       <h1>Logo</h1>
@@ -24,7 +24,7 @@ const Home = () => {
       <p>selectbox 테스트</p>
       <SelectBox items={items} />
       <SelectBox items={items2} />
-
+      <CustomDialog type='videoimageLink' isOpen={true} onClose={handle} />
       <div>
         <h2>인증 상태</h2>
         <p>로그인 상태: {isLoggedIn ? '로그인됨' : '로그인되지 않음'}</p>
