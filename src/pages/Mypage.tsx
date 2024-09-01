@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { RiAddLargeLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { getAllPlaylists } from '@/api/playlist';
+import IconButton from '@/components/common/buttons/IconButton';
+import Toast from '@/components/common/Toast';
 import MyPlaylists from '@/components/mypage/MyPlaylists';
 import MyProfile from '@/components/mypage/MyProfile';
-import { Playlist } from '@/types/playlist';
+import { PATH } from '@/constants/path';
+import { PlaylistModel } from '@/types/playlist';
 
 const MyPage = () => {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const navigate = useNavigate();
+  const [playlists, setPlaylists] = useState<PlaylistModel[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
@@ -25,16 +31,38 @@ const MyPage = () => {
     };
     fetchPlaylists();
   }, []);
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  const handleAddPlaylist = () => {
+    navigate(`${PATH.MYPAGE}/${PATH.MYPAGE_ADD_PLAYLIST}`);
+  };
+
   return (
-    <div css={containerStyle}>
-      <MyProfile />
-      <MyPlaylists playlists={playlists} />
-    </div>
+    <>
+      <div css={containerStyle}>
+        <MyProfile />
+        <MyPlaylists playlists={playlists} />
+        <IconButton
+          Icon={RiAddLargeLine}
+          customStyle={floatAddButtonStyle}
+          onClick={handleAddPlaylist}
+        />
+      </div>
+      <Toast />
+    </>
   );
 };
 const containerStyle = css`
+  position: relative;
+  max-width: 498px;
   padding-bottom: 80px;
+`;
+const floatAddButtonStyle = css`
+  position: fixed;
+  right: 1rem;
+  bottom: 96px;
+  z-index: 100;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
 `;
 export default MyPage;
