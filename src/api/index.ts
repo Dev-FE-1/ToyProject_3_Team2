@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-import { resetFireStoreData, setUpFireStoreData } from '@/api/resetAndSetupData';
+import { resetFireStoreData, setUpFireStoreData } from '@/api/endpoints/resetAndSetupData';
 import { firebaseConfig } from '@/constants/api';
 
 // Firebase 초기화

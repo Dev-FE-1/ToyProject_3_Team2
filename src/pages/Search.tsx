@@ -2,18 +2,21 @@ import { css } from '@emotion/react';
 
 import CategoryButtons from '@/components/search/CategoryButtons';
 import FilteredPlaylists from '@/components/search/FilteredPlaylists';
-import { searchPlaylist } from '@/constants/playlist';
+import { PLAYLIST } from '@/constants/playlist';
 import { usePlaylistsWithCategory } from '@/hooks/usePlaylistByCategory';
 
 const Search = () => {
-  const { displayedPlaylists, setSelectedCategory } = usePlaylistsWithCategory();
+  const { displayedPlaylists, selectedCategory, setSelectedCategory } = usePlaylistsWithCategory();
 
   return (
     <div>
       <div css={containerStyle}>
-        <input type='text' css={inputStyle} placeholder={searchPlaylist.inputPlaceholder} />
+        <input type='text' css={inputStyle} placeholder={PLAYLIST.search.placeholder} />
       </div>
-      <CategoryButtons setSelectedCategory={setSelectedCategory} />
+      <CategoryButtons
+        selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />
       <FilteredPlaylists displayedPlaylists={displayedPlaylists} />
     </div>
   );

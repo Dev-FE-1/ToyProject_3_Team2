@@ -3,14 +3,18 @@ import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { getPlaylistsByCategory } from '@/api/playlist';
-import { playlistCategories } from '@/constants/playlist';
+import { getPlaylistsByCategory } from '@/api/endpoints/playlist';
+import { PLAYLIST } from '@/constants/playlist';
+// import { useAllPlaylist, usePlaylistsByCategory } from '@/hooks/query/usePlaylist';
 import { Playlist } from '@/types/playlist';
 
 export const usePlaylistsWithCategory = () => {
   const [allPlaylists, setAllPlaylists] = useState<Playlist[]>([]);
   const [displayedPlaylists, setDisplayedPlaylists] = useState<Playlist[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+
+  //   const { data, isLoading, error } = useAllPlaylist();
+  //   const { data, isLoading, error } = usePlaylistsByCategory();
 
   useEffect(() => {
     // 파이어스토어 데이터 요청 (연습 시, 주석처리)
@@ -31,7 +35,7 @@ export const usePlaylistsWithCategory = () => {
 
   useEffect(() => {
     const fetchPlaylistsByCategory = async () => {
-      if (selectedCategory === playlistCategories[0]) {
+      if (selectedCategory === PLAYLIST.categories[0]) {
         setDisplayedPlaylists(allPlaylists);
       } else {
         const fetchedPlaylists = await getPlaylistsByCategory(selectedCategory);
@@ -44,5 +48,5 @@ export const usePlaylistsWithCategory = () => {
     }
   }, [selectedCategory, allPlaylists]);
 
-  return { displayedPlaylists, setSelectedCategory };
+  return { displayedPlaylists, selectedCategory, setSelectedCategory };
 };

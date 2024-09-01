@@ -2,13 +2,17 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { css } from '@emotion/react';
 
-import { playlistCategories } from '@/constants/playlist';
+import { PLAYLIST } from '@/constants/playlist';
 import theme from '@/styles/theme';
 interface CategoryButtonsProps {
+  selectedCategory: string;
   setSelectedCategory: Dispatch<SetStateAction<string>>;
 }
 
-const CategoryButtons: React.FC<CategoryButtonsProps> = ({ setSelectedCategory }) => {
+const CategoryButtons: React.FC<CategoryButtonsProps> = ({
+  selectedCategory,
+  setSelectedCategory,
+}) => {
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const buttonText = e.currentTarget.textContent;
 
@@ -19,9 +23,13 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({ setSelectedCategory }
 
   return (
     <div css={buttonsStyle}>
-      {playlistCategories &&
-        playlistCategories.map((category) => (
-          <button key={category} css={buttonStyle} onClick={handleButtonClick}>
+      {PLAYLIST.categories &&
+        PLAYLIST.categories.map((category) => (
+          <button
+            key={category}
+            css={[buttonStyle, category === selectedCategory && activeButtonStyle]}
+            onClick={handleButtonClick}
+          >
             {category}
           </button>
         ))}
@@ -60,11 +68,19 @@ const buttonStyle = css`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s; // 부드러운 전환 효과 추가
 
   &:active {
     background-color: ${theme.colors.secondary};
     color: ${theme.colors.black};
   }
+`;
+
+const activeButtonStyle = css`
+  background-color: ${theme.colors.secondary};
+  color: ${theme.colors.black};
 `;
 
 export default CategoryButtons;
