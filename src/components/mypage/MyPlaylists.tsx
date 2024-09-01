@@ -5,11 +5,9 @@ import { css } from '@emotion/react';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import FlipCard from '@/components/mypage/FlipCard';
 import { useToggleStore } from '@/store/useToggleStore';
-import theme from '@/styles/theme';
-import { Playlist } from '@/types/playlist';
-
+import { PlaylistModel } from '@/types/playlist';
 interface MyPlaylistsProps {
-  playlists: Playlist[];
+  playlists: PlaylistModel[];
 }
 
 const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
@@ -44,7 +42,6 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
           <strong>{playlists.length}</strong>
         </div>
         <div css={flexStyle}>
-          <div css={textStyle}>공개</div>
           <ToggleSwitch checked={isToggled} onCheckedChange={toggle} />
         </div>
       </header>
@@ -96,12 +93,6 @@ const flexStyle = css`
   display: flex;
   align-items: center;
   gap: 5px;
-`;
-
-const textStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.white};
-  font-weight: 500;
 `;
 
 export default MyPlaylists;
