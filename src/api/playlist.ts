@@ -9,8 +9,9 @@ import {
   where,
   addDoc,
 } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 
-import { app } from '@/api'; // Firebase 앱 초기화 파일
+import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
 import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 
 const db = getFirestore(app);
@@ -113,10 +114,24 @@ export const addPlaylist = async (playlistData: PlaylistFormDataModel): Promise<
   try {
     const playlistsRef = collection(db, 'playlists');
 
+    // 이미지가 base64형식인 경우에만, storage에 업로드하고 URL을 받아옴
+    let updatedUrl = playlistData.thumbnailUrl;
+    if (updatedUrl && updatedUrl.startsWith('data:image')) {
+      // Storage에 이미지 업로드
+      const storageRef = ref(storage, `thumbnails/${Date.now()}_${playlistData.title}`);
+      await uploadString(storageRef, updatedUrl, 'data_url');
+
+      // 업로드 된 이미지의 다운로드 URL을 받아옴
+      updatedUrl = await getDownloadURL(storageRef);
+    }
+
     // 서버 타임스탬프 사용 및 필요한 필드 추가
-    const playlistToAdd = {
+    const playlistToAdd: PlaylistFormDataModel = {
       ...playlistData,
+      thumbnailUrl: updatedUrl, // 업데이트 된 썸네일 URL 또는 원래 기존의 URL
     };
+
+    // Firestore에 플레이리스트 추가
     const docRef = await addDoc(playlistsRef, playlistToAdd);
     console.log('Document written with ID: ', docRef.id);
     return docRef.id;
