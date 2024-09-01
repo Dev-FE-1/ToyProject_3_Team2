@@ -1,12 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getAllPlaylists, getPlaylistsByCategory } from '@/api/endpoints/playlist';
-
-// 쿼리 키(queryKey)
-export const playlistKeys = {
-  all: ['playlists'] as const,
-  byCategory: (category: string) => [...playlistKeys.all, 'category', category] as const,
-};
+import { QUERY_KEYS } from '@/constants/querykey';
 
 // 기본 옵션
 const defaultOptions = {
@@ -15,14 +10,14 @@ const defaultOptions = {
 
 export const useAllPlaylist = () =>
   useQuery({
-    queryKey: playlistKeys.all,
+    queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY],
     queryFn: () => getAllPlaylists(),
     ...defaultOptions,
   });
 
 export const usePlaylistsByCategory = (category: string) =>
   useQuery({
-    queryKey: playlistKeys.byCategory(category),
+    queryKey: [QUERY_KEYS.PLAYLIST_CATEGORY_KEY, category],
     queryFn: () => getPlaylistsByCategory(category),
     ...defaultOptions,
   });
