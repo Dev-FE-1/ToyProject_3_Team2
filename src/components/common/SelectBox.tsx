@@ -91,6 +91,22 @@ const ViewportStyle = css`
   border: 1px solid ${theme.colors.bgSwitchOff};
   border-radius: 4px;
   background-color: ${theme.colors.black};
+  max-height: 155px;
+  overflow-y: auto;
+
+  /* Scrollbar */
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: ${theme.colors.white};
+  }
+  &::-webkit-scrollbar-track {
+    background: ${theme.colors.black};
+  }
+  &::-webkit-scrollbar-thumb {
+    background: ${theme.colors.bgSwitchOff};
+    border-radius: 4px;
+    border: 2px solid ${theme.colors.white};
+  }
 `;
 
 const ItemStyle = css`

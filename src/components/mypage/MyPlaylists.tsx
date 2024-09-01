@@ -62,7 +62,9 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
   );
 };
 
-const wrapperStyle = css``;
+const wrapperStyle = css`
+  padding-bottom: 90px;
+`;
 const headerStyle = css`
   position: relative;
   display: flex;
