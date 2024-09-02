@@ -5,10 +5,10 @@ import { VscKebabVertical } from 'react-icons/vsc';
 
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
-import { Playlist } from '@/types/playlist';
+import { PlaylistModel } from '@/types/playlist';
 
 interface VideoBoxDetailProps {
-  video: Playlist['videos'][0];
+  video: PlaylistModel['videos'][0];
   channelName: string;
   uploadDate: string;
   type: 'host' | 'visitor';

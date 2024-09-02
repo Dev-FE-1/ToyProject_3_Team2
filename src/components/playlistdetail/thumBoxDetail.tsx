@@ -7,10 +7,10 @@ import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
 import useLikeStore from '@/store/useLikeStore';
 import theme from '@/styles/theme';
-import { Playlist } from '@/types/playlist';
+import { PlaylistModel } from '@/types/playlist';
 
 interface ThumBoxDetailProps {
-  playlist: Playlist;
+  playlist: PlaylistModel;
   profileURL?: string;
   onClickProfile?: () => void;
 }

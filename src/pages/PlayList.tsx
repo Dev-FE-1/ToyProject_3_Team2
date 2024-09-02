@@ -14,9 +14,9 @@ import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import useToastStore from '@/store/useToastStore';
 import theme from '@/styles/theme';
-import { Playlist } from '@/types/playlist';
+import { PlaylistModel } from '@/types/playlist';
 
-const fetchMyPlaylists = async (): Promise<Playlist[]> => {
+const fetchMyPlaylists = async (): Promise<PlaylistModel[]> => {
   const response = await fetch('/src/mock/playlists.json');
   return await response.json();
 };
