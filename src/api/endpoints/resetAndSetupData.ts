@@ -43,7 +43,7 @@ export const setUpFireStoreData = async () => {
 
   // Comments 데이터 설정
   for (const [playlistId, playlistComments] of Object.entries(data.comments)) {
-    for (const [commentKey, commentData] of Object.entries(playlistComments)) {
+    for (const [_, commentData] of Object.entries(playlistComments)) {
       await setDoc(doc(db, 'comments', commentData.commentId), {
         ...commentData,
         playlistId,

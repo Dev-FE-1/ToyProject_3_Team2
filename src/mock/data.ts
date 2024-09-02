@@ -1,6 +1,7 @@
 // 파이어스토어 초기 셋업 데이터
 
 export interface User {
+  userId: string;
   userName: string;
   userBio: string;
   email: string;
@@ -45,6 +46,7 @@ export interface UserPlaylists {
 export interface Comment {
   commentId: string;
   userId: string;
+  playlistId: string;
   userName: string;
   content: string;
   createdAt: string;
@@ -60,7 +62,8 @@ export interface Data {
 
 export const data: Data = {
   users: {
-    user101: {
+    sa4TNoFWVFhW9pzJmh04xYybDkg2: {
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       userName: '엄마튜버',
       userBio: '1일 1운동 챌린지 중입니다:)',
       email: 'momtuber@example.com',
@@ -70,7 +73,8 @@ export const data: Data = {
       totalLikes: 1200,
       totalForks: 80,
     },
-    user102: {
+    ot2KbB8XxSf3moyXUu2XTK5A4RH3: {
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       userName: '여행왕',
       userBio: '지리는 플리만 만듭니다(따봉)',
       email: 'travelking@example.com',
@@ -84,7 +88,7 @@ export const data: Data = {
   playlists: {
     playlist101: {
       playlistId: 'playlist101',
-      userId: 'user101',
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       userName: '엄마튜버',
       title: '우리 아이 교육용 영상 모음',
       description: '핑크퐁과 뽀로로로 배우는 즐거운 학습!',
@@ -125,7 +129,7 @@ export const data: Data = {
     },
     playlist102: {
       playlistId: 'playlist102',
-      userId: 'user101',
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       userName: '엄마튜버',
       title: '잔잔한 클래식 음악',
       description: '마음을 편안하게 해주는 클래식 음악 모음',
@@ -165,7 +169,7 @@ export const data: Data = {
     },
     playlist103: {
       playlistId: 'playlist103',
-      userId: 'user101',
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       userName: '엄마튜버',
       title: '일상 브이로그',
       description: '평범한 일상의 소소한 행복',
@@ -205,7 +209,7 @@ export const data: Data = {
     },
     playlist104: {
       playlistId: 'playlist104',
-      userId: 'user101',
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       userName: '엄마튜버',
       title: '강아지 영상 모음',
       description: '귀여운 강아지들의 일상',
@@ -245,7 +249,7 @@ export const data: Data = {
     },
     playlist105: {
       playlistId: 'playlist105',
-      userId: 'user101',
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       userName: '엄마튜버',
       title: '영어 회화 강의',
       description: '초보자를 위한 영어 회화 강의 시리즈',
@@ -285,7 +289,7 @@ export const data: Data = {
     },
     playlist201: {
       playlistId: 'playlist201',
-      userId: 'user102',
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       userName: '여행왕',
       title: '뉴질랜드 여행 브이로그',
       description: '2주간의 뉴질랜드 여행 기록',
@@ -325,7 +329,7 @@ export const data: Data = {
     },
     playlist202: {
       playlistId: 'playlist202',
-      userId: 'user102',
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       userName: '여행왕',
       title: '인기 영화 리뷰',
       description: '최신 개봉 영화 리뷰 모음',
@@ -365,7 +369,7 @@ export const data: Data = {
     },
     playlist203: {
       playlistId: 'playlist203',
-      userId: 'user102',
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       userName: '여행왕',
       title: '무한도전 명장면 모음',
       description: '레전드 무한도전 에피소드 모음집',
@@ -405,7 +409,7 @@ export const data: Data = {
     },
     playlist204: {
       playlistId: 'playlist204',
-      userId: 'user102',
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       userName: '여행왕',
       title: '고양이 영상 모음',
       description: '귀여운 고양이들의 일상',
@@ -445,7 +449,7 @@ export const data: Data = {
     },
     playlist205: {
       playlistId: 'playlist205',
-      userId: 'user102',
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       userName: '여행왕',
       title: 'K-POP 인기 뮤직비디오',
       description: '최신 K-POP 히트곡 모음',
@@ -485,12 +489,12 @@ export const data: Data = {
     },
   },
   userPlaylists: {
-    user101: {
+    sa4TNoFWVFhW9pzJmh04xYybDkg2: {
       created: ['playlist101', 'playlist102', 'playlist103', 'playlist104', 'playlist105'],
       forked: ['playlist203', 'playlist205'],
       liked: ['playlist201', 'playlist203'],
     },
-    user102: {
+    ot2KbB8XxSf3moyXUu2XTK5A4RH3: {
       created: ['playlist201', 'playlist202', 'playlist203', 'playlist204', 'playlist205'],
       forked: ['playlist101', 'playlist104'],
       liked: ['playlist102', 'playlist104', 'playlist105'],
@@ -500,7 +504,8 @@ export const data: Data = {
     playlist101: {
       comment1: {
         commentId: 'comment701',
-        userId: 'user102',
+        userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
+        playlistId: 'playlist101',
         userName: '여행왕',
         content: '아이들이 정말 좋아하네요! 감사합니다.',
         createdAt: '2023-08-21T09:30:00Z',
@@ -508,8 +513,9 @@ export const data: Data = {
       },
       comment2: {
         commentId: 'comment702',
-        userId: 'user103',
-        userName: '육아맘',
+        userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
+        playlistId: 'playlist101',
+        userName: '여행왕',
         content: '핑크퐁 노래가 제일 좋아요!',
         createdAt: '2023-08-22T14:15:00Z',
         updatedAt: '2023-08-22T14:15:00Z',
@@ -518,7 +524,8 @@ export const data: Data = {
     playlist201: {
       comment1: {
         commentId: 'comment703',
-        userId: 'user101',
+        userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
+        playlistId: 'playlist201',
         userName: '엄마튜버',
         content: '뉴질랜드 너무 가보고 싶어요. 좋은 정보 감사합니다!',
         createdAt: '2023-11-16T10:00:00Z',
@@ -526,16 +533,18 @@ export const data: Data = {
       },
       comment2: {
         commentId: 'comment704',
-        userId: 'user104',
-        userName: '백패커',
+        userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
+        playlistId: 'playlist201',
+        userName: '엄마튜버',
         content: '퀸스타운 번지점프 꼭 해보고 싶네요.',
         createdAt: '2023-11-17T18:30:00Z',
         updatedAt: '2023-11-17T18:30:00Z',
       },
       comment3: {
         commentId: 'comment705',
-        userId: 'user105',
-        userName: '여행초보',
+        userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
+        playlistId: 'playlist201',
+        userName: '엄마튜버',
         content: '2주 일정 너무 알차 보여요. 참고하겠습니다!',
         createdAt: '2023-11-18T09:45:00Z',
         updatedAt: '2023-11-18T09:45:00Z',
@@ -544,8 +553,9 @@ export const data: Data = {
     playlist203: {
       comment1: {
         commentId: 'comment706',
-        userId: 'user106',
-        userName: '예능매니아',
+        userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
+        playlistId: 'playlist203',
+        userName: '엄마튜버',
         content: '무한도전 레전드 에피소드만 모아놓으셨네요. 굿!',
         createdAt: '2023-12-16T20:00:00Z',
         updatedAt: '2023-12-16T20:00:00Z',
