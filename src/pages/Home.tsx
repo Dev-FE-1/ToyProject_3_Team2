@@ -24,7 +24,7 @@ const Home = () => {
       <p>selectbox 테스트</p>
       <SelectBox items={items} />
       <SelectBox items={items2} />
-      <CustomDialog type='videoimageLink' isOpen={true} onClose={handle} />
+      {/* <CustomDialog type='videoimageLink' isOpen={true} onClose={handle} /> */}
       <div>
         <h2>인증 상태</h2>
         <p>로그인 상태: {isLoggedIn ? '로그인됨' : '로그인되지 않음'}</p>
