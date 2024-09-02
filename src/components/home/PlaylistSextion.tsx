@@ -83,14 +83,14 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists, onS
 };
 
 const sectionStyle = css`
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 `;
 
 const headerStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 1rem 0.5rem;
+  margin: 0 1rem -0.5rem;
 `;
 
 const titleStyle = css`
