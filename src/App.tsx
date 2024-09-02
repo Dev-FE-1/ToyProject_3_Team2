@@ -12,6 +12,7 @@ import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
+import NotFound from '@/pages/NotFound';
 import Onboarding from '@/pages/Onboarding';
 import PlayListPage from '@/pages/PlayList';
 import PlaylistAdd from '@/pages/PlaylistAdd';
@@ -46,6 +47,7 @@ const AuthProtectedRoute = () => {
 const router = createBrowserRouter([
   {
     path: '/',
+    errorElement: <NotFound />,
     //  <RootLayout /> : 네비게이션(탭바)+콘텐츠
     element: <RootLayout />,
     children: [
@@ -72,14 +74,10 @@ const router = createBrowserRouter([
               { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
             ],
           },
-
-          { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
-          { path: PATH.ONBOARDING, children: [{ index: true, element: <Onboarding /> }] },
           { path: PATH.PLAYLIST, element: <PlayListPage /> },
-       
-          { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
-          { path: '/section-list', element: <SectionListPage /> },
 
+          // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
+          { path: '/section-list', element: <SectionListPage /> },
         ],
       },
     ],
