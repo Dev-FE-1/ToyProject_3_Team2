@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllPlaylists } from '@/api/endpoints/playlist';
 import { getUserData } from '@/api/endpoints/user';
 import IconButton from '@/components/common/buttons/IconButton';
+import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import MyPlaylists from '@/components/mypage/MyPlaylists';
 import MyProfile from '@/components/mypage/MyProfile';
@@ -59,6 +60,13 @@ const MyPage = () => {
   const handleAddPlaylist = () => {
     navigate(`${PATH.MYPAGE}/${PATH.MYPAGE_ADD_PLAYLIST}`);
   };
+  if (isLoading) {
+    return (
+      <div css={spinnerStyle}>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -100,5 +108,11 @@ const floatAddButtonStyle = css`
   &:hover {
     transform: translateY(-2px);
   }
+`;
+const spinnerStyle = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 `;
 export default MyPage;
