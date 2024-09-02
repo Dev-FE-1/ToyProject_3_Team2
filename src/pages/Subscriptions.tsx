@@ -8,7 +8,7 @@ import theme from '@/styles/theme';
 
 const Subscriptions = () => {
   const { isToggled, toggle } = useToggleStore();
-  const showToast = useToastStore((state) => state.showToast);
+  const { showToast } = useToastStore();
 
   const handleSubBtnClick = () => {
     toggle();
