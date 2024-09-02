@@ -18,7 +18,7 @@ import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 const db = getFirestore(app);
 
 // 전체 플레이리스트 가져오기
-export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
+export const getAllPlaylists = async (userId: string): Promise<PlaylistModel[]> => {
   try {
     const playlistsCol = collection(db, 'playlists');
     const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'));
