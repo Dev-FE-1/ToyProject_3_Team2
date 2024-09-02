@@ -9,6 +9,7 @@ const Onboarding = () => {
   const navigate = useNavigate();
 
   const handleSignIn = () => {
+    sessionStorage.setItem('onboarding', 'true');
     navigate(PATH.SIGNIN);
   };
 
