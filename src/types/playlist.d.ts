@@ -1,6 +1,11 @@
-export interface Playlist {
-  playlistId: string;
-  userId: string;
+interface Video {
+  videoId: string;
+  videoUrl: string;
+  title: string;
+  thumbnailUrl: string;
+  duration: number;
+}
+export interface PlaylistFormDataModel {
   title: string;
   description: string;
   category: string;
@@ -12,10 +17,11 @@ export interface Playlist {
   videoCount: number;
   thumbnailUrl: string;
   isPublic: boolean;
-  videos: Array<{
-    videoId: string;
-    title: string;
-    thumbnailUrl: string;
-    duration: number;
-  }>;
+  videos: Array[];
+}
+
+export interface PlaylistModel extends PlaylistFormDataModel {
+  playlistId: string;
+  userId: string;
+  doc?: string;
 }

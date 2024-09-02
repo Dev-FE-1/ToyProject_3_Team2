@@ -1,7 +1,7 @@
 import { GoStar, GoStarFill } from 'react-icons/go';
 
 import IconButton from '@/components/common/buttons/IconButton';
-import useToggleStore from '@/store/useToggleStore';
+import { useToggleStore } from '@/store/useToggleStore';
 
 const StarToggleButton = () => {
   const isToggled = useToggleStore((state) => state.isToggled);

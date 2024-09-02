@@ -3,6 +3,7 @@ export const PATH = {
   SEARCH: '/search',
   SUBSCRIPTIONS: '/subscriptions',
   MYPAGE: '/mypage',
+  MYPAGE_ADD_PLAYLIST: 'add',
   SIGNIN: '/signin',
   ONBOARDING: '/onboarding',
   SETTINGS: '/mypage/settings',

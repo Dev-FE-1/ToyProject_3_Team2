@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
-import { useVideoData } from '@/hooks/useVideoData';
+import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
 
 interface contentType {
@@ -173,8 +173,11 @@ const CustomDialog: React.FC<DialogProps> = ({
 
 // CSS Styles
 const overlayStyle = css`
-  background-color: rgba(0, 0, 0, 0.5);
-  position: fixed;
+  background-color: ${theme.colors.black + '7a'};
+  position: absolute;
+  width: 498px;
+  height: 100vh;
+  margin: 0 auto;
   inset: 0;
   z-index: 5;
 `;

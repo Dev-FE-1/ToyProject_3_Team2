@@ -137,7 +137,7 @@ const baseStyles = css`
     line-height: 1;
     font-size: ${theme.fontSizes.large}; /* 16px */
     color: ${theme.colors.white};
-    /*background-color: ${theme.colors.black};*/
+    /* background-color: ${theme.colors.black}; */
     letter-spacing: -0.14px;
   }
 

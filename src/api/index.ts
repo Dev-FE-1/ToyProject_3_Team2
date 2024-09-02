@@ -1,8 +1,9 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
-import { resetFireStoreData, setUpFireStoreData } from '@/api/resetAndSetupData';
+import { resetFireStoreData, setUpFireStoreData } from '@/api/endpoints/resetAndSetupData';
 import { firebaseConfig } from '@/constants/api';
 
 // Firebase 초기화
@@ -10,6 +11,9 @@ const app = initializeApp(firebaseConfig);
 
 // Firestore 인스턴스 가져오기
 const db = getFirestore(app);
+
+// Storage 인스턴스 가져오기
+const storage = getStorage(app);
 
 // Auth 인스턴스 가져오기
 export const auth = getAuth(app);
@@ -20,6 +24,6 @@ const initFireStore = async () => {
   await resetFireStoreData();
   await setUpFireStoreData();
 };
-initFireStore();
+// initFireStore();
 
-export { app, db };
+export { app, db, storage };

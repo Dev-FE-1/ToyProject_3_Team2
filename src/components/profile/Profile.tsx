@@ -51,7 +51,7 @@ const imageStyle = css`
 `;
 
 const nameStyle = css`
-  width: 48px;
+  width: 70px;
   height: 17px;
   font-size: ${theme.fontSizes.normal};
   overflow: hidden;

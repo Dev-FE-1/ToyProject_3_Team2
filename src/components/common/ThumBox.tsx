@@ -15,7 +15,7 @@ interface ThumBoxProps {
   uploader?: string;
   likes?: number;
   comments?: number;
-  listnum?: string;
+  listnum?: number;
   type: 'main1' | 'main2' | 'details';
 }
 

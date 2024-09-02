@@ -8,7 +8,7 @@ interface ToastProps {
   hideToast: () => void;
 }
 
-const useToastStore = create<ToastProps>((set) => ({
+export const useToastStore = create<ToastProps>((set) => ({
   isVisible: false,
   message: '',
   showToast: (message: string) => {
@@ -16,5 +16,3 @@ const useToastStore = create<ToastProps>((set) => ({
   },
   hideToast: () => set({ isVisible: false, message: '' }),
 }));
-
-export default useToastStore;

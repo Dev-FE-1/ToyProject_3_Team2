@@ -46,12 +46,12 @@ const Navbar = () => {
   );
 };
 const navStyle = css`
-  z-index: 100;
+  z-index: 5;
   position: fixed;
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
-  max-width: 500px;
+  max-width: 498px;
   width: 100vw;
   height: 80px;
   border-top: 1px solid ${theme.colors.tertiary};
