@@ -20,7 +20,6 @@ const VideoCard: React.FC<VideoCardProps> = ({ onClick, thumbURL, time, type, wi
   </div>
 );
 const cardStyle = (type: 'main' | 'underbar', width?: string, height?: string) => css`
-  margin: 1rem;
   position: relative;
   cursor: pointer;
   overflow: hidden;
