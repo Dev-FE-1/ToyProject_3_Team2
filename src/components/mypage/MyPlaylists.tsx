@@ -13,20 +13,12 @@ interface MyPlaylistsProps {
 }
 
 const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
-  const [activeFlipCards, setActiveFlipCards] = useState<Set<string>>(new Set());
+  const [activeFlipCard, setActiveFlipCard] = useState<string | null>(null);
   const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
 
   const handleFlip = (id: string) => {
-    setActiveFlipCards((prevActive) => {
-      const newActive = new Set(prevActive);
-      if (newActive.has(id)) {
-        newActive.delete(id);
-      } else {
-        newActive.add(id);
-      }
-      return newActive;
-    });
+    setActiveFlipCard((prevActive) => (prevActive === id ? null : id));
   };
   const filteredPlaylists = useMemo(
     () => (isToggled ? playlists.filter((playlist) => playlist.isPublic) : playlists),
@@ -34,7 +26,7 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
   );
   // 토글 상태가 변경될 때 모든 카드를 초기 상태로 되돌려 줘
   useEffect(() => {
-    setActiveFlipCards(new Set());
+    setActiveFlipCard(null);
   }, [isToggled]);
   return (
     <div css={wrapperStyle}>
@@ -55,7 +47,7 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
           <FlipCard
             key={index}
             id={playlist.playlistId}
-            isFlipped={activeFlipCards.has(playlist.playlistId)}
+            isFlipped={activeFlipCard === playlist.playlistId}
             onFlip={() => handleFlip(playlist.playlistId)}
             title={playlist.title}
             category={playlist.category}
