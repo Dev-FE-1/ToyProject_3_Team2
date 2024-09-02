@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
+import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
 
 interface contentType {
@@ -31,6 +32,8 @@ const CustomDialog: React.FC<DialogProps> = ({
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
+
+  const { data: videoData, isLoading, error } = useVideoData(youtubeUrl as string);
 
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
@@ -68,8 +71,11 @@ const CustomDialog: React.FC<DialogProps> = ({
           title: null,
           content: (
             <>
-              {thumbnailUrl && (
+              {/* {thumbnailUrl && (
                 <img src={thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
+              )} */}
+              {videoData && (
+                <img src={videoData.thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
               )}
               <Dialog.Title
                 css={css`
@@ -100,22 +106,26 @@ const CustomDialog: React.FC<DialogProps> = ({
     }
   };
 
-  useEffect(() => {
-    const extractVideoId = (url: string) => {
-      const regex =
-        /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
-      const match = url.match(regex);
-      return match ? match[1] : null;
-    };
+  // useEffect(() => {
+  //   const extractVideoId = (url: string) => {
+  //     const regex =
+  //       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
+  //     const match = url.match(regex);
+  //     return match ? match[1] : null;
+  //   };
 
-    const videoId = extractVideoId(youtubeUrl);
-    if (videoId) {
-      setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`);
-    } else {
-      setThumbnailUrl('');
-    }
-    setIsConfirmDisabled(!youtubeUrl.trim());
-  }, [youtubeUrl]);
+  //   const videoId = extractVideoId(youtubeUrl);
+  //   if (videoId) {
+  //     setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`);
+  //   } else {
+  //     setThumbnailUrl('');
+  //   }
+  //   setIsConfirmDisabled(!youtubeUrl.trim());
+  // }, [youtubeUrl]);
+
+  useEffect(() => {
+    setIsConfirmDisabled(!videoData?.thumbnailUrl.trim());
+  }, [videoData]);
 
   const modalContent = getModalContent(type);
 

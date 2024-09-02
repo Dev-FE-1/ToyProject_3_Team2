@@ -26,6 +26,7 @@
       "videos": [
         {
           "videoId": "유튜브 비디오 ID",
+          "videoUrl": "유튜브 비디오 URL",
           "title": "비디오 제목",
           "thumbnailUrl": "비디오 썸네일 URL",
           "duration": 300
@@ -43,6 +44,7 @@
   "comments": {
     "<playlistId>": {
       "<commentId>": {
+        "commentId": "<commentId>",
         "userId": "<userId>",
         "username": "사용자 이름",
         "content": "댓글 내용",

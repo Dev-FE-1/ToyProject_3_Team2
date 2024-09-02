@@ -1,14 +1,14 @@
 // YouTube Data API v3를 사용해 영상 가져오기
 import { css } from '@emotion/react';
 
-import { useVideoData } from '@/hooks/useVideoData';
+import { useVideoData } from '@/hooks/query/useYoutube';
 
 interface YouTubePlayerProps {
-  videoId: string | null;
+  url: string | null;
 }
 
-const YouTubePlayerV3 = ({ videoId }: YouTubePlayerProps) => {
-  const { data: videoData, isLoading, error } = useVideoData(videoId as string);
+const YouTubePlayerV3 = ({ url }: YouTubePlayerProps) => {
+  const { data: videoData, isLoading, error } = useVideoData(url as string);
 
   if (isLoading) {
     return <div css={loadingStyle}>Loading...</div>;
@@ -25,7 +25,7 @@ const YouTubePlayerV3 = ({ videoId }: YouTubePlayerProps) => {
   return (
     <div css={containerStyle}>
       <h2 css={videoTitleStyle}>{videoData.title}</h2>
-      <div css={videoContainerStyle} dangerouslySetInnerHTML={{ __html: videoData.embedHtml }} />
+      <div css={videoContainerStyle} />
       <div css={videoInfoStyle}>
         <img css={videoThumbnailStyle} src={videoData.thumbnailUrl} alt={videoData.title} />
         <div css={videoDetailsStyle}>
@@ -36,7 +36,6 @@ const YouTubePlayerV3 = ({ videoId }: YouTubePlayerProps) => {
             </a>
           </p>
           <p>Upload Date: {videoData.publishedAt}</p>
-          <p>Views: {parseInt(videoData.viewCount).toLocaleString()}</p>
         </div>
       </div>
     </div>
