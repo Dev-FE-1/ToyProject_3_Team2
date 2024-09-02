@@ -1,6 +1,6 @@
 import { ComponentType, SVGProps } from 'react';
 
-import { css } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 
 import theme from '@/styles/theme';
 
@@ -12,6 +12,7 @@ interface IconTextButtonProps {
   iconPosition?: 'left' | 'right';
   onClick?: () => void;
   children: string;
+  customStyle?: SerializedStyles;
 }
 
 const IconTextButton: React.FC<IconTextButtonProps> = ({
@@ -20,9 +21,10 @@ const IconTextButton: React.FC<IconTextButtonProps> = ({
   iconPosition = 'right',
   onClick,
   children,
+  customStyle,
 }: IconTextButtonProps) => (
   <button
-    css={[baseButtonStyle, getVariantStyle(variant)]}
+    css={[baseButtonStyle, getVariantStyle(variant), customStyle]}
     onClick={onClick}
     className={iconPosition}
   >
