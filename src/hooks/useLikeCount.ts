@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const useLikeCount = (initialLikeCount: number) => {
+export const useLikeCount = (initialLikeCount: number) => {
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [isLiked, setIsLiked] = useState(false);
 
@@ -15,5 +15,3 @@ const useLikeCount = (initialLikeCount: number) => {
     isLiked,
   };
 };
-
-export default useLikeCount;

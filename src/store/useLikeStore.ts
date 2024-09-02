@@ -17,7 +17,7 @@ interface LikeState {
   toggleLiked: (playlistId: string) => void;
 }
 
-const useLikeStore = create<LikeState>()(
+export const useLikeStore = create<LikeState>()(
   devtools(
     (set) => ({
       // 각 플레이리스트의 좋아요 수를 저장하는 객체 상태
@@ -62,5 +62,3 @@ const useLikeStore = create<LikeState>()(
     }
   )
 );
-
-export default useLikeStore;
