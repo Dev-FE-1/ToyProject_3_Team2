@@ -1,11 +1,11 @@
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import notFound from '@/assets/images/notFound.png';
+import notFound from '@/assets/images/not-found.svg';
 import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
-const NotFound = () => {
+const NotFoundPage = () => {
   const navigate = useNavigate();
   const handleGoBack = () => navigate(-1);
   return (
@@ -58,4 +58,4 @@ const pStyle = css`
   color: ${theme.colors.primary};
 `;
 
-export default NotFound;
+export default NotFoundPage;
