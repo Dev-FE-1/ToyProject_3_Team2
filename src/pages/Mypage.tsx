@@ -40,11 +40,13 @@ const MyPage = () => {
       <div css={containerStyle}>
         <MyProfile />
         <MyPlaylists playlists={playlists} />
-        <IconButton
-          Icon={RiAddLargeLine}
-          customStyle={floatAddButtonStyle}
-          onClick={handleAddPlaylist}
-        />
+        <div css={addButtonContainerStyle}>
+          <IconButton
+            Icon={RiAddLargeLine}
+            customStyle={floatAddButtonStyle}
+            onClick={handleAddPlaylist}
+          />
+        </div>
       </div>
       <Toast />
     </>
@@ -55,10 +57,19 @@ const containerStyle = css`
   max-width: 498px;
   padding-bottom: 80px;
 `;
+const addButtonContainerStyle = css`
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  width: 100vw;
+  max-width: 500px;
+  height: 1px;
+  transform: translateX(-50%);
+`;
 const floatAddButtonStyle = css`
   position: absolute;
   right: 1.5rem;
-  top: calc(100vh - 150px);
+  bottom: 0;
   z-index: 100;
   transition: all 0.3s ease;
   &:hover {
