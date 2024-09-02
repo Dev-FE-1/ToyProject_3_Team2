@@ -10,8 +10,8 @@ import {
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
-import Onboarding from '@/pages/Onboarding';
 import MyPage from '@/pages/MyPage';
+import Onboarding from '@/pages/Onboarding';
 import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';

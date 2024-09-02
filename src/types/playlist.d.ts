@@ -1,6 +1,14 @@
+interface Video {
+  videoId: string;
+  videoUrl: string;
+  title: string;
+  thumbnailUrl: string;
+  duration: number;
+}
 export interface Playlist {
   playlistId: string;
   userId: string;
+  userName: string;
   title: string;
   description: string;
   category: string;
@@ -12,10 +20,5 @@ export interface Playlist {
   videoCount: number;
   thumbnailUrl: string;
   isPublic: boolean;
-  videos: Array<{
-    videoId: string;
-    title: string;
-    thumbnailUrl: string;
-    duration: number;
-  }>;
+  videos: Video[];
 }

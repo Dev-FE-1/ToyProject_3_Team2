@@ -3,7 +3,7 @@ import { FaRegComment } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
-import { formatNumberToK } from '@/utils/formatNumberToK';
+import { formatNumberToK } from '@/utils/formatNumber';
 
 interface CommentsButtonProps {
   playListId: string;
