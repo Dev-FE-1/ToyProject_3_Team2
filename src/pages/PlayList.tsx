@@ -12,7 +12,7 @@ import Toast from '@/components/common/Toast';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import Header from '@/layouts/layout/Header';
-import useToastStore from '@/store/useToastStore';
+import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 
@@ -23,7 +23,7 @@ const fetchMyPlaylists = async (): Promise<PlaylistModel[]> => {
 
 const PlayListPage = () => {
   const [isStarFilled, setIsStarFilled] = useState(false);
-  const [playlist, setPlaylist] = useState<Playlist | null>(null);
+  const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
   const showToast = useToastStore((state) => state.showToast);
 
   useEffect(() => {

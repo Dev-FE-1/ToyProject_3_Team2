@@ -1,9 +1,9 @@
 import ThumBox from '@/components/common/ThumBox';
-import { Playlist } from '@/types/playlist';
+import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface FilteredPlaylistsProps {
-  displayedPlaylists: Playlist[] | null;
+  displayedPlaylists: PlaylistModel[] | null;
 }
 const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylists }) => {
   const playlists = displayedPlaylists;

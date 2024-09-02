@@ -1,18 +1,25 @@
 import React from 'react';
 
-import { css } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 import * as Switch from '@radix-ui/react-switch';
 
 import theme from '@/styles/theme';
 
-interface SwitchToggleProps {
-  onClick?: () => void;
+interface ToggleSwitchProps {
+  checked: boolean;
+  onCheckedChange: () => void;
+  customStyle?: SerializedStyles;
 }
 
-const SwitchToggle: React.FC<SwitchToggleProps> = ({ onClick }) => (
+const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onCheckedChange, customStyle }) => (
   <div css={flexStyle}>
-    <div css={textStyle}>공개</div>
-    <Switch.Root defaultChecked onClick={onClick} css={switchRootStyle}>
+    <div css={[textStyle, customStyle]}>공개</div>
+    <Switch.Root
+      defaultChecked
+      checked={checked}
+      onCheckedChange={onCheckedChange}
+      css={switchRootStyle}
+    >
       <Switch.Thumb css={switchThumbStyle} />
     </Switch.Root>
   </div>
@@ -58,4 +65,4 @@ const switchThumbStyle = css`
   }
 `;
 
-export default SwitchToggle;
+export default ToggleSwitch;

@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
-import useLikeStore from '@/store/useLikeStore';
+import { useLikeStore } from '@/store/useLikeStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 

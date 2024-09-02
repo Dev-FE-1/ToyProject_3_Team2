@@ -5,10 +5,7 @@ interface Video {
   thumbnailUrl: string;
   duration: number;
 }
-export interface Playlist {
-  playlistId: string;
-  userId: string;
-  userName: string;
+export interface PlaylistFormDataModel {
   title: string;
   description: string;
   category: string;
@@ -20,5 +17,11 @@ export interface Playlist {
   videoCount: number;
   thumbnailUrl: string;
   isPublic: boolean;
-  videos: Video[];
+  videos: Array[];
+}
+
+export interface PlaylistModel extends PlaylistFormDataModel {
+  playlistId: string;
+  userId: string;
+  doc?: string;
 }
