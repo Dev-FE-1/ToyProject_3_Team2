@@ -2,23 +2,26 @@ import React, { useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { RiAddLargeLine, RiArrowRightSLine } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import ThumBox from '@/components/common/ThumBox';
 import theme from '@/styles/theme';
+import { PlaylistModel } from '@/types/playlist';
 
 interface PlaylistSectionProps {
   title: string;
-  playlists: PlaylistItem[];
+  playlists: PlaylistModel[];
   onSeeAllClick: () => void;
 }
 
-const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists, onSeeAllClick }) => {
+const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  const navigate = useNavigate();
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -40,6 +43,10 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists, onS
     setIsDragging(false);
   };
 
+  const handleMoreClick = () => {
+    navigate('/section-list', { state: { title, playlists } });
+  };
+
   return (
     <div css={sectionStyle}>
       <div css={headerStyle}>
@@ -48,7 +55,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists, onS
           Icon={RiArrowRightSLine}
           variant='transparent'
           customStyle={customButtonStyle}
-          onClick={onSeeAllClick}
+          onClick={handleMoreClick}
         >
           전체보기
         </IconTextButton>
@@ -62,18 +69,18 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists, onS
         onMouseLeave={handleMouseUp}
       >
         {playlists.map((playlist) => (
-          <div key={playlist.id} css={playlistItemStyle}>
+          <div key={playlist.playlistId} css={playlistItemStyle}>
             <ThumBox
               type='main1'
-              thumURL={playlist.thumURL}
+              thumURL={playlist.thumbnailUrl}
               title={playlist.title}
-              likes={playlist.likes}
-              uploader={playlist.uploader}
-              listnum={playlist.listnum}
+              likes={playlist.likeCount}
+              uploader={playlist.userId}
+              listnum={playlist.videoCount}
             />
           </div>
         ))}
-        <div css={moreButtonStyle}>
+        <div css={moreButtonStyle} onClick={handleMoreClick}>
           <IconButton Icon={RiAddLargeLine} />
           <p>더보기</p>
         </div>
@@ -90,10 +97,10 @@ const headerStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0 1rem -0.5rem;
+  margin: -0.5rem 1rem;
 `;
 
-const titleStyle = css`
+export const titleStyle = css`
   display: flex;
   align-items: center;
   font-size: ${theme.fontSizes.normal};

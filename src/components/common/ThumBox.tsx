@@ -122,7 +122,7 @@ const thumbnailStyle = (thumURL: string | undefined) => css`
   background-size: cover;
   background-position: center;
   border-radius: 4px;
-  z-index: 10;
+  z-index: 4;
 `;
 
 const thumbnailBackdropStyle = css`

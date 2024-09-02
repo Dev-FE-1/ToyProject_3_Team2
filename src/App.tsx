@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
+import SectionListPage from '@/components/home/SectionListPage';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
@@ -71,7 +72,14 @@ const router = createBrowserRouter([
               { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
             ],
           },
+
+          { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
+          { path: PATH.ONBOARDING, children: [{ index: true, element: <Onboarding /> }] },
           { path: PATH.PLAYLIST, element: <PlayListPage /> },
+       
+          { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
+          { path: '/section-list', element: <SectionListPage /> },
+
         ],
       },
     ],
