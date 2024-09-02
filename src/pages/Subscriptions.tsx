@@ -18,16 +18,11 @@ const Subscriptions = () => {
       : showToast('구독 목록에 추가되었습니다.');
   };
 
-  // 구독목록 페이지 자체헤더
-  const PlaylistHeader = () => (
-    <header css={header}>
-      <p>내가 구독중인 플레이리스트</p>
-    </header>
-  );
-
   return (
     <div>
-      <PlaylistHeader />
+      <header css={header}>
+        <p>내가 구독중인 플레이리스트</p>
+      </header>
       <PlaylistBox
         isSubscribed={isSubscribed}
         onClick={handleSubBtnClick}
