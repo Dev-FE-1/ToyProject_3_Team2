@@ -1,34 +1,57 @@
 import { css } from '@emotion/react';
 
+import Spinner from '@/components/common/Spinner';
 import CategoryButtons from '@/components/search/CategoryButtons';
 import FilteredPlaylists from '@/components/search/FilteredPlaylists';
-import { PLAYLIST } from '@/constants/playlist';
-import { usePlaylistsWithCategory } from '@/hooks/usePlaylistByCategory';
+import Input from '@/components/search/Input';
+import { useFilteredPlaylists } from '@/hooks/useFilteredPlaylists';
+import theme from '@/styles/theme';
 
 const Search = () => {
-  const { displayedPlaylists, selectedCategory, setSelectedCategory } = usePlaylistsWithCategory();
+  const {
+    searchTerm,
+    setSearchTerm,
+    filterBySearchTerm,
+    selectedCategory,
+    handleButtonClick,
+    displayedPlaylists,
+    isLoading,
+    error,
+  } = useFilteredPlaylists();
+
+  if (error) return <div>Error!!!!!!</div>;
 
   return (
     <div>
-      <div css={containerStyle}>
-        <input type='text' css={inputStyle} placeholder={PLAYLIST.search.placeholder} />
-      </div>
-      <CategoryButtons
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
-      <FilteredPlaylists displayedPlaylists={displayedPlaylists} />
+      <header css={headerStyle}>
+        <Input
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          filterBySearchTerm={filterBySearchTerm}
+        />
+        <CategoryButtons
+          selectedCategory={selectedCategory}
+          handleButtonClick={handleButtonClick}
+        />
+      </header>
+      <main css={mainStyle}>
+        {isLoading ? <Spinner /> : <FilteredPlaylists displayedPlaylists={displayedPlaylists} />}
+      </main>
     </div>
   );
 };
 
-const containerStyle = css``;
+const headerStyle = css`
+  position: fixed;
+  max-width: 498px;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  background-color: ${theme.colors.black};
+`;
 
-const inputStyle = css`
-  width: 343px;
-  height: 50px;
-  padding: 4px 8px;
-  align-items: center;
+const mainStyle = css`
+  padding-top: 128px;
 `;
 
 export default Search;

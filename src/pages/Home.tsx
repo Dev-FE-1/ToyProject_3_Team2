@@ -2,9 +2,8 @@ import React from 'react';
 
 import { css } from '@emotion/react';
 
-import PlaylistSection from '@/components/home/PlaylistSextion';
+import PlaylistSection from '@/components/home/PlaylistSection';
 import RecentUpdateSection from '@/components/home/RecentUpdateSection';
-import { useAllPlaylist, usePlaylistsByCategory } from '@/hooks/query/usePlaylist';
 
 const Home = () => {
   const mockMyInterestPlaylists = [

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import { css } from '@emotion/react';
 
-import { titleStyle } from './PlaylistSextion';
+import { titleStyle } from './PlaylistSection';
 import ThumBox from '../common/ThumBox';
 import { PlaylistModel } from '@/types/playlist';
 
