@@ -3,7 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-import { resetFireStoreData, setUpFireStoreData } from '@/api/resetAndSetupData';
+import { resetFireStoreData, setUpFireStoreData } from '@/api/endpoints/resetAndSetupData';
 import { firebaseConfig } from '@/constants/api';
 
 // Firebase 초기화
@@ -24,6 +24,6 @@ const initFireStore = async () => {
   await resetFireStoreData();
   await setUpFireStoreData();
 };
-initFireStore();
+// initFireStore();
 
 export { app, db, storage };

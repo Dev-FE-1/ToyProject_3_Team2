@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { RiAddLargeLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllPlaylists } from '@/api/playlist';
+import { getAllPlaylists } from '@/api/endpoints/playlist';
 import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
 import MyPlaylists from '@/components/mypage/MyPlaylists';

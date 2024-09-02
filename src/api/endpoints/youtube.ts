@@ -1,13 +1,5 @@
-import axios from 'axios';
-
+import { fetchYoutubeData } from '@/api/apiClient';
 import { getVideoId } from '@/utils/getVideoId';
-
-const fetchYoutubeData = axios.create({
-  baseURL: 'https://www.googleapis.com/youtube/v3',
-  params: {
-    key: import.meta.env.VITE_YOUTUBE_API_KEY,
-  },
-});
 
 export const getVideoData = async (url: string) => {
   const videoId = getVideoId(url);
@@ -30,8 +22,6 @@ export const getVideoData = async (url: string) => {
     channelId: item.snippet.channelId,
     thumbnailUrl: item.snippet.thumbnails.medium.url,
     publishedAt: new Date(item.snippet.publishedAt).toLocaleDateString(),
-    viewCount: item.statistics.viewCount,
-    embedHtml: item.player.embedHtml,
   };
 };
 
@@ -40,5 +30,3 @@ export const getVideoData = async (url: string) => {
 // channelId: 체널 id
 // thumbnailUrl: 썸네일 url
 // publishedAt: 업로드 날짜
-// viewCount: 조회수
-// embedHtml: html코드

@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { GoHeart, GoHeartFill } from 'react-icons/go';
 
 import theme from '@/styles/theme';
-import { formatNumberToK } from '@/utils/formatNumberToK';
+import { formatNumberToK } from '@/utils/formatNumber';
 
 interface LikesProps {
   playlistId: string;

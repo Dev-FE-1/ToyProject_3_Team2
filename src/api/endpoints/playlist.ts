@@ -3,6 +3,7 @@ import {
   collection,
   getDocs,
   query,
+  limit,
   orderBy,
   doc,
   getDoc,
@@ -15,31 +16,6 @@ import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
 import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 
 const db = getFirestore(app);
-
-interface Video {
-  videoId: string;
-  videoUrl: string;
-  title: string;
-  thumbnailUrl: string;
-  duration: number;
-}
-
-export interface Playlist {
-  playlistId: string;
-  userId: string;
-  title: string;
-  description: string;
-  category: string;
-  thumbnailUrl: string;
-  videoCount: number;
-  likeCount: number;
-  forkCount: number;
-  commentCount: number;
-  isPublic: boolean;
-  createdAt: string;
-  updatedAt: string;
-  videos: Video[];
-}
 
 // 전체 플레이리스트 가져오기
 export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
@@ -62,14 +38,14 @@ export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
 };
 
 // 특정 사용자가 포크한 플레이리스트 가져오기
-export const getForkedPlaylists = async (userId: string): Promise<Playlist[]> => {
+export const getForkedPlaylists = async (userId: string): Promise<PlaylistModel[]> => {
   try {
     // 1. userPlaylists에서 포크한 플레이리스트 ID 목록 가져오기
     const userPlaylistsRef = doc(db, 'userPlaylists', userId);
     const userPlaylistsDoc = await getDoc(userPlaylistsRef);
 
     if (!userPlaylistsDoc.exists()) {
-      console.log(`${userId} 포크 플레이리스트가 없습니다.`);
+      console.log(`${userId}'s forked playlist is not exist`);
       return [];
     }
 
@@ -89,6 +65,7 @@ export const getForkedPlaylists = async (userId: string): Promise<Playlist[]> =>
       return {
         playlistId: doc.id,
         userId: data.userId,
+        userName: data.userName,
         title: data.title,
         description: data.description,
         category: data.category,
@@ -105,6 +82,47 @@ export const getForkedPlaylists = async (userId: string): Promise<Playlist[]> =>
     });
   } catch (error) {
     console.error('Error fetching forked playlists:', error);
+    return [];
+  }
+};
+
+// 카테고리에 따른 플레이리스트 가져오기
+export const getPlaylistsByCategory = async (
+  category: string,
+  limitCount: number = 20
+): Promise<PlaylistModel[]> => {
+  try {
+    const playlistsCol = collection(db, 'playlists');
+    const playlistQuery = query(
+      playlistsCol,
+      where('category', '==', category),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+    const playlistSnapshot = await getDocs(playlistQuery);
+
+    return playlistSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        playlistId: doc.id,
+        userName: data.userName,
+        userId: data.userId,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        videoCount: data.videoCount,
+        likeCount: data.likeCount,
+        forkCount: data.forkCount,
+        commentCount: data.commentCount,
+        thumbnailUrl: data.thumbnailUrl,
+        isPublic: data.isPublic,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        videos: data.videos,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching playlists by category:', error);
     return [];
   }
 };

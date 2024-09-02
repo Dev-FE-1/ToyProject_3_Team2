@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
-import { useVideoData } from '@/hooks/useVideoData';
+import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
 
 interface contentType {

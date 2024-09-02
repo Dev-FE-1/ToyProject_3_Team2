@@ -1,3 +1,10 @@
+interface Video {
+  videoId: string;
+  videoUrl: string;
+  title: string;
+  thumbnailUrl: string;
+  duration: number;
+}
 export interface PlaylistFormDataModel {
   title: string;
   description: string;

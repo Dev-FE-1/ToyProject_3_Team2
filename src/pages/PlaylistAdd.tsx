@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { addPlaylist } from '@/api/playlist';
+import { addPlaylist } from '@/api/endpoints/playlist';
 import Toast from '@/components/common/Toast';
 import PlaylistForm from '@/components/playlistForm/PlaylistForm';
 import { PATH } from '@/constants/path';
