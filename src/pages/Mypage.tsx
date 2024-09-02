@@ -5,23 +5,47 @@ import { RiAddLargeLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import { getAllPlaylists } from '@/api/endpoints/playlist';
+import { getUserData } from '@/api/endpoints/user';
 import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
 import MyPlaylists from '@/components/mypage/MyPlaylists';
 import MyProfile from '@/components/mypage/MyProfile';
 import { PATH } from '@/constants/path';
 import { PlaylistModel } from '@/types/playlist';
+import { UserModel } from '@/types/user';
 
 const MyPage = () => {
   const navigate = useNavigate();
   const [playlists, setPlaylists] = useState<PlaylistModel[]>([]);
+  const [userData, setUserData] = useState<UserModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
         setIsLoading(true);
-        const data = await getAllPlaylists();
+
+        // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
+        const userSessionStr = sessionStorage.getItem('userSession');
+        if (!userSessionStr) {
+          throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
+        }
+        const userSession = JSON.parse(userSessionStr);
+        const userId = userSession.uid;
+
+        if (!userId) {
+          throw new Error('유효한 사용자 ID가 없습니다.');
+        }
+
+        // 사용자 데이터 가져오기
+        const user = await getUserData(userId);
+        if (!user) {
+          throw new Error('사용자 데이터를 가져오는 데 실패했습니다.');
+        }
+        setUserData(user);
+
+        // 플레이리스트 데이터 가져오기
+        const data = await getAllPlaylists(userId);
         setPlaylists(data);
       } catch (error) {
         setError(error instanceof Error ? error : new Error('알 수 없는 에러 발생!'));
@@ -31,14 +55,20 @@ const MyPage = () => {
     };
     fetchPlaylists();
   }, []);
+
   const handleAddPlaylist = () => {
     navigate(`${PATH.MYPAGE}/${PATH.MYPAGE_ADD_PLAYLIST}`);
   };
-
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <>
       <div css={containerStyle}>
-        <MyProfile />
+        <MyProfile userData={userData} />
         <MyPlaylists playlists={playlists} />
         <div css={addButtonContainerStyle}>
           <IconButton

@@ -6,49 +6,68 @@ import defaultAvatar from '@/assets/images/default-avatar-woman.svg';
 import Badge from '@/components/common/Badge';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
+import { UserModel } from '@/types/user';
 
-const MyProfile = () => {
+interface MyProfileProps {
+  userData: UserModel | null;
+}
+
+const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate(`${PATH.SETTINGS}/`); // 설정 페이지로 이동
   };
+
+  // userData가 없으면 아무것도 렌더링하지 않음
+  if (!userData) {
+    return null;
+  }
+
+  // Badge 컴포넌트의 존재여부 확인
+  const hasBadge = typeof Badge !== 'undefined';
+
   return (
     <div css={containerStyle}>
       <RiSettings5Line css={topIconStyle} onClick={handleNavigate} />
       <h1 css={a11yStyle}>MyPage</h1>
 
       <section css={sectionStyle}>
-        <div css={bgStyle}></div>
+        <div css={bgStyle(hasBadge)}>
+          <div css={contentStyle}>
+            <img src={defaultAvatar} alt='profile image' css={photoStyle} />
+            {/* profile image */}
+            <div css={profileStyle}>
+              <h2>{userData.userName}</h2>
+              <p>{userData.userBio}</p> {/* bio */}
+            </div>
+            {hasBadge && (
+              <Badge
+                text='좋아요'
+                suffix='개'
+                extra='달성🔥'
+                position='center'
+                customStyle={badgeStyle}
+              >
+                1000
+              </Badge>
+            )}
 
-        <img src={defaultAvatar} alt='profile image' css={photoStyle} />
-        {/* profile image */}
-        <div css={profileStyle}>
-          <h2>_my_app_nickname</h2>
-          <p>1일1운동 챌린지 중 입니다 🏃🏻‍♀️</p> {/* bio */}
+            <ul css={ulStyle}>
+              <li>
+                <strong>{userData.playlistCount}</strong> {/* my playlist */}
+                <span>내 플리</span>
+              </li>
+              <li>
+                <strong>{userData.totalLikes}</strong> {/* likes */}
+                <span>좋아요</span>
+              </li>
+              <li>
+                <strong>{userData.totalForks}</strong> {/* forked */}
+                <span>포크</span>
+              </li>
+            </ul>
+          </div>
         </div>
-        <Badge
-          text='좋아요'
-          suffix='개'
-          extra='달성🔥'
-          position='center'
-          customStyle={css({ width: '155px' })}
-        >
-          1000
-        </Badge>
-        <ul css={ulStyle}>
-          <li>
-            <strong>124</strong> {/* my playlist */}
-            <span>내 플리</span>
-          </li>
-          <li>
-            <strong>1161</strong> {/* likes */}
-            <span>좋아요</span>
-          </li>
-          <li>
-            <strong>118</strong> {/* forked */}
-            <span>포크</span>
-          </li>
-        </ul>
       </section>
     </div>
   );
@@ -82,39 +101,46 @@ const a11yStyle = css`
   white-space: nowrap;
   border-width: 0;
 `;
-const bgStyle = css`
-  position: absolute;
+const bgStyle = (hasBadge: boolean) => css`
+  position: relative;
   top: 112px;
   left: 50%;
   transform: translateX(-50%);
   max-width: 498px;
-  width: 100%;
-  height: 229px;
+  width: 100vw;
+  height: ${hasBadge ? '223px' : '198px'};
   margin: 0 auto;
-
+  text-align: center;
   background-color: ${theme.colors.bgMypage};
 `;
 const sectionStyle = css`
-  padding-top: 62px;
-  padding-bottom: 31px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
   z-index: 1;
+  height: 334px;
+`;
+const contentStyle = css`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-50px);
 `;
 const profileStyle = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
+  margin-bottom: 14px;
   z-index: 1;
+  > h2 {
+    margin-bottom: 14px;
+  }
 `;
 const photoStyle = css`
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  margin-bottom: 2px;
+  margin-bottom: 16px;
   background-color: ${theme.colors.blue};
   object-fit: cover;
   z-index: 1;
@@ -124,7 +150,8 @@ const ulStyle = css`
   display: flex;
   align-items: center;
   list-style: none;
-  margin-top: 2px;
+  margin-top: 16px;
+  font-size: ${theme.fontSizes.large};
   gap: 40px;
   li {
     position: relative;
@@ -145,11 +172,18 @@ const ulStyle = css`
     &:last-child::before {
       display: none;
     }
+    strong {
+      line-height: 18px;
+    }
     span {
       font-size: ${theme.fontSizes.small};
       color: ${theme.colors.white};
+      line-height: 15px;
     }
   }
 `;
-
+const badgeStyle = css`
+  height: 25px;
+  letter-spacing: -0.21px;
+`;
 export default MyProfile;
