@@ -12,6 +12,7 @@ import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
 import Onboarding from '@/pages/Onboarding';
+import PlayListPage from '@/pages/PlayList';
 import PlaylistAdd from '@/pages/PlaylistAdd';
 import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
@@ -62,6 +63,10 @@ const router = createBrowserRouter([
           },
           { path: PATH.SIGNIN, children: [{ index: true, element: <SignIn /> }] },
           { path: PATH.ONBOARDING, children: [{ index: true, element: <Onboarding /> }] },
+
+          // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
+          { path: '/playlist', element: <PlayListPage /> },
+
           // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
         ],
       },
