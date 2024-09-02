@@ -12,6 +12,7 @@ import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
+import NotFoundPage from '@/pages/NotFound';
 import Onboarding from '@/pages/Onboarding';
 import PlayListPage from '@/pages/PlayList';
 import PlaylistAdd from '@/pages/PlaylistAdd';
@@ -45,9 +46,9 @@ const AuthProtectedRoute = () => {
 };
 const router = createBrowserRouter([
   {
-    path: '/',
-    //  <RootLayout /> : 네비게이션(탭바)+콘텐츠
+    path: PATH.HOME,
     element: <RootLayout />,
+    errorElement: <NotFoundPage />,
     children: [
       // 공개 페이지
       { path: PATH.SIGNIN, element: <SignIn /> },
