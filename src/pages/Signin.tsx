@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
 import { PATH } from '@/constants/path';
-import { useAuthStore } from '@/store/authStore';
 import theme from '@/styles/theme';
 
 const SignIn = () => {
@@ -18,7 +17,6 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
 
   const handleInputChange = (isValid: boolean, newUsername: string, newPassword: string) => {
     setIsFormValid(isValid);
@@ -34,7 +32,13 @@ const SignIn = () => {
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
         console.log('로그인 성공:', userCredential.user.email);
         setErrorMessage('');
-        login(userCredential.user.email!);
+        sessionStorage.setItem(
+          'userSession',
+          JSON.stringify({
+            email: userCredential.user.email,
+            uid: userCredential.user.uid,
+          })
+        );
         navigate(PATH.HOME);
       } catch (error) {
         console.error('로그인 실패: ', error);
