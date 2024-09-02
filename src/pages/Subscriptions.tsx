@@ -1,20 +1,40 @@
-import { css } from '@emotion/react';
+import { useState, useEffect } from 'react';
 
+import { css } from '@emotion/react';
+import { collection, getDocs } from 'firebase/firestore';
+
+import { db } from '@/api/index';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/playlist/PlaylistBox';
+import { Playlist } from '@/mock/data';
 import useToastStore from '@/store/useToastStore';
 import useToggleStore from '@/store/useToggleStore';
 import theme from '@/styles/theme';
 
-const Subscriptions = () => {
+const Subscriptions: React.FC = () => {
+  const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const { isToggled, toggle } = useToggleStore();
   const { showToast } = useToastStore();
 
-  const handleSubBtnClick = () => {
+  const fetchPlaylists = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'playlists'));
+      const playlistsData = querySnapshot.docs.map((doc) => doc.data() as Playlist);
+      setPlaylists(playlistsData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPlaylists();
+  }, []);
+
+  const handleSubBtnClick = (playlistId: Playlist) => {
     toggle();
     isToggled
-      ? showToast('구독 목록에서 해제되었습니다.')
-      : showToast('구독 목록에 추가되었습니다.');
+      ? showToast(`"${playlistId.title}" 이(가) 구독 목록에서 해제되었습니다.`)
+      : showToast(`"${playlistId.title}" 이(가) 구독 목록에 추가되었습니다.`);
   };
 
   return (
@@ -22,27 +42,21 @@ const Subscriptions = () => {
       <header css={header}>
         <p>내가 구독중인 플레이리스트</p>
       </header>
-      <PlaylistBox
-        isSubscribed={isToggled}
-        onClick={handleSubBtnClick}
-        nickname='고먐미'
-        imageUrl='https://goodsisgood.com/wp-content/uploads/2024/02/mindaday1.jpg'
-        playlistTitle='개쩌는 플레이리스트 볼사람 여기여기 모여라'
-      />
-      <PlaylistBox
-        isSubscribed={isToggled}
-        onClick={handleSubBtnClick}
-        nickname='고먐미'
-        imageUrl='https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDA0MTBfMzMg%2FMDAxNzEyNzA2NTYzMzQ2.LJjblzvIEqxPO_5qBiB4Sk4RtCMhhySYiPgsrtUrp24g.5LiOVYy3D4ZuKA9NEWFPHBvpDv-i-gai52dRszy9DhMg.JPEG%2F1.jpg&type=sc960_832'
-        playlistTitle='국뽕 치사량 최대치로 올라오는 플리 모음 1탄'
-      />
-      <PlaylistBox
-        isSubscribed={isToggled}
-        onClick={handleSubBtnClick}
-        nickname='고먐미'
-        imageUrl='https://static.displate.com/857x1200/displate/2023-07-04/8bdb31c1949b22406cb2a9c257dae6f4_45fcb4a5a3d57eab739d4a610fb77ab2.jpg'
-        playlistTitle='들으면 세상 개힙해지는 플레이리스트'
-      />
+      {playlists.map((playlist) => (
+        <PlaylistBox
+          key={playlist.playlistId}
+          isSubscribed={isToggled}
+          onClick={() => handleSubBtnClick(playlist)}
+          nickname={playlist.userId}
+          imageUrl={playlist.thumbnailUrl}
+          playlistTitle={playlist.title}
+          category={playlist.category}
+          videoCount={playlist.videoCount}
+          forkCount={playlist.forkCount}
+          likeCount={playlist.likeCount}
+          commentCount={playlist.commentCount}
+        />
+      ))}
       <Toast />
     </div>
   );

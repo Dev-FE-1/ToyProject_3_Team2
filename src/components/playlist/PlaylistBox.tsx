@@ -6,12 +6,17 @@ import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Profile from '@/components/profile/Profile';
 import theme from '@/styles/theme';
 
-interface PlaylistBoxProps {
+export interface PlaylistBoxProps {
   isSubscribed: boolean;
   onClick: () => void;
   nickname: string;
   imageUrl: string;
   playlistTitle: string;
+  category: string;
+  videoCount: number;
+  forkCount: number;
+  likeCount: number;
+  commentCount: number;
 }
 
 const PlaylistBox: React.FC<PlaylistBoxProps> = ({
@@ -20,6 +25,11 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
   nickname,
   imageUrl,
   playlistTitle,
+  category,
+  videoCount,
+  forkCount,
+  likeCount,
+  commentCount,
 }: PlaylistBoxProps) => {
   const navigate = useNavigate();
 
@@ -37,13 +47,13 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
         </div>
         <div css={bottom}>
           <h1>{playlistTitle}</h1>
-          <h2>동영상 5개</h2>
-          <h2>포크 200회</h2>
+          <h2>동영상 {videoCount}개</h2>
+          <h2>포크 {forkCount}회</h2>
           <div>
-            <h3>#스포츠</h3>
+            <h3>#{category}</h3>
             <div css={sumInfo}>
-              <h3>좋아요 100</h3>
-              <h3>댓글 2</h3>
+              <h3>좋아요 {likeCount}</h3>
+              <h3>댓글 {commentCount}</h3>
             </div>
           </div>
         </div>
