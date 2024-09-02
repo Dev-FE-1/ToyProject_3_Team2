@@ -24,8 +24,8 @@ const cardStyle = (type: 'main' | 'underbar', width?: string, height?: string) =
   cursor: pointer;
   overflow: hidden;
   border-radius: 8px;
-  width: ${type === 'main' ? '145px' : width || 'auto'};
-  height: ${type === 'main' ? '85px' : height || 'auto'};
+  min-width: ${type === 'main' ? '145px' : width || 'auto'};
+  min-height: ${type === 'main' ? '85px' : height || 'auto'};
   display: flex;
   justify-content: center;
   align-items: center;

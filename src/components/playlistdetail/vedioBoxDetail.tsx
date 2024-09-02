@@ -55,7 +55,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
 
 const kebabIconStyle = css`
   position: absolute;
-  top: 8px;
+  top: 2px;
   right: 8px;
   color: ${theme.colors.white};
   cursor: pointer;
@@ -76,10 +76,18 @@ const detailsStyle = css`
 `;
 
 const titleStyle = css`
+  width: 90%;
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.white};
   margin-top: 2px;
-  height: 34px;
+  height: 28px;
+
+  /* 여러 줄 오버플로우 처리 */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const channelStyle = css`

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { FaPlay } from 'react-icons/fa';
 import { GoStar, GoStarFill } from 'react-icons/go';
+import { RiPencilLine } from 'react-icons/ri';
 import { VscKebabVertical } from 'react-icons/vsc';
 
 import Button from '@/components/common/buttons/Button';
@@ -75,12 +76,13 @@ const PlayListPage = () => {
           Play all
         </Button>
         <IconButton Icon={isStarFilled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
+        {/* <IconButton Icon={RiPencilLine} onClick={() => console.log('편집모달')} /> */}
       </div>
       {playlist.videos.map((video) => (
         <VideoBoxDetail
           key={video.videoId}
           video={video}
-          type='host'
+          type='host' // 아이디 비교해서 값이 참이면 host 다르면 visitor
           channelName={playlist.userId}
           uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
           onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
