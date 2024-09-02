@@ -1,7 +1,7 @@
 import { doc, setDoc, collection, deleteDoc, getDocs } from 'firebase/firestore';
 
-import { data } from '../mock/data';
 import { db } from '@/api';
+import { data } from '@/mock/data';
 
 // 파이어스토어 데이터 초기화
 export const resetFireStoreData = async () => {
