@@ -13,7 +13,6 @@ import { PlaylistModel } from '@/types/playlist';
 interface PlaylistSectionProps {
   title: string;
   playlists: PlaylistModel[];
-  onSeeAllClick: () => void;
 }
 
 const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) => {
