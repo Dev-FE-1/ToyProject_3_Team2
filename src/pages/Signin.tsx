@@ -5,7 +5,7 @@ import { FirebaseError } from 'firebase/app';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
-// import { auth } from '@/api/index';
+import { auth } from '@/api/index';
 import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
 import { PATH } from '@/constants/path';
