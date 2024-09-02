@@ -18,25 +18,29 @@ import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
-import { useAuthStore } from '@/store/authStore';
 
 const queryClient = new QueryClient();
 
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
   const { pathname, search } = useLocation();
-
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const setOnboarding = sessionStorage.getItem('onboarding') === 'true';
+  const userSession = sessionStorage.getItem('userSession');
+  const isLoggedIn = !!userSession;
   // // 로그인 통과? 그럼 Outlet을 렌더링
   // // 로그인 실패? 로그인 페이지로 Redirect
   // // <Outlet/>: 자식 라우트를 렌더링
   // // replace: 현재 페이지를 브라우저 히스토리에서 교체
   // // state={..} :현재 URL 정보를 로그인 페이지로 전달
-  return isLoggedIn ? (
-    <Outlet />
-  ) : (
-    <Navigate to={`${PATH.ONBOARDING}`} replace state={pathname + search} />
-  );
+  if (!setOnboarding) {
+    // 온보딩을 완료하지 않았다면 온보딩 페이지로 이동
+    return <Navigate to={PATH.ONBOARDING} replace state={pathname + search} />;
+  }
+  if (!isLoggedIn) {
+    // 로그인하지 않았다면 로그인 페이지로 이동
+    return <Navigate to={PATH.SIGNIN} replace state={pathname + search} />;
+  }
+  return <Outlet />;
 };
 const router = createBrowserRouter([
   {
@@ -67,6 +71,7 @@ const router = createBrowserRouter([
               { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
             ],
           },
+          { path: PATH.PLAYLIST, element: <PlayListPage /> },
         ],
       },
     ],

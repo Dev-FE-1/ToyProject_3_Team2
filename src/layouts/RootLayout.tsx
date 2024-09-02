@@ -8,18 +8,15 @@ import theme from '@/styles/theme';
 const RootLayout = () => {
   const location = useLocation();
 
-  const shouldShowNavbar = () => {
-    const noNavbarPaths = [PATH.SIGNIN, PATH.ONBOARDING, `${PATH.MYPAGE}${PATH.SETTINGS}`];
+  const noShowNavbar = () => {
+    const noNavbarPaths = [PATH.SIGNIN, PATH.ONBOARDING, PATH.SETTINGS, PATH.PLAYLIST];
 
-    return !noNavbarPaths.some(
-      (path) =>
-        location.pathname === path || (path.endsWith('/') && location.pathname.startsWith(path))
-    );
+    return !noNavbarPaths.some((path) => location.pathname.startsWith(path));
   };
 
   return (
     <div css={wrapperStyle}>
-      {shouldShowNavbar() && <Navbar />}
+      {noShowNavbar() && <Navbar />}
       <main>
         <Outlet />
       </main>
