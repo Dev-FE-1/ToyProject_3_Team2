@@ -73,6 +73,9 @@ const router = createBrowserRouter([
             ],
           },
           { path: PATH.PLAYLIST, element: <PlayListPage /> },
+
+          // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
+          { path: PATH.PLAYLIST, element: <PlayListPage /> },
           { path: '/section-list', element: <SectionListPage /> },
         ],
       },

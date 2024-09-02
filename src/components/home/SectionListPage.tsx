@@ -20,29 +20,40 @@ const SectionListPage: React.FC = () => {
 
   return (
     <div>
-      <Header
-        onBack={() => {
-          navigate(-1);
-        }}
-      ></Header>
-      <h2 css={titleStyle2}>{title}</h2>
-      {playlists.map((playlist) => (
-        <ThumBox
-          key={playlist.playlistId}
-          type='details'
-          thumURL={playlist.thumbnailUrl}
-          title={playlist.title}
-          subtitle={playlist.description}
-          likes={playlist.likeCount}
-          comments={playlist.commentCount}
-          uploader={playlist.userId}
-          update={playlist.updatedAt}
-          listnum={playlist.videoCount}
-        />
-      ))}
+      <Header onBack={() => navigate(-1)} />
+      <div css={listStyle}>
+        <h2 css={titleStyle2}>{title}</h2>
+        {playlists.map((playlist) => (
+          <ThumBox
+            key={playlist.playlistId}
+            type='details'
+            thumURL={playlist.thumbnailUrl}
+            title={playlist.title}
+            subtitle={playlist.description}
+            likes={playlist.likeCount}
+            comments={playlist.commentCount}
+            uploader={playlist.userId}
+            update={playlist.updatedAt}
+            listnum={playlist.videoCount}
+          />
+        ))}
+      </div>
     </div>
   );
 };
+
+const listStyle = css`
+  height: calc(100vh - 130px);
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+`;
 
 const titleStyle2 = css`
   ${titleStyle}
