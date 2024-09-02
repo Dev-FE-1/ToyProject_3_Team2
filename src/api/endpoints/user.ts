@@ -1,12 +1,14 @@
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
+import { UserModel } from '@/types/user';
 
 const db = getFirestore(app);
 
 export interface User {
   id: string;
   username: string;
+  userBio: string;
   email: string;
   profileImg: string;
   playlistCount: number;
@@ -20,7 +22,11 @@ export interface UserPlaylists {
   liked: string[];
 }
 
-export const getUserData = async (userId: string): Promise<User | null> => {
+export const getUserData = async (userId: string): Promise<UserModel | null> => {
+  if (!userId) {
+    console.error('유효한 사용자 ID가 없습니다.');
+    return null;
+  }
   try {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
@@ -34,12 +40,13 @@ export const getUserData = async (userId: string): Promise<User | null> => {
 
     return {
       id: userDoc.id,
-      username: data.username,
-      email: data.email,
-      profileImg: data.profileImg,
-      playlistCount: data.playlistCount ?? 0,
-      totalLikes: data.totalLikes ?? 0,
-      totalForks: data.totalForks ?? 0,
+      userName: data.userName || '',
+      userBio: data.userBio || '',
+      email: data.email || '',
+      profileImg: data.profileImg || '',
+      playlistCount: data.playlistCount || 0,
+      totalLikes: data.totalLikes || 0,
+      totalForks: data.totalForks || 0,
     };
   } catch (error) {
     console.error('Error fetching user data:', error);
