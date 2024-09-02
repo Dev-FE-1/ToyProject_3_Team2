@@ -59,12 +59,7 @@ const MyPage = () => {
   const handleAddPlaylist = () => {
     navigate(`${PATH.MYPAGE}/${PATH.MYPAGE_ADD_PLAYLIST}`);
   };
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
+
   return (
     <>
       <div css={containerStyle}>
