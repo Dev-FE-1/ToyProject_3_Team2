@@ -1,37 +1,107 @@
-import CustomDialog from '@/components/common/modals/Dialog';
-import SelectBox from '@/components/common/SelectBox';
-import { useAuthStatus } from '@/hooks/useAuthStaus';
-// SelectBox에 들어갈 내용
-const items = [
-  { value: 'public', label: '공개' },
-  { value: 'private', label: '비공개' },
-];
-const items2 = [
-  { value: 'sport', label: '스포츠' },
-  { value: 'music', label: '음악' },
-  { value: 'dance', label: '춤' },
-  { value: 'mukbang', label: '먹방' },
-];
+import React from 'react';
+
+import { css } from '@emotion/react';
+
+import PlaylistSection from '@/components/home/PlaylistSextion';
+import { useAllPlaylist, usePlaylistsByCategory } from '@/hooks/query/usePlaylist';
+
 const Home = () => {
-  const { isLoggedIn, userEmail } = useAuthStatus();
-  const handle = () => {
-    console.log('hi');
-  };
+  const mockMyInterestPlaylists = [
+    {
+      id: 1,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 물리치는 플리',
+      likes: 1200,
+      uploader: 'DJ Smooth',
+      listnum: 20,
+    },
+    {
+      id: 2,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 전부 물리치는 플리',
+      likes: 1500,
+      uploader: 'Fitness Guru',
+      listnum: 30,
+    },
+    {
+      id: 3,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 싫어병 플리',
+      likes: 800,
+      uploader: 'Study Buddy',
+      listnum: 25,
+    },
+    {
+      id: 4,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 싫다구요',
+      likes: 2200,
+      uploader: 'Party Master',
+      listnum: 40,
+    },
+  ];
+
+  // 인기 플레이리스트 목업 데이터
+  const mockPopularPlaylists = [
+    {
+      id: 1,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 물리치는 플리',
+      likes: 1200,
+      uploader: 'DJ Smooth',
+      listnum: 20,
+    },
+    {
+      id: 2,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 전부 물리치는 플리',
+      likes: 1500,
+      uploader: 'Fitness Guru',
+      listnum: 30,
+    },
+    {
+      id: 3,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 싫어병 플리',
+      likes: 800,
+      uploader: 'Study Buddy',
+      listnum: 25,
+    },
+    {
+      id: 4,
+      thumURL: 'https://i.imgur.com/zvHEnru.png',
+      title: '월요병 싫다구요',
+      likes: 2200,
+      uploader: 'Party Master',
+      listnum: 40,
+    },
+  ];
+
+  // 목업 데이터를 사용하는 로직
+  const myInterestPlaylists = mockMyInterestPlaylists;
+  const popularPlaylists = mockPopularPlaylists;
+
   return (
     <div>
-      <h1>Logo</h1>
-      <p>Home</p>
-      <p>selectbox 테스트</p>
-      <SelectBox items={items} />
-      <SelectBox items={items2} />
-      {/* <CustomDialog type='videoimageLink' isOpen={true} onClose={handle} /> */}
-      <div>
-        <h2>인증 상태</h2>
-        <p>로그인 상태: {isLoggedIn ? '로그인됨' : '로그인되지 않음'}</p>
-        <p>사용자 이메일: {userEmail || '없음'}</p>
-      </div>
+      <img src='/logo.svg' alt='Logo' css={logoStyle} />
+      <PlaylistSection
+        title='내 관심사와 비슷한 플레이리스트'
+        playlists={myInterestPlaylists}
+        onSeeAllClick={() => console.log('내 관심사 더보기 클릭')}
+      />
+      <PlaylistSection
+        title='인기 플레이리스트'
+        playlists={popularPlaylists}
+        onSeeAllClick={() => console.log('인기 플레이리스트 더보기 클릭')}
+      />
     </div>
   );
 };
+
+// 스타일 정의
+const logoStyle = css`
+  width: 120px;
+  margin: 2rem 0 1rem 1rem;
+`;
 
 export default Home;

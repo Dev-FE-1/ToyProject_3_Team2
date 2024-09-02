@@ -7,16 +7,17 @@ interface ProfileProps {
   onClick?: () => void;
   nickname: string;
   profileImageSrc?: string;
+  marginSide?: string; // props로 관리
 }
 //기본 프로필 이미지 주소값
 const DEFAULT_IMAGE =
   'https://img.freepik.com/premium-vector/bald-empty-face-icon-avatar-vector-illustration_601298-13391.jpg?w=1480';
 
-const Profile: React.FC<ProfileProps> = ({ onClick, nickname, profileImageSrc }) => {
+const Profile: React.FC<ProfileProps> = ({ onClick, nickname, profileImageSrc, marginSide }) => {
   const imageSrc = profileImageSrc || DEFAULT_IMAGE;
 
   return (
-    <div css={containerStyle} onClick={onClick}>
+    <div css={containerStyle(marginSide)} onClick={onClick}>
       <div css={imageContainerStyle}>
         <img src={imageSrc} alt={`${nickname}의 프로필`} css={imageStyle} />
       </div>
@@ -27,8 +28,8 @@ const Profile: React.FC<ProfileProps> = ({ onClick, nickname, profileImageSrc })
 
 export default Profile;
 
-const containerStyle = css`
-  margin: 1rem;
+const containerStyle = (marginSide?: string) => css`
+  margin: 1rem ${marginSide || '1rem'};
   display: flex;
   align-items: center;
   min-width: 91px;

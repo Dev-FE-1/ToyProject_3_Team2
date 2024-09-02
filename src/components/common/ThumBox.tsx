@@ -161,6 +161,7 @@ const updateStyle = css`
 const main1Style = css`
   width: 150px;
   height: 190px;
+  margin-right: 0;
 
   .thumbnail {
     width: 150px;
