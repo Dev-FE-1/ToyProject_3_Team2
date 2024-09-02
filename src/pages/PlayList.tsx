@@ -10,7 +10,7 @@ import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistdetail/vedioBoxDetail';
+import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import useToastStore from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -18,8 +18,7 @@ import { Playlist } from '@/types/playlist';
 
 const fetchMyPlaylists = async (): Promise<Playlist[]> => {
   const response = await fetch('/src/mock/playlists.json');
-  const data = await response.json();
-  return data;
+  return await response.json();
 };
 
 const PlayListPage = () => {
