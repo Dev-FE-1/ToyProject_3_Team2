@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
-import * as Switch from '@radix-ui/react-switch';
 
+import ToggleSwitch from '@/components/common/ToggleSwitch';
 import FlipCard from '@/components/mypage/FlipCard';
-import useToggleStore from '@/store/useToggleStore';
-import theme from '@/styles/theme';
-import { Playlist } from '@/types/playlist';
-
+import { useToggleStore } from '@/store/useToggleStore';
+import { PlaylistModel } from '@/types/playlist';
 interface MyPlaylistsProps {
-  playlists: Playlist[];
+  playlists: PlaylistModel[];
 }
 
 const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
@@ -36,10 +34,7 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
           <strong>{playlists.length}</strong>
         </div>
         <div css={flexStyle}>
-          <div css={textStyle}>공개</div>
-          <Switch.Root checked={isToggled} onCheckedChange={toggle} css={switchRootStyle}>
-            <Switch.Thumb css={switchThumbStyle} />
-          </Switch.Root>
+          <ToggleSwitch checked={isToggled} onCheckedChange={toggle} />
         </div>
       </header>
       <div css={flipContainerStyle}>
@@ -59,7 +54,9 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
   );
 };
 
-const wrapperStyle = css``;
+const wrapperStyle = css`
+  padding-bottom: 90px;
+`;
 const headerStyle = css`
   position: relative;
   display: flex;
@@ -92,37 +89,4 @@ const flexStyle = css`
   gap: 5px;
 `;
 
-const textStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.white};
-  font-weight: 500;
-`;
-
-const switchRootStyle = css`
-  background-color: ${theme.colors.bgSwitchOff + '5a'};
-  width: 32px;
-  height: 16px;
-  border-radius: 100px;
-  position: relative;
-  border: 1px solid ${theme.colors.bgSwitchOff};
-  cursor: pointer;
-
-  &[data-state='checked'] {
-    background-color: ${theme.colors.primary};
-  }
-`;
-
-const switchThumbStyle = css`
-  display: block;
-  width: 15px;
-  height: 15px;
-  background-color: ${theme.colors.whiteText};
-  border-radius: 100px;
-  transition: transform 200ms;
-  transform: translateY(-0.5px);
-
-  [data-state='checked'] & {
-    transform: translateX(15px) translateY(-0.5px);
-  }
-`;
 export default MyPlaylists;

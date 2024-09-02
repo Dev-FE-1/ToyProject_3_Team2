@@ -5,9 +5,7 @@ interface ToggleProps {
   toggle: () => void;
 }
 
-const useToggleStore = create<ToggleProps>((set) => ({
+export const useToggleStore = create<ToggleProps>((set) => ({
   isToggled: false,
   toggle: () => set((state) => ({ isToggled: !state.isToggled })),
 }));
-
-export default useToggleStore;

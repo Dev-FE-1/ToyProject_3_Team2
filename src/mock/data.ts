@@ -178,7 +178,7 @@ export const data: Data = {
       videoCount: 3,
       thumbnailUrl:
         'https://images.unsplash.com/photo-1523841589119-b55aee0f66e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&h=1000&q=80',
-      isPublic: true,
+      isPublic: false,
       videos: [
         {
           videoId: 'GurNiNV5XUM',
@@ -298,7 +298,7 @@ export const data: Data = {
       videoCount: 3,
       thumbnailUrl:
         'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&h=1000&q=80',
-      isPublic: true,
+      isPublic: false,
       videos: [
         {
           videoId: 'LT_jAU5cmMM',

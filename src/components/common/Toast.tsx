@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import useToastStore from '@/store/useToastStore';
+import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 
 const TOAST_VISIBLE_DURATION = 2000; // 토스트가 보이는 시간 (ms)

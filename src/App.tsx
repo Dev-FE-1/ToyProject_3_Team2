@@ -12,6 +12,8 @@ import RootLayout from '@/layouts/RootLayout';
 import Home from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
 import Onboarding from '@/pages/Onboarding';
+import PlayListPage from '@/pages/PlayList';
+import PlaylistAdd from '@/pages/PlaylistAdd';
 import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
@@ -62,6 +64,7 @@ const router = createBrowserRouter([
             children: [
               { index: true, element: <MyPage /> },
               { path: PATH.SETTINGS, element: <Settings /> },
+              { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
             ],
           },
         ],

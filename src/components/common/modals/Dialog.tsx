@@ -173,8 +173,11 @@ const CustomDialog: React.FC<DialogProps> = ({
 
 // CSS Styles
 const overlayStyle = css`
-  background-color: rgba(0, 0, 0, 0.5);
-  position: fixed;
+  background-color: ${theme.colors.black + '7a'};
+  position: absolute;
+  width: 498px;
+  height: 100vh;
+  margin: 0 auto;
   inset: 0;
   z-index: 5;
 `;

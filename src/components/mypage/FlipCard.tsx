@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import theme from '@/styles/theme';
-import { shortenString } from '@/utils/stringUtils';
+import { shortenString } from '@/utils/string';
 
 interface FlipCardProps {
   id: string;
