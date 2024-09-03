@@ -38,6 +38,7 @@ export interface Video {
 }
 
 export interface UserPlaylists {
+  userId: string; // 추가
   created: string[];
   forked: string[];
   liked: string[];
