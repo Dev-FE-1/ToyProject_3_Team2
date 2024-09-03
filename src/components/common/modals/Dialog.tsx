@@ -218,6 +218,7 @@ const buttonStyle = css`
   cursor: pointer;
   padding: 1rem;
   font-size: ${theme.fontSizes.large};
+  transition: color 300ms ease-in;
 
   &:hover {
     color: ${theme.colors.blueHover};
