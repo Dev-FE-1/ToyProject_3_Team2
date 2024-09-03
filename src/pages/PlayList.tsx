@@ -126,17 +126,25 @@ const PlaylistPage: React.FC = () => {
           <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
         )}
       </div>
-      {playlist.videos.map((video) => (
-        <VideoBoxDetail
-          key={video.videoId}
-          video={video}
-          type={playlist.userId === user.userId ? 'host' : 'visitor'} // 아이디 비교해서 값이 참이면 host 다르면 visitor
-          channelName={playlist.userName}
-          uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-          onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
-          onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
-        />
-      ))}
+      {playlist.videos.length > 0 ? (
+        playlist.videos.map((video) => (
+          <VideoBoxDetail
+            key={video.videoId}
+            video={video}
+            type={playlist.userId === userId ? 'host' : 'visitor'} // 로그인한 사용자 아이디 비교해서 값이 참이면 host 다르면 visitor
+            channelName={playlist.userName}
+            uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
+            onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
+            onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
+          />
+        ))
+      ) : (
+        <div css={nullContentStyle}>
+          <div>앗! 아직 영상이 없어요</div>
+          <div>영상을 추가하여</div>
+          <div>나만의 플리를 만들어보세요</div>
+        </div>
+      )}
       {playlist.userId === userId ? null : (
         <div css={addButtonContainerStyle}>
           <IconButton
@@ -184,8 +192,6 @@ const nullContentStyle = css`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-top: 50%;
-  height: 100vh;
   div {
     text-align: center;
     margin: 1rem;
