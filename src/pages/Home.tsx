@@ -1,5 +1,6 @@
 import { css } from '@emotion/react';
 
+import Spinner from '@/components/common/Spinner';
 import CrossScrolling from '@/components/home/CrossScrolling';
 import RecentUpdateSection from '@/components/home/RecentUpdateSection';
 import { usePopularPlaylists } from '@/hooks/useSortedPlaylists';
@@ -11,23 +12,31 @@ const LOGO = 'BOMVI';
 
 const Home = () => {
   const { popularAndRecentPlaylists, interestedPlaylists } = usePopularPlaylists();
-
+  const isLoading = popularAndRecentPlaylists.isLoadingForAllPlaylist;
   return (
     <div css={containerStyle}>
       <img src='/logo.svg' alt={LOGO} css={logoStyle} />
 
-      <CrossScrolling
-        title={INTERESTED_PLAYLIST}
-        playlists={interestedPlaylists.allForkedPlaylists}
-      />
-      <CrossScrolling
-        title={POPULAR_PLAYLIST}
-        playlists={popularAndRecentPlaylists.playlistsByPopularity}
-      />
-      <RecentUpdateSection
-        title={RECENTUPDATE_PLAYLIST}
-        playlists={popularAndRecentPlaylists.recentPlaylists}
-      />
+      {isLoading ? (
+        <div css={spinnerStyle}>
+          <Spinner />
+        </div>
+      ) : (
+        <>
+          <CrossScrolling
+            title={INTERESTED_PLAYLIST}
+            playlists={interestedPlaylists.allForkedPlaylists}
+          />
+          <CrossScrolling
+            title={POPULAR_PLAYLIST}
+            playlists={popularAndRecentPlaylists.playlistsByPopularity}
+          />
+          <RecentUpdateSection
+            title={RECENTUPDATE_PLAYLIST}
+            playlists={popularAndRecentPlaylists.recentPlaylists}
+          />
+        </>
+      )}
     </div>
   );
 };
@@ -42,4 +51,9 @@ const logoStyle = css`
   margin: 2rem 0 1rem 1rem;
 `;
 
+const spinnerStyle = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 export default Home;
