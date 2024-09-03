@@ -11,6 +11,7 @@ import {
   addDoc,
   startAt,
   endAt,
+  setDoc,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 import { IoMdReturnRight } from 'react-icons/io';
@@ -277,7 +278,11 @@ export const getPlaylistsByKeyword = async (
 };
 
 // 새 플레이리스트 만들기
-export const addPlaylist = async (playlistData: PlaylistFormDataModel): Promise<string> => {
+export const addPlaylist = async (
+  playlistData: PlaylistFormDataModel,
+  userId: string,
+  userName: string
+): Promise<string> => {
   try {
     const playlistsRef = collection(db, 'playlists');
 
@@ -300,8 +305,22 @@ export const addPlaylist = async (playlistData: PlaylistFormDataModel): Promise<
 
     // Firestore에 플레이리스트 추가
     const docRef = await addDoc(playlistsRef, playlistToAdd);
+    const playlistId = docRef.id;
     console.log('Document written with ID: ', docRef.id);
-    return docRef.id;
+
+    // playlistId를 포함한 최종 데이터 생성
+    const finalPlaylistData: PlaylistModel = {
+      ...playlistToAdd,
+      playlistId,
+      userId,
+      userName,
+    };
+
+    // playlistId를 포함하여 문서 업데이트
+    await setDoc(doc(db, 'playlists', playlistId), finalPlaylistData);
+
+    console.log('Document written with ID: ', playlistId);
+    return playlistId;
   } catch (error) {
     console.error('Error adding playlist:', error);
     throw error; // Add a throw statement to propagate the error

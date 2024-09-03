@@ -7,7 +7,7 @@ import PlaylistForm from '@/components/playlistForm/PlaylistForm';
 import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
-import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
+import { PlaylistFormDataModel } from '@/types/playlist';
 
 const PlaylistAdd = () => {
   const navigate = useNavigate();
@@ -34,16 +34,8 @@ const PlaylistAdd = () => {
         throw new Error('사용자 데이터를 가져오는 데 실패했습니다.');
       }
 
-      // 플레이리스트 데이터에 사용자 정보를 추가
-      const playlistData: PlaylistModel = {
-        ...formData,
-        userId: user.userId,
-        userName: user.userName,
-        playlistId: '', // 플레이리스트 ID는 추가 시 자동 생성
-      };
-
       // 플레이리스트 추가 API 호출
-      const playlistId = addPlaylist(playlistData);
+      const playlistId = addPlaylist(formData, user.userId, user.userName);
       console.log('추가된 플레이리스트 ID:', playlistId);
       // 성공 시 마이페이지로 이동
       showToast('플레이리스트가 추가되었습니다.');
