@@ -13,6 +13,7 @@ import {
   endAt,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { IoMdReturnRight } from 'react-icons/io';
 
 import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
 import { PlaylistFormDataModel, PlaylistModel, Video } from '@/types/playlist';
@@ -99,6 +100,7 @@ export const getPlaylistWithUser = async (
     const playlist: PlaylistModel = {
       ...playlistData,
       playlistId: playlistSnap.id,
+      videos: playlistData.videos || [], // 비디오가 없으면 빈 배열로 초기화
     };
     // 2. 플레이리스트의 유저 정보 가져오기
     const userRef = doc(db, 'users', playlist.userId);
@@ -111,7 +113,7 @@ export const getPlaylistWithUser = async (
     return { playlist, user: userData };
   } catch (error) {
     console.error('Error fetching playlist with user:', error);
-    throw error;
+    return null;
   }
 };
 
