@@ -19,6 +19,9 @@ interface ThumBoxProps {
   type: 'main1' | 'main2' | 'details';
 }
 
+const LIKES = '좋아요';
+const COMMENTS = '댓글';
+
 const ThumBox: React.FC<ThumBoxProps> = ({
   onClick,
   thumURL,
@@ -88,8 +91,12 @@ const ThumBox: React.FC<ThumBoxProps> = ({
               <div className='subtitle'>{subtitle}</div>
               <div className='info'>
                 <span css={infoItemStyle}>{uploader}</span>
-                <span css={infoItemStyle}>좋아요 {likes}</span>
-                <span css={infoItemStyle}>댓글 {comments}</span>
+                <span css={infoItemStyle}>
+                  {LIKES} {likes}
+                </span>
+                <span css={infoItemStyle}>
+                  {COMMENTS} {comments}
+                </span>
               </div>
               <div className='update'>{update}</div>
             </div>
@@ -254,6 +261,7 @@ const detailsStyle = css`
 `;
 
 const infoItemStyle = css`
+  margin-top: 2px;
   margin-right: 10px;
   &:last-child {
     margin-right: 0;

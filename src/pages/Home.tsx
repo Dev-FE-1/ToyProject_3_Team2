@@ -1,218 +1,33 @@
 import { css } from '@emotion/react';
 
-import BestPlaylists from '@/components/home/BestPlaylists';
-import PlaylistSection from '@/components/home/PlaylistSection';
+import CrossScrolling from '@/components/home/CrossScrolling';
 import RecentUpdateSection from '@/components/home/RecentUpdateSection';
+import { usePopularPlaylists } from '@/hooks/useSortedPlaylists';
+
+const POPULAR_PLAYLIST = '인기 플레이리스트';
+const INTERESTED_PLAYLIST = '내 관심사와 비슷한 플레이리스트';
+const RECENTUPDATE_PLAYLIST = '최신 플레이리스트';
+const LOGO = 'BOMVI';
 
 const Home = () => {
-  const mockMyInterestPlaylists = [
-    {
-      playlistId: '1',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 물리치는 플리',
-      description: '월요일 아침을 활기차게 시작할 수 있는 플레이리스트입니다.',
-      category: '힐링',
-      createdAt: '2024-08-01',
-      updatedAt: '2024-08-25',
-      likeCount: 1200,
-      forkCount: 100,
-      commentCount: 50,
-      videoCount: 20,
-      isPublic: true,
-      userId: 'DJ Smooth',
-      videos: [],
-    },
-    {
-      playlistId: '2',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 전부 물리치는 플리',
-      description: '모든 월요병을 날려버릴 만큼 에너지 넘치는 플레이리스트입니다.',
-      category: '운동',
-      createdAt: '2024-08-03',
-      updatedAt: '2024-08-25',
-      likeCount: 1500,
-      forkCount: 150,
-      commentCount: 75,
-      videoCount: 30,
-      isPublic: true,
-      userId: 'Fitness Guru',
-      videos: [],
-    },
-    {
-      playlistId: '3',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 싫어병 플리',
-      description: '월요일을 조금이라도 덜 싫어할 수 있게 도와주는 음악들.',
-      category: '공부',
-      createdAt: '2024-08-05',
-      updatedAt: '2024-08-25',
-      likeCount: 800,
-      forkCount: 80,
-      commentCount: 30,
-      videoCount: 25,
-      isPublic: true,
-      userId: 'Study Buddy',
-      videos: [],
-    },
-    {
-      playlistId: '4',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 싫다구요',
-      description: '월요병이 더 이상 두렵지 않도록 힘을 주는 플레이리스트입니다.',
-      category: '파티',
-      createdAt: '2024-08-07',
-      updatedAt: '2024-08-25',
-      likeCount: 2200,
-      forkCount: 200,
-      commentCount: 90,
-      videoCount: 40,
-      isPublic: true,
-      userId: 'Party Master',
-      videos: [],
-    },
-    {
-      playlistId: '5',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 물리치는 플리',
-      description: '월요일 아침을 활기차게 시작할 수 있는 플레이리스트입니다.',
-      category: '힐링',
-      createdAt: '2024-08-01',
-      updatedAt: '2024-08-25',
-      likeCount: 1200,
-      forkCount: 100,
-      commentCount: 50,
-      videoCount: 20,
-      isPublic: true,
-      userId: 'DJ Smooth',
-      videos: [],
-    },
-    {
-      playlistId: '6',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 전부 물리치는 플리',
-      description: '모든 월요병을 날려버릴 만큼 에너지 넘치는 플레이리스트입니다.',
-      category: '운동',
-      createdAt: '2024-08-03',
-      updatedAt: '2024-08-25',
-      likeCount: 1500,
-      forkCount: 150,
-      commentCount: 75,
-      videoCount: 30,
-      isPublic: true,
-      userId: 'Fitness Guru',
-      videos: [],
-    },
-    {
-      playlistId: '7',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 싫어병 플리',
-      description: '월요일을 조금이라도 덜 싫어할 수 있게 도와주는 음악들.',
-      category: '공부',
-      createdAt: '2024-08-05',
-      updatedAt: '2024-08-25',
-      likeCount: 800,
-      forkCount: 80,
-      commentCount: 30,
-      videoCount: 25,
-      isPublic: true,
-      userId: 'Study Buddy',
-      videos: [],
-    },
-    {
-      playlistId: '8',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 싫다구요',
-      description: '월요병이 더 이상 두렵지 않도록 힘을 주는 플레이리스트입니다.',
-      category: '파티',
-      createdAt: '2024-08-07',
-      updatedAt: '2024-08-25',
-      likeCount: 2200,
-      forkCount: 200,
-      commentCount: 90,
-      videoCount: 40,
-      isPublic: true,
-      userId: 'Party Master',
-      videos: [],
-    },
-  ];
-
-  // 인기 플레이리스트 목업 데이터
-  const mockPopularPlaylists = [
-    {
-      playlistId: '1',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 물리치는 플리',
-      description: '월요일 아침을 활기차게 시작할 수 있는 플레이리스트입니다.',
-      category: '힐링',
-      createdAt: '2024-08-01',
-      updatedAt: '2024-08-25',
-      likeCount: 1200,
-      forkCount: 100,
-      commentCount: 50,
-      videoCount: 20,
-      isPublic: true,
-      userId: 'DJ Smooth',
-      videos: [],
-    },
-    {
-      playlistId: '2',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 전부 물리치는 플리',
-      description: '모든 월요병을 날려버릴 만큼 에너지 넘치는 플레이리스트입니다.',
-      category: '운동',
-      createdAt: '2024-08-03',
-      updatedAt: '2024-08-25',
-      likeCount: 1500,
-      forkCount: 150,
-      commentCount: 75,
-      videoCount: 30,
-      isPublic: true,
-      userId: 'Fitness Guru',
-      videos: [],
-    },
-    {
-      playlistId: '3',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 싫어병 플리',
-      description: '월요일을 조금이라도 덜 싫어할 수 있게 도와주는 음악들.',
-      category: '공부',
-      createdAt: '2024-08-05',
-      updatedAt: '2024-08-25',
-      likeCount: 800,
-      forkCount: 80,
-      commentCount: 30,
-      videoCount: 25,
-      isPublic: true,
-      userId: 'Study Buddy',
-      videos: [],
-    },
-    {
-      playlistId: '4',
-      thumbnailUrl: 'https://i.imgur.com/zvHEnru.png',
-      title: '월요병 싫다구요',
-      description: '월요병이 더 이상 두렵지 않도록 힘을 주는 플레이리스트입니다.',
-      category: '파티',
-      createdAt: '2024-08-07',
-      updatedAt: '2024-08-25',
-      likeCount: 2200,
-      forkCount: 200,
-      commentCount: 90,
-      videoCount: 40,
-      isPublic: true,
-      userId: 'Party Master',
-      videos: [],
-    },
-  ];
+  const { popularAndRecentPlaylists, interestedPlaylists } = usePopularPlaylists();
 
   return (
     <div css={containerStyle}>
-      <img src='/logo.svg' alt='Logo' css={logoStyle} />
-      <PlaylistSection
-        title='내 관심사와 비슷한 플레이리스트'
-        playlists={mockMyInterestPlaylists}
+      <img src='/logo.svg' alt={LOGO} css={logoStyle} />
+
+      <CrossScrolling
+        title={INTERESTED_PLAYLIST}
+        playlists={interestedPlaylists.allForkedPlaylists}
       />
-      <BestPlaylists title='인기 플레이리스트' playlists={mockPopularPlaylists} />
-      <RecentUpdateSection title='최신 업데이트' playlists={mockMyInterestPlaylists} />
+      <CrossScrolling
+        title={POPULAR_PLAYLIST}
+        playlists={popularAndRecentPlaylists.playlistsByPopularity}
+      />
+      <RecentUpdateSection
+        title={RECENTUPDATE_PLAYLIST}
+        playlists={popularAndRecentPlaylists.recentPlaylists}
+      />
     </div>
   );
 };

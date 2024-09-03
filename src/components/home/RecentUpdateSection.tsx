@@ -1,10 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-
 import { css } from '@emotion/react';
 
-import { titleStyle } from './PlaylistSection';
-import ThumBox from '../common/ThumBox';
-import { getAllPlaylists } from '@/api/endpoints/playlist';
+import ThumBox from '@/components/common/ThumBox';
+import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 
@@ -13,54 +10,31 @@ interface RecentUpdateSectionProps {
   playlists: PlaylistModel[];
 }
 
-const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playlists }) => {
-  const [recentPlaylists, setRecentPlaylists] = useState<PlaylistModel[]>([]);
+const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playlists }) => (
+  <div>
+    <h2 css={titleStyle}>{title}</h2>
+    {playlists.map((playlist) => (
+      <ThumBox
+        key={playlist.playlistId}
+        type='details'
+        thumURL={playlist.thumbnailUrl}
+        title={playlist.title}
+        subtitle={playlist.description}
+        likes={playlist.likeCount}
+        comments={playlist.commentCount}
+        uploader={playlist.userName}
+        update={formatTimeWithUpdated(playlist.updatedAt)}
+        listnum={playlist.videoCount}
+      />
+    ))}
+  </div>
+);
 
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      const allPlaylists = await getAllPlaylists();
-      const recentPlaylists = getRecentPlaylists(allPlaylists);
-      setRecentPlaylists(recentPlaylists);
-    };
-
-    fetchPlaylists();
-  }, []);
-
-  const getRecentPlaylists = (playlists: PlaylistModel[], dayAgo: number = 7) => {
-    const currentDate = new Date();
-    const cutoffDate = new Date(currentDate.getTime() - dayAgo * 24 * 60 * 60 * 1000);
-
-    return playlists.filter((playlist) => {
-      const playlistCreatedDate = new Date(playlist.createdAt);
-      return playlistCreatedDate >= cutoffDate;
-    });
-  };
-
-  return (
-    <div css={listStyle}>
-      <h2 css={titleStyle2}>{title}</h2>
-      {recentPlaylists.map((playlist) => (
-        <ThumBox
-          key={playlist.playlistId}
-          type='details'
-          thumURL={playlist.thumbnailUrl}
-          title={playlist.title}
-          subtitle={playlist.description}
-          likes={playlist.likeCount}
-          comments={playlist.commentCount}
-          uploader={playlist.userName}
-          update={formatTimeWithUpdated(playlist.updatedAt)}
-          listnum={playlist.videoCount}
-        />
-      ))}
-    </div>
-  );
-};
-
-const listStyle = css``;
-
-const titleStyle2 = css`
-  ${titleStyle}
+const titleStyle = css`
+  display: flex;
+  align-items: center;
+  font-size: ${theme.fontSizes.normal};
+  font-weight: 700;
   margin-left: 1rem;
 `;
 

@@ -47,8 +47,7 @@ export const getForkedPlaylists = async (userId: string): Promise<PlaylistModel[
     const userPlaylistsDoc = await getDoc(userPlaylistsRef);
 
     if (!userPlaylistsDoc.exists()) {
-      console.log(`${userId}'s forked playlist is not exist`);
-      return [];
+      throw new Error(`${userId}'s forked playlist is not exist`);
     }
 
     const forkedPlaylistIds = userPlaylistsDoc.data().forked || [];

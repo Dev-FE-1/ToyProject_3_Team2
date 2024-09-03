@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { RiAddLargeLine, RiArrowRightSLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllPlaylists } from '@/api/endpoints/playlist';
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import ThumBox from '@/components/common/ThumBox';
@@ -12,32 +11,22 @@ import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatNumberToK } from '@/utils/formatNumber';
 
-interface BestPlaylists {
+interface CrossScrollingProps {
   title: string;
   playlists: PlaylistModel[];
 }
 
-const BestPlaylists: React.FC<BestPlaylists> = () => {
+const SEE = {
+  MORE: '더보기',
+  ALL: '전체보기',
+};
+
+const CrossScrolling: React.FC<CrossScrollingProps> = ({ title, playlists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const navigate = useNavigate();
-
-  const [playlistsByPopularity, setPlaylistsByPopularity] = useState<PlaylistModel[]>([]);
-
-  useEffect(() => {
-    const fetchPlaylists = async () => {
-      const allPlaylists = await getAllPlaylists(8);
-      const playlistsByPopularity = sortPlaylistsByPopularity(allPlaylists);
-      setPlaylistsByPopularity(playlistsByPopularity);
-    };
-
-    fetchPlaylists();
-  }, []);
-
-  const sortPlaylistsByPopularity = (playlists: PlaylistModel[]) =>
-    [...playlists].sort((a, b) => b.likeCount - a.likeCount);
 
   const handleMouse = {
     up: () => {
@@ -62,20 +51,20 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
   };
 
   const handleMoreClick = () => {
-    navigate('/section-list', { state: { title: '제목', playlistsByPopularity } });
+    navigate('/section-list', { state: { title, playlists } });
   };
 
   return (
     <div css={sectionStyle}>
       <div css={headerStyle}>
-        <h2 css={titleStyle}>인기 플레이리스트</h2>
+        <h2 css={titleStyle}>{title}</h2>
         <IconTextButton
           Icon={RiArrowRightSLine}
           variant='transparent'
           customStyle={customButtonStyle}
           onClick={handleMoreClick}
         >
-          전체보기
+          {SEE.ALL}
         </IconTextButton>
       </div>
       <div
@@ -86,7 +75,7 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
         onMouseUp={handleMouse.up}
         onMouseLeave={handleMouse.up}
       >
-        {playlistsByPopularity.map((playlist) => (
+        {playlists.map((playlist) => (
           <div key={playlist.playlistId} css={playlistItemStyle}>
             <ThumBox
               type='main1'
@@ -98,10 +87,12 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
             />
           </div>
         ))}
-        <div css={moreButtonStyle} onClick={handleMoreClick}>
-          <IconButton Icon={RiAddLargeLine} />
-          <p>더보기</p>
-        </div>
+        {playlists.length > 8 && (
+          <div css={moreButtonStyle} onClick={handleMoreClick}>
+            <IconButton Icon={RiAddLargeLine} />
+            <p>{SEE.MORE}</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -166,4 +157,4 @@ const moreButtonStyle = css`
   font-weight: 500;
 `;
 
-export default BestPlaylists;
+export default CrossScrolling;

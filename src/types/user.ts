@@ -10,6 +10,7 @@ export interface UserModel {
 }
 
 export interface UserPlaylistsModel {
+  userId: string;
   created: string[];
   forked: string[];
   liked: string[];
