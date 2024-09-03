@@ -131,6 +131,17 @@ const baseStyles = css`
     padding: 0;
     box-sizing: border-box;
   }
+  html {
+    // Webkit browsers (Chrome, Safari)
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none; // Firefox
+    -ms-overflow-style: none; // IE and Edge
+
+    // (추가) 터치 기기에서의 스크롤 동작 개선, 네이티브와 같이 동작
+    -webkit-overflow-scrolling: touch;
+  }
   body {
     font-family: 'Pretendard', sans-serif;
     font-weight: 400;

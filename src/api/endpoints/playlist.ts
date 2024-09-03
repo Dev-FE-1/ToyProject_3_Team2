@@ -9,6 +9,8 @@ import {
   getDoc,
   where,
   addDoc,
+  startAt,
+  endAt,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 
@@ -18,7 +20,7 @@ import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 const db = getFirestore(app);
 
 // 전체 플레이리스트 가져오기
-export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
+export const getAllPlaylists = async (userId: string): Promise<PlaylistModel[]> => {
   try {
     const playlistsCol = collection(db, 'playlists');
     const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'));
@@ -123,6 +125,52 @@ export const getPlaylistsByCategory = async (
     });
   } catch (error) {
     console.error('Error fetching playlists by category:', error);
+    return [];
+  }
+};
+
+export const getPlaylistsByKeyword = async (
+  keyword: string,
+  limitCount: number = 20
+): Promise<PlaylistModel[]> => {
+  try {
+    const keywordLower = keyword.toLowerCase();
+    const keywordUpper = keyword.toLowerCase() + '\uf8ff';
+
+    const playlistsCol = collection(db, 'playlists');
+    const playlistQuery = query(
+      playlistsCol,
+      orderBy('title'),
+      startAt(keywordLower),
+      endAt(keywordUpper),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const playlistSnapshot = await getDocs(playlistQuery);
+
+    return playlistSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        playlistId: doc.id,
+        userName: data.userName,
+        userId: data.userId,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        videoCount: data.videoCount,
+        likeCount: data.likeCount,
+        forkCount: data.forkCount,
+        commentCount: data.commentCount,
+        thumbnailUrl: data.thumbnailUrl,
+        isPublic: data.isPublic,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        videos: data.videos,
+      };
+    });
+  } catch (error) {
+    console.error('Error fetching playlists by keyword:', error);
     return [];
   }
 };

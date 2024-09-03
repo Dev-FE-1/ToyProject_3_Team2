@@ -23,5 +23,6 @@ export interface PlaylistFormDataModel {
 export interface PlaylistModel extends PlaylistFormDataModel {
   playlistId: string;
   userId: string;
+  userName: string;
   doc?: string;
 }
