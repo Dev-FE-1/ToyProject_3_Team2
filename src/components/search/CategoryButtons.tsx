@@ -1,41 +1,29 @@
-import { Dispatch, SetStateAction } from 'react';
-
 import { css } from '@emotion/react';
 
 import { PLAYLIST } from '@/constants/playlist';
 import theme from '@/styles/theme';
 interface CategoryButtonsProps {
   selectedCategory: string;
-  setSelectedCategory: Dispatch<SetStateAction<string>>;
+  handleButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const CategoryButtons: React.FC<CategoryButtonsProps> = ({
   selectedCategory,
-  setSelectedCategory,
-}) => {
-  const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const buttonText = e.currentTarget.textContent;
-
-    if (buttonText) {
-      setSelectedCategory(buttonText);
-    }
-  };
-
-  return (
-    <div css={buttonsStyle}>
-      {PLAYLIST.categories &&
-        PLAYLIST.categories.map((category) => (
-          <button
-            key={category}
-            css={[buttonStyle, category === selectedCategory && activeButtonStyle]}
-            onClick={handleButtonClick}
-          >
-            {category}
-          </button>
-        ))}
-    </div>
-  );
-};
+  handleButtonClick,
+}) => (
+  <div css={buttonsStyle}>
+    {PLAYLIST.categories &&
+      PLAYLIST.categories.map((category) => (
+        <button
+          key={category}
+          css={[buttonStyle, category === selectedCategory && activeButtonStyle]}
+          onClick={handleButtonClick}
+        >
+          {category}
+        </button>
+      ))}
+  </div>
+);
 
 const buttonsStyle = css`
   margin: 1rem;

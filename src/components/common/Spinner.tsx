@@ -10,6 +10,7 @@ const spin = keyframes`
     }
     `;
 const Spinner: React.FC = () => <div css={spinnerStyle}></div>;
+
 const spinnerStyle = css`
   border: 4px solid ${theme.colors.bgMypage};
   border-top: 4px solid ${theme.colors.primary};

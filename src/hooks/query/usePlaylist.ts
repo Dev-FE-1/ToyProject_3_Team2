@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { getAllPlaylists, getPlaylistsByCategory } from '@/api/endpoints/playlist';
-import { QUERY_KEYS } from '@/constants/querykey';
+import { QUERY_KEYS } from '@/constants/queryKey';
 
 // 기본 옵션
 const defaultOptions = {

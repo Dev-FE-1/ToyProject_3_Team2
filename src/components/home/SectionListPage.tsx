@@ -3,7 +3,7 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { titleStyle } from './PlaylistSextion';
+import { titleStyle } from './PlaylistSection';
 import ThumBox from '../common/ThumBox';
 import Header from '@/layouts/layout/Header';
 import { PlaylistModel } from '@/types/playlist';
