@@ -10,6 +10,7 @@ import {
 import SectionListPage from '@/components/home/SectionListPage';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
+import CommentList from '@/pages/CommentList';
 import Home from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
 import NotFoundPage from '@/pages/NotFound';
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
           // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
           { path: PATH.PLAYLIST, element: <PlayListPage /> },
           { path: '/section-list', element: <SectionListPage /> },
+          { path: '/comment-list', element: <CommentList /> }, // 댓글목록 페이지
         ],
       },
     ],
