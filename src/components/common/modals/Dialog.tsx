@@ -127,7 +127,7 @@ const CustomDialog: React.FC<DialogProps> = ({
     if (type === 'alertconfirm') {
       setIsConfirmDisabled(false);
     } else {
-      setIsConfirmDisabled(!videoData?.thumbnailUrl.trim());
+      setIsConfirmDisabled(!(videoData?.thumbnailUrl?.trim() ?? ''));
     }
   }, [type, videoData]);
 
