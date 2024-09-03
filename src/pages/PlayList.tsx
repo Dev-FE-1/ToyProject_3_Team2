@@ -1,10 +1,8 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { FaPlay } from 'react-icons/fa';
-import { GoStar, GoStarFill } from 'react-icons/go';
-import { RiPencilLine } from 'react-icons/ri';
-import { VscKebabVertical } from 'react-icons/vsc';
+import { GoStar, GoStarFill, GoKebabHorizontal } from 'react-icons/go';
+import { RiPlayLargeFill } from 'react-icons/ri';
 
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
@@ -55,10 +53,11 @@ const PlayListPage = () => {
   return (
     <div css={containerStyle}>
       <Header
-        Icon={VscKebabVertical}
+        Icon={GoKebabHorizontal}
         onBack={() => {
           console.log('사용자정의 뒤로가기 동작 추가');
         }}
+        customStyle={kebabStyle}
       />
       <ThumBoxDetail
         playlist={playlist}
@@ -71,7 +70,7 @@ const PlayListPage = () => {
           customStyle={buttonStyle}
           onClick={() => console.log('전체재생')}
         >
-          <FaPlay css={iconStyle} />
+          <RiPlayLargeFill css={iconStyle} />
           Play all
         </Button>
         <IconButton Icon={isStarFilled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
@@ -115,4 +114,7 @@ const iconStyle = css`
   margin-right: 6px;
 `;
 
+const kebabStyle = css`
+  transform: rotate(90deg);
+`;
 export default PlayListPage;
