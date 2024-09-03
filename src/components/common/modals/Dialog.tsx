@@ -124,8 +124,12 @@ const CustomDialog: React.FC<DialogProps> = ({
   // }, [youtubeUrl]);
 
   useEffect(() => {
-    setIsConfirmDisabled(!videoData?.thumbnailUrl.trim());
-  }, [videoData]);
+    if (type === 'alertconfirm') {
+      setIsConfirmDisabled(false);
+    } else {
+      setIsConfirmDisabled(!videoData?.thumbnailUrl.trim());
+    }
+  }, [type, videoData]);
 
   const modalContent = getModalContent(type);
 
