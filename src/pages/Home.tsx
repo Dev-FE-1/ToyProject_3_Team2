@@ -1,7 +1,6 @@
-import React from 'react';
-
 import { css } from '@emotion/react';
 
+import BestPlaylists from '@/components/home/BestPlaylists';
 import PlaylistSection from '@/components/home/PlaylistSection';
 import RecentUpdateSection from '@/components/home/RecentUpdateSection';
 
@@ -212,7 +211,7 @@ const Home = () => {
         title='내 관심사와 비슷한 플레이리스트'
         playlists={mockMyInterestPlaylists}
       />
-      <PlaylistSection title='인기 플레이리스트' playlists={mockPopularPlaylists} />
+      <BestPlaylists title='인기 플레이리스트' playlists={mockPopularPlaylists} />
       <RecentUpdateSection
         title='내 관심사와 비슷한 플레이리스트'
         playlists={mockMyInterestPlaylists}
