@@ -35,7 +35,13 @@ const Search = () => {
         />
       </header>
       <main css={mainStyle}>
-        {isLoading ? <Spinner /> : <FilteredPlaylists displayedPlaylists={displayedPlaylists} />}
+        {isLoading ? (
+          <div css={spinnerStyle}>
+            <Spinner />
+          </div>
+        ) : (
+          <FilteredPlaylists displayedPlaylists={displayedPlaylists} />
+        )}
       </main>
     </div>
   );
@@ -52,6 +58,12 @@ const headerStyle = css`
 
 const mainStyle = css`
   padding-top: 128px;
+`;
+
+const spinnerStyle = css`
+  position: absolute;
+  top: 50%;
+  left: 50%;
 `;
 
 export default Search;
