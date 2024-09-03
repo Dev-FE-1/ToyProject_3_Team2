@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
-import { RiPlayLargeFill, RiPencilFill, RiPencilLine } from 'react-icons/ri';
+import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams } from 'react-router-dom';
 
 import { getPlaylistWithUser } from '@/api/endpoints/playlist';
@@ -74,7 +74,9 @@ const PlaylistPage: React.FC = () => {
   const handlePlaylistEdit = () => {
     console.log('플레이리스트 수정페이지로 이동');
   };
-
+  const handleAddPlaylist = () => {
+    console.log('플레이리스트 링크 추가하는 모달 팝업');
+  };
   if (isLoading) {
     return (
       <div css={spinnerContainerStyle}>
@@ -135,6 +137,15 @@ const PlaylistPage: React.FC = () => {
           onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
         />
       ))}
+      {playlist.userId === userId ? null : (
+        <div css={addButtonContainerStyle}>
+          <IconButton
+            Icon={RiAddLargeLine}
+            customStyle={floatAddButtonStyle}
+            onClick={handleAddPlaylist}
+          />
+        </div>
+      )}
       <Toast />
     </div>
   );
@@ -180,5 +191,23 @@ const nullContentStyle = css`
     margin: 1rem;
   }
 `;
-
+const addButtonContainerStyle = css`
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  width: 100vw;
+  max-width: 500px;
+  height: 1px;
+  transform: translateX(-50%);
+`;
+const floatAddButtonStyle = css`
+  position: absolute;
+  right: 1.5rem;
+  bottom: 0;
+  z-index: 100;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
 export default PlaylistPage;
