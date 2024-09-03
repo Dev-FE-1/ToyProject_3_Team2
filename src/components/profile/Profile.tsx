@@ -41,6 +41,8 @@ const containerStyle = (marginSide?: string) => css`
 const imageContainerStyle = css`
   width: 35px;
   height: 35px;
+  border-radius: 50%;
+  background-color: ${theme.colors.blue};
   margin-right: 8px;
 `;
 
@@ -48,6 +50,7 @@ const imageStyle = css`
   width: 100%;
   height: 100%;
   border-radius: 50%;
+  object-fit: cover;
 `;
 
 const nameStyle = css`
