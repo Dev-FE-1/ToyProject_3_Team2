@@ -24,13 +24,13 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
   const navigate = useNavigate();
 
-  const [displayPlaylists, setDisplayPlaylists] = useState<PlaylistModel[]>([]);
+  const [playlistsByPopularity, setPlaylistsByPopularity] = useState<PlaylistModel[]>([]);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
       const allPlaylists = await getAllPlaylists(8);
       const playlistsByPopularity = sortPlaylistsByPopularity(allPlaylists);
-      setDisplayPlaylists(playlistsByPopularity);
+      setPlaylistsByPopularity(playlistsByPopularity);
     };
 
     fetchPlaylists();
@@ -38,8 +38,6 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
 
   const sortPlaylistsByPopularity = (playlists: PlaylistModel[]) =>
     [...playlists].sort((a, b) => b.likeCount - a.likeCount);
-
-  console.log(sortPlaylistsByPopularity(displayPlaylists));
 
   const handleMouse = {
     up: () => {
@@ -64,7 +62,7 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
   };
 
   const handleMoreClick = () => {
-    // navigate('/section-list', { state: { '제목', playlists } });
+    navigate('/section-list', { state: { title: '제목', playlistsByPopularity } });
   };
 
   return (
@@ -88,7 +86,7 @@ const BestPlaylists: React.FC<BestPlaylists> = () => {
         onMouseUp={handleMouse.up}
         onMouseLeave={handleMouse.up}
       >
-        {displayPlaylists.map((playlist) => (
+        {playlistsByPopularity.map((playlist) => (
           <div key={playlist.playlistId} css={playlistItemStyle}>
             <ThumBox
               type='main1'

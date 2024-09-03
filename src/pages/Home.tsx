@@ -205,35 +205,21 @@ const Home = () => {
   ];
 
   return (
-    <div css={homeContainerStyle}>
+    <div css={containerStyle}>
       <img src='/logo.svg' alt='Logo' css={logoStyle} />
       <PlaylistSection
         title='내 관심사와 비슷한 플레이리스트'
         playlists={mockMyInterestPlaylists}
       />
       <BestPlaylists title='인기 플레이리스트' playlists={mockPopularPlaylists} />
-      <RecentUpdateSection
-        title='내 관심사와 비슷한 플레이리스트'
-        playlists={mockMyInterestPlaylists}
-      />
+      <RecentUpdateSection title='최신 업데이트' playlists={mockMyInterestPlaylists} />
     </div>
   );
 };
 
-// 스타일 정의
-
-const homeContainerStyle = css`
+const containerStyle = css`
   overflow-y: auto;
-  height: 100vh;
-  -webkit-overflow-scrolling: touch;
   padding-bottom: 80px;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 `;
 
 const logoStyle = css`

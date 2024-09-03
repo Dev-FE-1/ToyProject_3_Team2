@@ -130,8 +130,8 @@ const baseStyles = css`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-  html {
+
+    /* 브라우저 기본 스크롤 숨기기 */
     // Webkit browsers (Chrome, Safari)
     &::-webkit-scrollbar {
       display: none;
