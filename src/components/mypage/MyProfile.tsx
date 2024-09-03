@@ -89,6 +89,9 @@ const topIconStyle = css`
   font-size: 24px;
   color: ${theme.colors.white};
   cursor: pointer;
+  width: 24px;
+  height: 24px;
+  z-index: 5;
 `;
 const a11yStyle = css`
   position: absolute;
