@@ -30,6 +30,14 @@ const PlaylistPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
+  const userSessionStr = sessionStorage.getItem('userSession');
+  if (!userSessionStr) {
+    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
+  }
+  const userSession = JSON.parse(userSessionStr);
+  const userId = userSession.uid;
+
   useEffect(() => {
     async function fetchPlaylistWithUser() {
       if (!playlistId) {
@@ -61,6 +69,10 @@ const PlaylistPage: React.FC = () => {
   const handleIconButtonClick = () => {
     showToast('내 재생목록에 저장되었습니다.');
     toggle();
+  };
+
+  const handlePlaylistEdit = () => {
+    console.log('플레이리스트 수정페이지로 이동');
   };
 
   if (isLoading) {
@@ -106,11 +118,8 @@ const PlaylistPage: React.FC = () => {
           <RiPlayLargeFill css={iconStyle} />
           Play all
         </Button>
-        {playlist.userId === user.userId ? (
-          <IconButton
-            Icon={isToggled ? RiPencilFill : RiPencilLine}
-            onClick={handleIconButtonClick}
-          />
+        {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
+          <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
           <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
         )}
