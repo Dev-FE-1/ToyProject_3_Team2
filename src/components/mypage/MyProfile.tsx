@@ -22,9 +22,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
   if (!userData) {
     return null;
   }
-
-  // Badge 컴포넌트의 존재여부 확인
-  const hasBadge = typeof Badge !== 'undefined';
+  const hasBadge = userData.totalLikes >= 1000; // 좋아요 1000개 이상이면 뱃지 표시
 
   return (
     <div css={containerStyle}>
