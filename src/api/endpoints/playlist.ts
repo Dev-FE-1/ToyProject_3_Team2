@@ -15,7 +15,8 @@ import {
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
 
 import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
-import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
+import { PlaylistFormDataModel, PlaylistModel, Video } from '@/types/playlist';
+import { UserModel } from '@/types/user';
 
 const db = getFirestore(app);
 
@@ -39,7 +40,7 @@ export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
   }
 };
 
-// 특정 아이디로 전체 플레이리스트 가져오기
+// 유저 아이디로 전체 플레이리스트 가져오기
 export const getAllPlaylistsById = async (userId: string): Promise<PlaylistModel[]> => {
   try {
     const playlistsCol = collection(db, 'playlists');
@@ -56,6 +57,79 @@ export const getAllPlaylistsById = async (userId: string): Promise<PlaylistModel
   } catch (error) {
     console.error('Error fetching playlists:', error);
     return [];
+  }
+};
+
+// 플레이리스트 아이디로 특정 플레이리스트 가져오기
+export async function getPlaylist(playlistId: string): Promise<PlaylistModel | null> {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    const playlistSnap = await getDoc(playlistRef);
+
+    if (playlistSnap.exists()) {
+      const playlistData = playlistSnap.data() as PlaylistModel;
+
+      return {
+        ...playlistData,
+        playlistId: playlistSnap.id,
+      };
+    } else {
+      console.log('No such playlist!');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching playlist:', error);
+    throw error;
+  }
+}
+// 플레이리스트 아이디로 플레이리스트를 가져온 후, 해당 플레이리스트의 유저 정보를 가져오기
+export const getPlaylistWithUser = async (
+  playlistId: string
+): Promise<{ playlist: PlaylistModel; user: UserModel } | null> => {
+  try {
+    // 1. 플레이리스트 가져오기
+    const playlistRef = doc(db, 'playlists', playlistId);
+    const playlistSnap = await getDoc(playlistRef);
+    if (!playlistSnap.exists()) {
+      console.log('No such playlist!');
+      return null;
+    }
+    const playlistData = playlistSnap.data() as PlaylistModel;
+    const playlist: PlaylistModel = {
+      ...playlistData,
+      playlistId: playlistSnap.id,
+    };
+    // 2. 플레이리스트의 유저 정보 가져오기
+    const userRef = doc(db, 'users', playlist.userId);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      console.log('No such user!');
+      return null;
+    }
+    const userData = userSnap.data() as UserModel;
+    return { playlist, user: userData };
+  } catch (error) {
+    console.error('Error fetching playlist with user:', error);
+    throw error;
+  }
+};
+
+// 플레이리스트 아이디로 해당 플레이리스트의 전체 Videos 가져오기
+export const getPlaylistVideos = async (playlistId: string): Promise<Video[]> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+    const playlistSnap = await getDoc(playlistRef);
+
+    if (playlistSnap.exists()) {
+      const playlistData = playlistSnap.data();
+      return playlistData.videos || [];
+    } else {
+      throw new Error('Playlist not found');
+    }
+  } catch (error) {
+    console.error('Error fetching playlist videos:', error);
+    throw error;
   }
 };
 
