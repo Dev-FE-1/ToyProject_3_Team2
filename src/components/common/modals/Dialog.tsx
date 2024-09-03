@@ -124,8 +124,12 @@ const CustomDialog: React.FC<DialogProps> = ({
   // }, [youtubeUrl]);
 
   useEffect(() => {
-    setIsConfirmDisabled(!videoData?.thumbnailUrl.trim());
-  }, [videoData]);
+    if (type === 'alertconfirm') {
+      setIsConfirmDisabled(false);
+    } else {
+      setIsConfirmDisabled(!(videoData?.thumbnailUrl?.trim() ?? ''));
+    }
+  }, [type, videoData]);
 
   const modalContent = getModalContent(type);
 
@@ -214,6 +218,7 @@ const buttonStyle = css`
   cursor: pointer;
   padding: 1rem;
   font-size: ${theme.fontSizes.large};
+  transition: color 300ms ease-in;
 
   &:hover {
     color: ${theme.colors.blueHover};
