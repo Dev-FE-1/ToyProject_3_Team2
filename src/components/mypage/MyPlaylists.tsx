@@ -55,6 +55,7 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
 };
 
 const wrapperStyle = css`
+  position: relative;
   padding-bottom: 90px;
 `;
 const headerStyle = css`
