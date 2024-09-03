@@ -41,23 +41,28 @@ export const getAllPlaylists = async (): Promise<PlaylistModel[]> => {
   }
 };
 
-// 유저 아이디로 전체 플레이리스트 가져오기
-export const getAllPlaylistsById = async (userId: string): Promise<PlaylistModel[]> => {
+// 로그인한 유저의 userId로, 해당 유저가 포함된 모든 플레이리스트 가져오기
+export const getUserPlaylists = async (loggedInUserId: string): Promise<PlaylistModel[]> => {
   try {
     const playlistsCol = collection(db, 'playlists');
     const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'));
     const playlistSnapshot = await getDocs(playlistQuery);
 
-    return playlistSnapshot.docs.map(
+    const allPlaylists = playlistSnapshot.docs.map(
       (doc) =>
         ({
           playlistId: doc.id,
           ...doc.data(),
         }) as PlaylistModel
     );
+
+    // 로그인한 유저의 userId와 일치하는 플레이리스트만 필터링
+    const userPlaylists = allPlaylists.filter((playlist) => playlist.userId === loggedInUserId);
+
+    return userPlaylists;
   } catch (error) {
-    console.error('Error fetching playlists:', error);
-    return [];
+    console.error('Error fetching user playlists:', error);
+    throw new Error('사용자의 플레이리스트를 가져오는 데 실패했습니다.');
   }
 };
 

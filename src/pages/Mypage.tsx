@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { RiAddLargeLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllPlaylistsById } from '@/api/endpoints/playlist';
+import { getUserPlaylists } from '@/api/endpoints/playlist';
 import { getUserData } from '@/api/endpoints/user';
 import IconButton from '@/components/common/buttons/IconButton';
 import Spinner from '@/components/common/Spinner';
@@ -46,7 +46,7 @@ const MyPage = () => {
         setUserData(user);
 
         // 플레이리스트 데이터 가져오기
-        const data = await getAllPlaylistsById(userId);
+        const data = await getUserPlaylists(userId);
         setPlaylists(data);
       } catch (error) {
         setError(error instanceof Error ? error : new Error('알 수 없는 에러 발생!'));
