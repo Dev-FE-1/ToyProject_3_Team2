@@ -14,7 +14,6 @@ import {
   setDoc,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
-import { IoMdReturnRight } from 'react-icons/io';
 
 import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
 import { PlaylistFormDataModel, PlaylistModel, Video } from '@/types/playlist';
