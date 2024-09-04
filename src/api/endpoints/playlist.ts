@@ -13,6 +13,8 @@ import {
   endAt,
   setDoc,
   deleteDoc,
+  arrayRemove,
+  updateDoc,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString, deleteObject } from 'firebase/storage';
 
@@ -353,6 +355,43 @@ export const deletePlaylist = async (playlistId: string): Promise<void> => {
     console.log('Playlist deleted successfully');
   } catch (error) {
     console.error('Error deleting playlist:', error);
+    throw error; // 에러를 상위로 전파
+  }
+};
+
+export const deleteVideoFromPlaylist = async (
+  playlistId: string,
+  videoId: string
+): Promise<void> => {
+  try {
+    // 플레이리스트 문서 참조 생성
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    // 플레이리스트 데이터 가져오기
+    const playlistSnapshot = await getDoc(playlistRef);
+
+    if (!playlistSnapshot.exists()) {
+      throw new Error('Playlist not found');
+    }
+
+    const playlistData = playlistSnapshot.data() as PlaylistModel;
+
+    // 삭제할 비디오 찾기
+    const videoToDelete = playlistData.videos.find((video) => video.videoId === videoId);
+
+    if (!videoToDelete) {
+      throw new Error('Video not found in the playlist');
+    }
+
+    // videos 배열에서 해당 비디오 제거
+    await updateDoc(playlistRef, {
+      videos: arrayRemove(videoToDelete),
+      videoCount: playlistData.videoCount - 1,
+    });
+
+    console.log(`Video ${videoId} successfully deleted from playlist ${playlistId}`);
+  } catch (error) {
+    console.error('Error deleting video from playlist:', error);
     throw error; // 에러를 상위로 전파
   }
 };
