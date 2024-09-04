@@ -38,7 +38,7 @@ export interface Video {
 }
 
 export interface UserPlaylists {
-  userId: string; // 추가
+  userId: string;
   created: string[];
   forked: string[];
   liked: string[];
@@ -491,11 +491,13 @@ export const data: Data = {
   },
   userPlaylists: {
     sa4TNoFWVFhW9pzJmh04xYybDkg2: {
+      userId: 'sa4TNoFWVFhW9pzJmh04xYybDkg2',
       created: ['playlist101', 'playlist102', 'playlist103', 'playlist104', 'playlist105'],
       forked: ['playlist203', 'playlist205'],
       liked: ['playlist201', 'playlist203'],
     },
     ot2KbB8XxSf3moyXUu2XTK5A4RH3: {
+      userId: 'ot2KbB8XxSf3moyXUu2XTK5A4RH3',
       created: ['playlist201', 'playlist202', 'playlist203', 'playlist204', 'playlist205'],
       forked: ['playlist101', 'playlist104'],
       liked: ['playlist102', 'playlist104', 'playlist105'],

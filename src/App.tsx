@@ -75,8 +75,6 @@ const router = createBrowserRouter([
             ],
           },
           { path: `${PATH.PLAYLIST}/:playlistId`, element: <PlayListPage /> },
-
-          // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
           { path: PATH.PLAYLIST, element: <PlaylistPage /> },
           { path: '/section-list', element: <SectionListPage /> },
         ],
