@@ -328,6 +328,7 @@ export const addPlaylist = async (
   }
 };
 
+//플레이리스트 삭제
 export const deletePlaylist = async (playlistId: string): Promise<void> => {
   try {
     // 플레이리스트 문서 참조 생성
@@ -346,19 +347,17 @@ export const deletePlaylist = async (playlistId: string): Promise<void> => {
     if (playlistData.thumbnailUrl && playlistData.thumbnailUrl.includes('firebasestorage')) {
       const imageRef = ref(storage, playlistData.thumbnailUrl);
       await deleteObject(imageRef);
-      console.log('Thumbnail image deleted from storage');
     }
 
     // Firestore에서 플레이리스트 문서 삭제
     await deleteDoc(playlistRef);
-
-    console.log('Playlist deleted successfully');
   } catch (error) {
     console.error('Error deleting playlist:', error);
     throw error; // 에러를 상위로 전파
   }
 };
 
+// 비디오 삭제
 export const deleteVideoFromPlaylist = async (
   playlistId: string,
   videoId: string
@@ -388,8 +387,6 @@ export const deleteVideoFromPlaylist = async (
       videos: arrayRemove(videoToDelete),
       videoCount: playlistData.videoCount - 1,
     });
-
-    console.log(`Video ${videoId} successfully deleted from playlist ${playlistId}`);
   } catch (error) {
     console.error('Error deleting video from playlist:', error);
     throw error; // 에러를 상위로 전파
