@@ -5,6 +5,7 @@ import { FaPlay } from 'react-icons/fa';
 import { GoStar, GoStarFill } from 'react-icons/go';
 import { RiPencilLine } from 'react-icons/ri';
 import { VscKebabVertical } from 'react-icons/vsc';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
@@ -16,30 +17,33 @@ import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 
-const fetchMyPlaylists = async (): Promise<PlaylistModel[]> => {
-  const response = await fetch('/src/mock/playlists.json');
-  return await response.json();
-};
+// const fetchMyPlaylists = async (): Promise<PlaylistModel[]> => {
+//   const response = await fetch('/src/mock/playlists.json');
+//   return await response.json();
+// };
 
 const PlayListPage = () => {
   const [isStarFilled, setIsStarFilled] = useState(false);
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
   const showToast = useToastStore((state) => state.showToast);
+  const location = useLocation();
+  const { playlist } = location.state as { playlist: PlaylistModel };
 
-  useEffect(() => {
-    const loadPlaylist = async () => {
-      try {
-        const playlists = await fetchMyPlaylists();
-        if (playlists.length > 0) {
-          setPlaylist(playlists[2]);
-        }
-      } catch (error) {
-        console.error('Failed to load playlist:', error);
-      }
-    };
+  const navigate = useNavigate();
 
-    loadPlaylist();
-  }, []);
+  // useEffect(() => {
+  //   const loadPlaylist = async () => {
+  //     try {
+  //       const playlists = await fetchMyPlaylists();
+  //       if (playlists.length > 0) {
+  //         setPlaylist(playlists[2]);
+  //       }
+  //     } catch (error) {
+  //       console.error('Failed to load playlist:', error);
+  //     }
+  //   };
+
+  //   loadPlaylist();
+  // }, []);
 
   const handleIconButtonClick = () => {
     setIsStarFilled(!isStarFilled);
@@ -54,12 +58,7 @@ const PlayListPage = () => {
 
   return (
     <div css={containerStyle}>
-      <Header
-        Icon={VscKebabVertical}
-        onBack={() => {
-          console.log('사용자정의 뒤로가기 동작 추가');
-        }}
-      />
+      <Header Icon={VscKebabVertical} onBack={() => navigate(-1)} />
       <ThumBoxDetail
         playlist={playlist}
         profileURL='https://img.freepik.com/free-vector/young-man-with-blue-hair_24877-82124.jpg?t=st=1724720053~exp=1724723653~hmac=2deb5619e93e7a773e2d7f182144cc8c65fa620d252c35388c2f3ec5adac104e&w=1480'
