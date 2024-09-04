@@ -10,12 +10,13 @@ import {
 import SectionListPage from '@/components/home/SectionListPage';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
-import Home from '@/pages/Home';
+import HomePage from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
 import NotFoundPage from '@/pages/NotFound';
 import Onboarding from '@/pages/Onboarding';
-import PlayListPage from '@/pages/PlayList';
 import PlaylistAdd from '@/pages/PlaylistAdd';
+import PlayListPage from '@/pages/PlaylistPage';
+import PlaylistPage from '@/pages/PlaylistPage';
 import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
         children: [
           // 해당라우트가 부모라우트의 자식이야(true)-> Home으로 가
           // 부모라우트와 정확히 일치할 때 사용
-          { index: true, element: <Home /> },
+          { index: true, element: <HomePage /> },
           { path: PATH.SEARCH, children: [{ index: true, element: <Search /> }] },
           {
             path: PATH.SUBSCRIPTIONS,
@@ -76,7 +77,7 @@ const router = createBrowserRouter([
           { path: `${PATH.PLAYLIST}/:playlistId`, element: <PlayListPage /> },
 
           // { path: '/example', element: <ExamplePage /> }, // Zustand와 TanStack Query 예시 페이지
-          { path: PATH.PLAYLIST, element: <PlayListPage /> },
+          { path: PATH.PLAYLIST, element: <PlaylistPage /> },
           { path: '/section-list', element: <SectionListPage /> },
         ],
       },

@@ -1,5 +1,5 @@
 export interface UserModel {
-  id: string;
+  userId: string;
   userName: string;
   userBio: string;
   email: string;
@@ -10,6 +10,7 @@ export interface UserModel {
 }
 
 export interface UserPlaylistsModel {
+  userId: string;
   created: string[];
   forked: string[];
   liked: string[];

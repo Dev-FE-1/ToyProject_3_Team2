@@ -1,6 +1,6 @@
 import { ComponentType, SVGProps } from 'react';
 
-import { css } from '@emotion/react';
+import { css, SerializedStyles } from '@emotion/react';
 import { GoChevronLeft } from 'react-icons/go';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,9 +9,10 @@ interface HeaderProps {
   Icon?: ComponentType<SVGProps<SVGElement>>;
   children?: React.ReactNode;
   onBack?: () => void;
+  customStyle?: SerializedStyles;
 }
 
-const Header: React.FC<HeaderProps> = ({ Icon, children, onBack }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ Icon, children, onBack, customStyle }: HeaderProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -24,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ Icon, children, onBack }: HeaderProps) 
       </button>
       {children && <h1 css={titleStyle}>{children}</h1>}
       {Icon && (
-        <button css={buttonStyle}>
+        <button css={[buttonStyle, customStyle]}>
           <Icon />
         </button>
       )}

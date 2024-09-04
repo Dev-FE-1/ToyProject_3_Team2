@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import PlaylistSection from '@/components/home/PlaylistSection';
 import RecentUpdateSection from '@/components/home/RecentUpdateSection';
 
-const Home = () => {
+const HomePage = () => {
   const mockMyInterestPlaylists = [
     {
       playlistId: '1',
@@ -242,4 +242,4 @@ const logoStyle = css`
   margin: 2rem 0 1rem 1rem;
 `;
 
-export default Home;
+export default HomePage;
