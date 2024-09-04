@@ -80,25 +80,6 @@ const PlaylistPage: React.FC = () => {
   const handleAddPlaylist = () => {
     console.log('플레이리스트 링크 추가하는 모달 팝업');
   };
-
-  // const onClickKebob = async () => {
-  //   if (!playlist) return;
-  //   const isConfirmed = window.confirm('정말로 이 플레이리스트를 삭제하시겠습니까?');
-
-  //   if (isConfirmed) {
-  //     try {
-  //       setIsLoading(true);
-  //       await deletePlaylist(playlist.playlistId);
-  //       showToast('해당 플레이리스트가 삭제되었습니다.');
-  //       navigate(-1);
-  //     } catch (error) {
-  //       console.error('Error deleting playlist:', error);
-  //       showToast('플레이리스트 삭제 중 오류가 발생했습니다.');
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // };
   const onClickKebob = () => {
     setIsBottomSheetOpen(true);
   };
