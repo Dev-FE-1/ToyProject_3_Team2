@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
-// import { useVideoData } from '@/hooks/query/useYoutube';
 import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
+import { Video } from '@/types/playlist';
+import { getVideoId } from '@/utils/getVideoId';
 
 interface contentType {
   title?: string;
   confirmText?: string;
   cancelText?: string;
 }
-
 interface DialogProps {
   type: 'alertConfirm' | 'videoLink';
   customContent?: contentType;
@@ -20,6 +20,7 @@ interface DialogProps {
   onClose: () => void;
   onConfirm?: () => void;
   onCancel?: () => void;
+  setVideoData: Dispatch<SetStateAction<Partial<Video> | undefined>>;
 }
 
 const CustomDialog: React.FC<DialogProps> = ({
@@ -29,20 +30,22 @@ const CustomDialog: React.FC<DialogProps> = ({
   onClose,
   onConfirm,
   onCancel,
+  setVideoData,
 }) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
+  // videoData를 상위 컴포넌트(Playlist)로 넘기기 위한 커스텀훅 사용
   const { data: videoData } = useVideoData(youtubeUrl as string);
 
   useEffect(() => {
-    if (type === 'alertConfirm') {
-      setIsConfirmDisabled(false);
-    } else {
-      setIsConfirmDisabled(!(videoData?.thumbnailUrl?.trim() ?? ''));
-    }
-  }, [type, videoData]);
+    type === 'alertConfirm' ? setIsConfirmDisabled(false) : setIsConfirmDisabled(!videoData);
 
+    if (videoData)
+      setVideoData({ ...videoData, videoId: getVideoId(youtubeUrl), videoUrl: youtubeUrl });
+  }, [videoData]);
+
+  // console.log(videoData);
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
       case 'alertConfirm':
@@ -145,7 +148,7 @@ const overlayStyle = css`
   background-color: ${theme.colors.black + '7a'};
   position: absolute;
   width: 498px;
-  height: 100vh;
+  height: 100%;
   margin: 0 auto;
   inset: 0;
   z-index: 5;

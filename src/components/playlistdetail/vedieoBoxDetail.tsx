@@ -6,6 +6,7 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatDurationSecondToTime } from '@/utils/formatTime';
 
 interface VideoBoxDetailProps {
   video: PlaylistModel['videos'][0];
@@ -26,12 +27,6 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
 }) => {
   const { thumbnailUrl, duration, title } = video;
 
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
   return (
     <div css={containerStyle} onClick={onClick}>
       {type === 'host' && (
@@ -43,7 +38,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
           }}
         />
       )}
-      <VideoCard type='main' thumbURL={thumbnailUrl} time={formatDuration(duration)} />
+      <VideoCard type='main' thumbURL={thumbnailUrl} time={formatDurationSecondToTime(duration)} />
       <div css={detailsStyle}>
         <h3 css={titleStyle}>{title}</h3>
         <p css={channelStyle}>{channelName}</p>

@@ -21,12 +21,12 @@ import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
-import { PlaylistModel } from '@/types/playlist';
+import { PlaylistModel, Video } from '@/types/playlist';
 import { UserModel } from '@/types/user';
 
 const PlaylistPage: React.FC = () => {
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
+  const [playlist, setPlaylist] = useState<PlaylistModel | null>();
   const [user, setUser] = useState<UserModel | null>(null);
   const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
@@ -35,6 +35,8 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
+  const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
+  console.log(videoData);
   const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
   const { openModal, closeModal } = useModalStore(); // 추가추가
 
@@ -208,6 +210,7 @@ const PlaylistPage: React.FC = () => {
           isOpen={isModalOpen}
           onClose={closeModal}
           onConfirm={confirmSignOut}
+          setVideoData={setVideoData}
         />
       )}
     </div>
