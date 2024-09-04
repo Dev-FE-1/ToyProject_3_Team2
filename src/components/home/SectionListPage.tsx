@@ -18,6 +18,12 @@ const SectionListPage: React.FC = () => {
   const navigate = useNavigate();
   const { title, playlists } = location.state as LocationState;
 
+  const handleThumBoxClick = (playlist: PlaylistModel) => {
+    navigate(`/Playlist/${playlist.playlistId}`, {
+      state: { playlist },
+    });
+  };
+
   return (
     <div>
       <Header onBack={() => navigate(-1)} />
@@ -35,6 +41,7 @@ const SectionListPage: React.FC = () => {
             uploader={playlist.userId}
             update={playlist.updatedAt}
             listnum={playlist.videoCount}
+            onClick={() => handleThumBoxClick(playlist)}
           />
         ))}
       </div>
