@@ -26,3 +26,13 @@ export interface PlaylistModel extends PlaylistFormDataModel {
   userName: string;
   doc?: string;
 }
+
+export interface Comment {
+  commentId: string;
+  playlistId: string;
+  userId: string;
+  userName: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,14 +1,40 @@
+import { useState, useEffect } from 'react';
+
 import { css } from '@emotion/react';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
+import { db } from '@/api/index';
+import CommentBox from '@/components/comment/CommentBox';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Header from '@/layouts/layout/Header';
 import theme from '@/styles/theme';
+import { Comment } from '@/types/playlist';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 const CommentList = () => {
+  // const { commentData, loading, error } = usePlaylistComments(playlistId, 10);
+  const [comments, setComments] = useState<Comment[]>([]);
   const navigate = useNavigate();
 
+  // if (loading) <div>Loading comments...</div>;
+  // if (error) <div>{error}</div>;
+
+  const fetchComments = async () => {
+    const q = query(collection(db, 'comments'), where('playlistId', '==', 'playlist101'));
+    try {
+      const querySnapshot = await getDocs(q);
+      const commentsData = querySnapshot.docs.map((doc) => doc.data() as Comment);
+      setComments(commentsData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+  });
   return (
     <div>
       <Header />
@@ -38,67 +64,19 @@ const CommentList = () => {
           <p>댓글 수 3</p>
           <p>필터</p>
         </div>
-        <div css={CommentListStyle}>
-          {/* 댓글 리스트 div*/}
-          <div>
-            <img
-              src='https://www.urbanbrush.net/web/wp-content/uploads/edd/2023/02/urban-20230228144115810458.jpg'
-              alt='미니 썸네일'
-            />
-            <div>
-              <h1>골든리트리버좋아</h1>
-              <h2>1999-05-24</h2>
-              <h3>
-                {' '}
-                나 지금 심심한데 뭐 할거없나...? 이거 누가 봐??? 아님 혼자 그냥 하는거야?
-                김혜인바보멍청이 똥개해삼말미잘 호호호호혼ㅇㄹㄴㅇㅁㅁㄹㅇㅁㄴㄹㅇ
-              </h3>
-            </div>
-          </div>
-        </div>
+        {comments.map((comment) => (
+          <CommentBox
+            key={comment.commentId}
+            commentId={comment.commentId}
+            playlistId={comment.playlistId}
+            userId={comment.userId}
+            userName={comment.userName}
+            content={comment.content}
+            createdAt={formatTimeWithUpdated(comment.createdAt)}
+            updatedAt={comment.updatedAt}
+          />
+        ))}
         <hr css={horizonStyle} />
-        <div css={CommentListStyle}>
-          {/* 댓글 리스트 div*/}
-          <div>
-            <img
-              src='https://www.urbanbrush.net/web/wp-content/uploads/edd/2023/02/urban-20230228144115810458.jpg'
-              alt='미니 썸네일'
-            />
-            <div>
-              <h1>이름</h1>
-              <h2>날짜</h2>
-              <h3>이것은 댓글입니다.이것은 댓글입니다.</h3>
-            </div>
-          </div>
-        </div>
-        <div css={CommentListStyle}>
-          {/* 댓글 리스트 div*/}
-          <div>
-            <img
-              src='https://www.urbanbrush.net/web/wp-content/uploads/edd/2023/02/urban-20230228144115810458.jpg'
-              alt='미니 썸네일'
-            />
-            <div>
-              <h1>이름</h1>
-              <h2>날짜</h2>
-              <h3>이것은 댓글입니다.이것은 댓글입니다.</h3>
-            </div>
-          </div>
-        </div>
-        <div css={CommentListStyle}>
-          {/* 댓글 리스트 div*/}
-          <div>
-            <img
-              src='https://www.urbanbrush.net/web/wp-content/uploads/edd/2023/02/urban-20230228144115810458.jpg'
-              alt='미니 썸네일'
-            />
-            <div>
-              <h1>이름</h1>
-              <h2>날짜</h2>
-              <h3>이것은 댓글입니다.이것은 댓글입니다.</h3>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

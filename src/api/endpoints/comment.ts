@@ -9,17 +9,9 @@ import {
 } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
+import { Comment } from '@/types/playlist';
 
 const db = getFirestore(app);
-
-interface Comment {
-  commentId: string;
-  userId: string;
-  username: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}
 
 export const getPlaylistComments = async (
   playlistId: string,
@@ -41,7 +33,8 @@ export const getPlaylistComments = async (
       return {
         commentId: doc.id,
         userId: data.userId,
-        username: data.username,
+        playlistId: data.playlistId,
+        userName: data.username,
         content: data.content,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
