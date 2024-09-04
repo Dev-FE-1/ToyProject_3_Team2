@@ -2,7 +2,6 @@ import { css } from '@emotion/react';
 import { RiSettings5Line } from 'react-icons/ri'; // setting 아이콘
 import { useNavigate } from 'react-router-dom';
 
-import defaultAvatar from '@/assets/images/default-avatar-woman.svg';
 import Badge from '@/components/common/Badge';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
@@ -32,7 +31,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
       <section css={sectionStyle}>
         <div css={bgStyle(hasBadge)}>
           <div css={contentStyle}>
-            <img src={defaultAvatar} alt='profile image' css={photoStyle} />
+            <img src={userData.profileImg} alt='profile image' css={photoStyle} />
             {/* profile image */}
             <div css={profileStyle}>
               <h2>{userData.userName}</h2>

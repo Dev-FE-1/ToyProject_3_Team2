@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
+import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
@@ -9,6 +10,7 @@ import { useLikeStore } from '@/store/useLikeStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface ThumBoxDetailProps {
   playlist: PlaylistModel;
@@ -17,15 +19,9 @@ interface ThumBoxDetailProps {
   onClickProfile?: () => void;
 }
 
-const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
-  playlist,
-  user,
-  profileURL,
-  onClickProfile,
-}) => {
+const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickProfile }) => {
   const {
     playlistId,
-    userId,
     title,
     description,
     updatedAt,
@@ -36,7 +32,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
     thumbnailUrl,
   } = playlist;
 
-  const { profileImg, userName } = user;
+  const { profileImg = defaultProfileImage, userName } = user;
 
   const likes = useLikeStore((state) => state.likes);
   const isLiked = useLikeStore((state) => state.isLiked);
@@ -84,7 +80,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
       <div css={statsRowStyle}>
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
-        <span css={statsStyle}>{new Date(updatedAt).toLocaleDateString()}</span>
+        <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
       </div>
       <p css={subtitleStyle}>{description}</p>
     </div>

@@ -6,7 +6,6 @@ import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { getPlaylistWithUser, deletePlaylist, addVideoToPlaylist } from '@/api/endpoints/playlist';
-import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
@@ -15,7 +14,7 @@ import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import NullBox from '@/components/playlistdetail/nullBox';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
+import VideoBoxDetail from '@/components/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
@@ -36,6 +35,8 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
+
   const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
   const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
   const { openModal, closeModal } = useModalStore(); // 추가추가
@@ -45,7 +46,7 @@ const PlaylistPage: React.FC = () => {
   const userId = getUserIdBySession();
 
   useEffect(() => {
-    async function fetchPlaylistWithUser() {
+    const fetchPlaylistWithUser = async () => {
       if (!playlistId) {
         setError('Playlist ID is missing');
         setIsLoading(false);
@@ -67,10 +68,10 @@ const PlaylistPage: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     fetchPlaylistWithUser();
-  }, [playlistId]);
+  }, [playlistId, refreshTrigger]);
 
   const handleIconButtonClick = () => {
     showToast('내 재생목록에 저장되었습니다.');
@@ -81,14 +82,14 @@ const PlaylistPage: React.FC = () => {
     console.log('플레이리스트 수정페이지로 이동');
   };
   const handleAddPlaylist = () => {
-    // console.log('플레이리스트 링크 추가하는 모달 팝업');
     openModal();
   };
   const confirmSignOut = () => {
-    console.log(videoData);
     addVideoToPlaylist(playlistId, videoData as Video);
+    setRefreshTrigger(Date());
     closeModal();
   };
+
   const onClickKebob = () => {
     setIsBottomSheetOpen(true);
   };
@@ -141,7 +142,6 @@ const PlaylistPage: React.FC = () => {
         <ThumBoxDetail
           playlist={playlist}
           user={user}
-          profileURL={user.profileImg || defaultProfileImage}
           onClickProfile={() => console.log('프로필 클릭')}
         />
       )}

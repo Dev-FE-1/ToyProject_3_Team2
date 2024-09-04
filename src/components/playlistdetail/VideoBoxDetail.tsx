@@ -6,7 +6,7 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
-import { formatDurationSecondToTime } from '@/utils/formatTime';
+import { formatDurationISOToTime, formatDurationSecondToTime } from '@/utils/formatTime';
 
 interface VideoBoxDetailProps {
   video: PlaylistModel['videos'][0];
@@ -26,7 +26,6 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
   onClickKebob,
 }) => {
   const { thumbnailUrl, duration, title } = video;
-
   return (
     <div css={containerStyle} onClick={onClick}>
       {type === 'host' && (
@@ -38,7 +37,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
           }}
         />
       )}
-      <VideoCard type='main' thumbURL={thumbnailUrl} time={formatDurationSecondToTime(duration)} />
+      <VideoCard type='main' thumbURL={thumbnailUrl} duration={duration} />
       <div css={detailsStyle}>
         <h3 css={titleStyle}>{title}</h3>
         <p css={channelStyle}>{channelName}</p>

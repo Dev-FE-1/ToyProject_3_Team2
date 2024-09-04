@@ -326,15 +326,13 @@ export const addVideoToPlaylist = async (
 
     const playlistRef = doc(db, 'playlists', playlistId);
 
-    // Firestore 문서 업데이트
     await updateDoc(playlistRef, {
-      // 중복 방지, 여러 클라이언트가 동시에 업데이트를 시도해도 데이터 일관성을 유지
+      // 중복 방지, 여러 사용자가 동시에 업데이트를 시도해도 데이터 일관성 유지 가능
       videos: arrayUnion(newVideo),
       videoCount: increment(1),
       updatedAt: new Date().toISOString(),
     });
 
-    console.log('Video added successfully');
     return true;
   } catch (error) {
     console.error('Error adding video to playlist:', error);

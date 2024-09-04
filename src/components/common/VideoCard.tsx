@@ -7,18 +7,26 @@ import Badge from '@/components/common/Badge';
 interface VideoCardProps {
   onClick?: () => void;
   thumbURL?: string;
-  time?: string;
+  duration?: string;
   width?: string;
   height?: string;
   type: 'main' | 'underbar';
 }
 
-const VideoCard: React.FC<VideoCardProps> = ({ onClick, thumbURL, time, type, width, height }) => (
+const VideoCard: React.FC<VideoCardProps> = ({
+  onClick,
+  thumbURL,
+  duration,
+  type,
+  width,
+  height,
+}) => (
   <div css={cardStyle(type, width, height)} onClick={onClick}>
     <img src={thumbURL} alt='Video thumbnail' css={imageStyle} />
-    {type === 'main' && time && <Badge position='corner'>{time}</Badge>}
+    {type === 'main' && duration && <Badge position='corner'>{duration}</Badge>}
   </div>
 );
+
 const cardStyle = (type: 'main' | 'underbar', width?: string, height?: string) => css`
   position: relative;
   cursor: pointer;
