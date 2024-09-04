@@ -77,7 +77,7 @@ const InputForm: React.FC<InputFormProps> = ({ onInputChange }) => {
 const inputStyle = css`
   background: transparent;
   border: none;
-  border-bottom: 1px solid ${theme.colors.darkGray};
+  border-bottom: 1px solid ${theme.colors.bgSwitchOff};
   padding: 16px 15px 18px 18px;
   margin-bottom: 10px;
   width: 100%;
@@ -92,7 +92,7 @@ const inputStyle = css`
 
 const formStyle = css`
   padding: 1rem;
-  width: 100%;
+  width: 90%;
 `;
 
 const errorStyle = css`

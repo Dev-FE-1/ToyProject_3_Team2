@@ -22,7 +22,7 @@ const Search = () => {
   if (error) return <div>Error!!!!!!</div>;
 
   return (
-    <div>
+    <div css={containerStyle}>
       <header css={headerStyle}>
         <Input
           searchTerm={searchTerm}
@@ -46,6 +46,10 @@ const Search = () => {
     </div>
   );
 };
+
+const containerStyle = css`
+  padding-bottom: 80px;
+`;
 
 const headerStyle = css`
   position: fixed;
