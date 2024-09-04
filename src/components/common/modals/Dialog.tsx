@@ -6,6 +6,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
 import { Video } from '@/types/playlist';
+import { formatDurationISOToTime } from '@/utils/formatTime';
 import { getVideoId } from '@/utils/getVideoId';
 
 interface contentType {
@@ -42,7 +43,12 @@ const CustomDialog: React.FC<DialogProps> = ({
     type === 'alertConfirm' ? setIsConfirmDisabled(false) : setIsConfirmDisabled(!videoData);
 
     if (videoData)
-      setVideoData({ ...videoData, videoId: getVideoId(youtubeUrl), videoUrl: youtubeUrl });
+      setVideoData({
+        ...videoData,
+        videoId: getVideoId(youtubeUrl),
+        videoUrl: youtubeUrl,
+        duration: formatDurationISOToTime(videoData.duration),
+      });
   }, [videoData]);
 
   const getModalContent = (type: DialogProps['type']) => {
@@ -80,7 +86,15 @@ const CustomDialog: React.FC<DialogProps> = ({
                   </div>
                 </Dialog.Title>
               ) : (
-                <div css={descriptionStyle}>등록 가능한 영상입니다.</div>
+                <Dialog.Title
+                  css={css`
+                    text-align: left;
+                    width: 100%;
+                  `}
+                >
+                  {videoData.title}
+                  <div css={descriptionStyle}>등록 가능한 영상입니다.</div>
+                </Dialog.Title>
               )}
 
               <input

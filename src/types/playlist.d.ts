@@ -3,7 +3,7 @@ export interface Video {
   videoUrl: string;
   title: string;
   thumbnailUrl: string;
-  duration: number;
+  duration: string;
 }
 export interface PlaylistFormDataModel {
   title: string;

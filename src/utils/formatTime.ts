@@ -11,12 +11,20 @@ export const formatDurationISOToTime = (isoDuration: string): string => {
 
   // 타입 가드
   if (!match) {
-    return '0:00:00';
+    return '00:00';
   }
 
-  const hours = match[1] ? match[1].slice(0, -1) : '0';
-  const minutes = match[2] ? match[2].slice(0, -1) : '0';
-  const seconds = match[3] ? match[3].slice(0, -1) : '0';
+  const hours = parseInt(match[1]?.slice(0, -1) || '0');
+  const minutes = parseInt(match[2]?.slice(0, -1) || '0');
+  const seconds = parseInt(match[3]?.slice(0, -1) || '0');
 
-  return `${hours}:${minutes}:${seconds}`;
+  const paddedHours = hours.toString().padStart(2, '0');
+  const paddedMinutes = minutes.toString().padStart(2, '0');
+  const paddedSeconds = seconds.toString().padStart(2, '0');
+
+  if (hours > 0) {
+    return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+  } else {
+    return `${paddedMinutes}:${paddedSeconds}`;
+  }
 };

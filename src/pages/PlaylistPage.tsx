@@ -5,7 +5,7 @@ import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getPlaylistWithUser, deletePlaylist } from '@/api/endpoints/playlist';
+import { getPlaylistWithUser, deletePlaylist, addVideoToPlaylist } from '@/api/endpoints/playlist';
 import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
@@ -37,7 +37,6 @@ const PlaylistPage: React.FC = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
-  console.log(videoData);
   const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
   const { openModal, closeModal } = useModalStore(); // 추가추가
 
@@ -83,10 +82,11 @@ const PlaylistPage: React.FC = () => {
   };
   const handleAddPlaylist = () => {
     // console.log('플레이리스트 링크 추가하는 모달 팝업');
-    console.log('여기에서 파이어스토어로 등록!');
     openModal();
   };
   const confirmSignOut = () => {
+    console.log(videoData);
+    addVideoToPlaylist(playlistId, videoData as Video);
     closeModal();
   };
   const onClickKebob = () => {
