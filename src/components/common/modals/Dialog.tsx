@@ -33,7 +33,7 @@ const CustomDialog: React.FC<DialogProps> = ({
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
-  const { data: videoData, isLoading } = useVideoData(youtubeUrl as string);
+  const { data: videoData } = useVideoData(youtubeUrl as string);
 
   useEffect(() => {
     if (type === 'alertConfirm') {
@@ -61,21 +61,26 @@ const CustomDialog: React.FC<DialogProps> = ({
           title: null,
           content: (
             <>
-              {isLoading ? (
-                <div>불러오는 중!</div>
-              ) : (
-                videoData && (
-                  <img src={videoData.thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
-                )
+              {videoData && (
+                <img src={videoData.thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
               )}
-              <Dialog.Title
-                css={css`
-                  text-align: left;
-                  width: 100%;
-                `}
-              >
-                영상링크
-              </Dialog.Title>
+              {!videoData ? (
+                <Dialog.Title
+                  css={css`
+                    text-align: left;
+                    width: 100%;
+                  `}
+                >
+                  영상링크
+                  <div css={descriptionStyle}>
+                    잘못된 URL 및 공개가 허용되지 않는 영상일 경우 동록할수 없습니다. 등록가능
+                    영상은 썸네일이 표시됩니다.
+                  </div>
+                </Dialog.Title>
+              ) : (
+                <div css={descriptionStyle}>등록 가능한 영상입니다.</div>
+              )}
+
               <input
                 type='text'
                 css={inputStyle}
@@ -222,6 +227,14 @@ const thumbnailStyle = css`
   border-radius: 4px;
   margin-bottom: 10px;
   object-fit: cover;
+`;
+
+const descriptionStyle = css`
+  font-size: ${theme.fontSizes.small};
+  color: ${theme.colors.disabledText};
+  margin-top: 8px;
+  letter-spacing: -0.4px;
+  line-height: 16px;
 `;
 
 export default CustomDialog;

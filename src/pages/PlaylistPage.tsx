@@ -85,6 +85,7 @@ const PlaylistPage: React.FC = () => {
   };
   const handleAddPlaylist = () => {
     // console.log('플레이리스트 링크 추가하는 모달 팝업');
+    console.log('여기에서 파이어스토어로 등록!');
     openModal();
   };
   const confirmSignOut = () => {
@@ -158,15 +159,7 @@ const PlaylistPage: React.FC = () => {
         {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
           <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
-          <>
-            <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
-            <CustomDialog
-              type='videoLink'
-              isOpen={isModalOpen}
-              onClose={closeModal}
-              onConfirm={confirmSignOut}
-            />
-          </>
+          <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
         )}
       </div>
       {playlist.videos.length > 0 ? (
@@ -209,6 +202,14 @@ const PlaylistPage: React.FC = () => {
         ]}
         onPlaylistClick={handlePlaylistDelete}
       />
+      {isModalOpen && (
+        <CustomDialog
+          type='videoLink'
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={confirmSignOut}
+        />
+      )}
     </div>
   );
 };
