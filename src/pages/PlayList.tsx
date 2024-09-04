@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { FaPlay } from 'react-icons/fa';
 import { GoStar, GoStarFill } from 'react-icons/go';
-import { RiPencilLine } from 'react-icons/ri';
 import { VscKebabVertical } from 'react-icons/vsc';
 import { useLocation, useNavigate } from 'react-router-dom';
 
