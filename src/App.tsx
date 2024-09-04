@@ -20,6 +20,7 @@ import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
+import TestCommentPage from '@/TestCommentPage';
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
           },
           { path: PATH.PLAYLIST, element: <PlaylistPage /> },
           { path: '/section-list', element: <SectionListPage /> },
+          { path: '/comments/:playlistId', element: <TestCommentPage /> },
         ],
       },
     ],

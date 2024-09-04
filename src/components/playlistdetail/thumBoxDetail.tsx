@@ -1,68 +1,47 @@
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
+import { toggleLike } from '@/api/endpoints/like';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
-import { useLikeStore } from '@/store/useLikeStore';
+// import { useLikeStore } from '@/store/useLikeStore';
+import { useLikeManagement } from '@/hooks/useLike';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { getUserIdBySession } from '@/utils/user';
 
 interface ThumBoxDetailProps {
   playlist: PlaylistModel;
   user: UserModel;
-  profileURL?: string;
   onClickProfile?: () => void;
+  setRefreshTrigger: Dispatch<SetStateAction<string>>;
 }
 
 const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
   playlist,
   user,
-  profileURL,
   onClickProfile,
+  setRefreshTrigger,
 }) => {
   const {
     playlistId,
-    userId,
     title,
     description,
     updatedAt,
     videoCount,
     forkCount,
-    likeCount,
+    // likeCount,
     commentCount,
     thumbnailUrl,
   } = playlist;
 
   const { profileImg, userName } = user;
+  const userId = getUserIdBySession();
 
-  const likes = useLikeStore((state) => state.likes);
-  const isLiked = useLikeStore((state) => state.isLiked);
-  const initializeLikes = useLikeStore((state) => state.initializeLikes);
-  const incrementLike = useLikeStore((state) => state.incrementLike);
-  const decrementLike = useLikeStore((state) => state.decrementLike);
-  const toggleLiked = useLikeStore((state) => state.toggleLiked);
-
-  useEffect(() => {
-    initializeLikes([
-      {
-        playlistId,
-        initialLikeCount: likeCount,
-        commentCount,
-      },
-    ]);
-  }, [initializeLikes, playlistId, likeCount, commentCount]);
-
-  const handleLikeClick = () => {
-    if (isLiked[playlistId]) {
-      decrementLike(playlistId);
-    } else {
-      incrementLike(playlistId);
-    }
-    toggleLiked(playlistId);
-  };
+  const { likeCount, isLiked, handleLikeToggle } = useLikeManagement(playlistId, userId);
 
   return (
     <div>
@@ -75,9 +54,9 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
           <div css={dividerStyle} />
           <LikesButton
             playlistId={playlistId}
-            likeCount={likes[playlistId] || likeCount}
-            handleLikeClick={handleLikeClick}
-            isLiked={isLiked[playlistId] || false}
+            likeCount={likeCount}
+            isLiked={isLiked}
+            handleLikeToggle={handleLikeToggle}
           />
         </div>
       </div>

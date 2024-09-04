@@ -41,6 +41,8 @@ const PlaylistPage: React.FC = () => {
   const userSession = JSON.parse(userSessionStr);
   const userId = userSession.uid;
 
+  const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
+
   useEffect(() => {
     async function fetchPlaylistWithUser() {
       if (!playlistId) {
@@ -67,7 +69,7 @@ const PlaylistPage: React.FC = () => {
     }
 
     fetchPlaylistWithUser();
-  }, [playlistId]);
+  }, [playlistId, refreshTrigger]);
 
   const handleIconButtonClick = () => {
     showToast('내 재생목록에 저장되었습니다.');
@@ -132,8 +134,8 @@ const PlaylistPage: React.FC = () => {
         <ThumBoxDetail
           playlist={playlist}
           user={user}
-          profileURL={user.profileImg || defaultProfileImage}
           onClickProfile={() => console.log('프로필 클릭')}
+          setRefreshTrigger={setRefreshTrigger}
         />
       )}
       <div css={buttonBoxStyle}>
