@@ -46,6 +46,10 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) =
     navigate('/section-list', { state: { title, playlists } });
   };
 
+  const handleThumBoxClick = (playlist: PlaylistModel) => {
+    navigate(`Playlist/${playlist.playlistId}`, { state: { playlist } });
+  };
+
   return (
     <div css={sectionStyle}>
       <div css={headerStyle}>
@@ -76,6 +80,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) =
               likes={playlist.likeCount}
               uploader={playlist.userId}
               listnum={playlist.videoCount}
+              onClick={() => handleThumBoxClick(playlist)}
             />
           </div>
         ))}

@@ -4,6 +4,7 @@ import { css } from '@emotion/react';
 import { RiArrowRightSLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
+import defaultImage from '@/assets/images/default-thumb.svg';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import theme from '@/styles/theme';
 import { shortenString } from '@/utils/string';
@@ -20,6 +21,7 @@ interface FlipCardProps {
 }
 
 const FlipCard: React.FC<FlipCardProps> = ({
+  id,
   title,
   isFlipped,
   onFlip,
@@ -47,12 +49,11 @@ const FlipCard: React.FC<FlipCardProps> = ({
   }, []);
 
   const handleClick = () => {
-    navigate(`/playlist/\${id}`);
+    navigate('/playlist/' + id);
   };
 
-  const defaultImageUrl =
-    'https://img.freepik.com/free-vector/music-streaming-design_53876-90530.jpg?t=st=1724784091~exp=1724787691~hmac=42d73983e0851ae2b41e1442ed58033866983f634b9ae3cc9f93d056e5e06b4f&w=1380';
-  const imageUrl = image && image.trim() !== '' ? image : defaultImageUrl;
+  const imageUrl = image && image.trim() !== '' ? image : defaultImage;
+
   return (
     <div ref={containerRef} css={containerStyle(size)} onClick={onFlip}>
       <div css={[innerStyle, isFlipped && flippedStyle]}>

@@ -8,14 +8,21 @@ import Profile from '@/components/profile/Profile';
 import { useLikeStore } from '@/store/useLikeStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { UserModel } from '@/types/user';
 
 interface ThumBoxDetailProps {
   playlist: PlaylistModel;
+  user: UserModel;
   profileURL?: string;
   onClickProfile?: () => void;
 }
 
-const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, profileURL, onClickProfile }) => {
+const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
+  playlist,
+  user,
+  profileURL,
+  onClickProfile,
+}) => {
   const {
     playlistId,
     userId,
@@ -28,6 +35,8 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, profileURL, onC
     commentCount,
     thumbnailUrl,
   } = playlist;
+
+  const { profileImg, userName } = user;
 
   const likes = useLikeStore((state) => state.likes);
   const isLiked = useLikeStore((state) => state.isLiked);
@@ -60,7 +69,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, profileURL, onC
       <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
-        <Profile profileImageSrc={profileURL} nickname={userId} onClick={onClickProfile} />
+        <Profile profileImageSrc={profileImg} nickname={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
           <CommentsButton playListId={playlistId} commentCount={commentCount} />
           <div css={dividerStyle} />
@@ -84,7 +93,6 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, profileURL, onC
 
 const thumbnailStyle = css`
   width: 100%;
-  margin-top: 16px;
   height: 343px;
   object-fit: cover;
   border-radius: 4px;

@@ -11,11 +11,14 @@ import {
   addDoc,
   startAt,
   endAt,
+  setDoc,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { IoMdReturnRight } from 'react-icons/io';
 
 import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
-import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
+import { PlaylistFormDataModel, PlaylistModel, Video } from '@/types/playlist';
+import { UserModel } from '@/types/user';
 
 const db = getFirestore(app);
 
@@ -36,6 +39,105 @@ export const getAllPlaylists = async (limitCount: number = 20): Promise<Playlist
   } catch (error) {
     console.error('Error fetching playlists:', error);
     return [];
+  }
+};
+
+// 로그인한 유저의 userId로, 해당 유저가 포함된 모든 플레이리스트 가져오기
+export const getUserPlaylists = async (loggedInUserId: string): Promise<PlaylistModel[]> => {
+  try {
+    const playlistsCol = collection(db, 'playlists');
+    const playlistQuery = query(playlistsCol, orderBy('createdAt', 'desc'));
+    const playlistSnapshot = await getDocs(playlistQuery);
+
+    const allPlaylists = playlistSnapshot.docs.map(
+      (doc) =>
+        ({
+          playlistId: doc.id,
+          ...doc.data(),
+        }) as PlaylistModel
+    );
+
+    // 로그인한 유저의 userId와 일치하는 플레이리스트만 필터링
+    const userPlaylists = allPlaylists.filter((playlist) => playlist.userId === loggedInUserId);
+
+    return userPlaylists;
+  } catch (error) {
+    console.error('Error fetching user playlists:', error);
+    throw new Error('사용자의 플레이리스트를 가져오는 데 실패했습니다.');
+  }
+};
+
+// 플레이리스트 아이디로 특정 플레이리스트 가져오기
+export async function getPlaylist(playlistId: string): Promise<PlaylistModel | null> {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    const playlistSnap = await getDoc(playlistRef);
+
+    if (playlistSnap.exists()) {
+      const playlistData = playlistSnap.data() as PlaylistModel;
+
+      return {
+        ...playlistData,
+        playlistId: playlistSnap.id,
+      };
+    } else {
+      console.log('No such playlist!');
+      return null;
+    }
+  } catch (error) {
+    console.error('Error fetching playlist:', error);
+    throw error;
+  }
+}
+// 플레이리스트 아이디로 플레이리스트를 가져온 후, 해당 플레이리스트의 유저 정보를 가져오기
+export const getPlaylistWithUser = async (
+  playlistId: string
+): Promise<{ playlist: PlaylistModel; user: UserModel } | null> => {
+  try {
+    // 1. 플레이리스트 가져오기
+    const playlistRef = doc(db, 'playlists', playlistId);
+    const playlistSnap = await getDoc(playlistRef);
+    if (!playlistSnap.exists()) {
+      console.log('No such playlist!');
+      return null;
+    }
+    const playlistData = playlistSnap.data() as PlaylistModel;
+    const playlist: PlaylistModel = {
+      ...playlistData,
+      playlistId: playlistSnap.id,
+      videos: playlistData.videos || [], // 비디오가 없으면 빈 배열로 초기화
+    };
+    // 2. 플레이리스트의 유저 정보 가져오기
+    const userRef = doc(db, 'users', playlist.userId);
+    const userSnap = await getDoc(userRef);
+    if (!userSnap.exists()) {
+      console.log('No such user!');
+      return null;
+    }
+    const userData = userSnap.data() as UserModel;
+    return { playlist, user: userData };
+  } catch (error) {
+    console.error('Error fetching playlist with user:', error);
+    return null;
+  }
+};
+
+// 플레이리스트 아이디로 해당 플레이리스트의 전체 Videos 가져오기
+export const getPlaylistVideos = async (playlistId: string): Promise<Video[]> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+    const playlistSnap = await getDoc(playlistRef);
+
+    if (playlistSnap.exists()) {
+      const playlistData = playlistSnap.data();
+      return playlistData.videos || [];
+    } else {
+      throw new Error('Playlist not found');
+    }
+  } catch (error) {
+    console.error('Error fetching playlist videos:', error);
+    throw error;
   }
 };
 
@@ -175,7 +277,11 @@ export const getPlaylistsByKeyword = async (
 };
 
 // 새 플레이리스트 만들기
-export const addPlaylist = async (playlistData: PlaylistFormDataModel): Promise<string> => {
+export const addPlaylist = async (
+  playlistData: PlaylistFormDataModel,
+  userId: string,
+  userName: string
+): Promise<string> => {
   try {
     const playlistsRef = collection(db, 'playlists');
 
@@ -198,8 +304,22 @@ export const addPlaylist = async (playlistData: PlaylistFormDataModel): Promise<
 
     // Firestore에 플레이리스트 추가
     const docRef = await addDoc(playlistsRef, playlistToAdd);
+    const playlistId = docRef.id;
     console.log('Document written with ID: ', docRef.id);
-    return docRef.id;
+
+    // playlistId를 포함한 최종 데이터 생성
+    const finalPlaylistData: PlaylistModel = {
+      ...playlistToAdd,
+      playlistId,
+      userId,
+      userName,
+    };
+
+    // playlistId를 포함하여 문서 업데이트
+    await setDoc(doc(db, 'playlists', playlistId), finalPlaylistData);
+
+    console.log('Document written with ID: ', playlistId);
+    return playlistId;
   } catch (error) {
     console.error('Error adding playlist:', error);
     throw error; // Add a throw statement to propagate the error

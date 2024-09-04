@@ -22,9 +22,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
   if (!userData) {
     return null;
   }
-
-  // Badge 컴포넌트의 존재여부 확인
-  const hasBadge = typeof Badge !== 'undefined';
+  const hasBadge = userData.totalLikes >= 1000; // 좋아요 1000개 이상이면 뱃지 표시
 
   return (
     <div css={containerStyle}>
@@ -89,6 +87,9 @@ const topIconStyle = css`
   font-size: 24px;
   color: ${theme.colors.white};
   cursor: pointer;
+  width: 24px;
+  height: 24px;
+  z-index: 5;
 `;
 const a11yStyle = css`
   position: absolute;
