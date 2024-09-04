@@ -14,7 +14,7 @@ import { Comment } from '@/types/playlist';
 const db = getFirestore(app);
 
 export const getPlaylistComments = async (
-  playlistId: string,
+  playlistId: string | undefined,
   limitCount: number = 10
 ): Promise<Comment[]> => {
   try {

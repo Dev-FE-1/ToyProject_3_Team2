@@ -1,52 +1,69 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+// import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { db } from '@/api/index';
+import { getPlaylistById } from '@/api/endpoints/playlist';
 import CommentBox from '@/components/comment/CommentBox';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import { useCommentsList } from '@/hooks/query/useComments';
 import Header from '@/layouts/layout/Header';
 import theme from '@/styles/theme';
-import { Comment } from '@/types/playlist';
+import { Comment, PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 const CommentList = () => {
-  // const { commentData, loading, error } = usePlaylistComments(playlistId, 10);
+  const { playlistId } = useParams<{ playlistId: string | undefined }>();
   const [comments, setComments] = useState<Comment[]>([]);
+  const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
   const navigate = useNavigate();
 
-  // if (loading) <div>Loading comments...</div>;
-  // if (error) <div>{error}</div>;
+  // const fetchComments = async () => {
+  //   const q = query(collection(db, 'comments'), where('playlistId', '==', 'playlist101'));
+  //   try {
+  //     const querySnapshot = await getDocs(q);
+  //     const commentsData = querySnapshot.docs.map((doc) => doc.data() as Comment);
+  //     setComments(commentsData);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
-  const fetchComments = async () => {
-    const q = query(collection(db, 'comments'), where('playlistId', '==', 'playlist101'));
-    try {
-      const querySnapshot = await getDocs(q);
-      const commentsData = querySnapshot.docs.map((doc) => doc.data() as Comment);
-      setComments(commentsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { data: commentsData, error } = useCommentsList(playlistId);
 
   useEffect(() => {
-    fetchComments();
-  });
+    if (commentsData) {
+      setComments(commentsData);
+    } else if (error) {
+      console.error('Failed to fetch comments:', error);
+    }
+    async function fetchPlaylistData() {
+      if (playlistId) {
+        try {
+          const data = await getPlaylistById(playlistId);
+          if (data) {
+            setPlaylistData(data);
+          }
+        } catch (error) {
+          console.error('Failed to fetch playlist data:', error);
+        }
+      }
+    }
+
+    fetchPlaylistData();
+  }, [commentsData, error, playlistId]);
+
   return (
     <div>
       <Header />
       <div css={commentTop}>
         <div>
-          <img
-            src='https://www.urbanbrush.net/web/wp-content/uploads/edd/2023/02/urban-20230228144115810458.jpg'
-            alt='미니 썸네일'
-          />
+          <img src={playlistData?.thumbnailUrl} alt='미니 썸네일' />
           <div>
-            <p>개쩌는 플레이리스트 볼사람 여기여기 붙어라</p>
-            <p>김아무개</p>
+            <p>{playlistData?.title}</p>
+            <p>{playlistData?.userName}</p>
           </div>
         </div>
         <IconTextButton
@@ -61,7 +78,7 @@ const CommentList = () => {
       <div css={CommentListDivStyle}>
         <div css={CommentListTopStyle}>
           {/* 댓글 수 / 필터 div */}
-          <p>댓글 수 3</p>
+          <p>댓글 수 {playlistData?.commentCount}</p>
           <p>필터</p>
         </div>
         {comments.map((comment) => (
@@ -76,7 +93,6 @@ const CommentList = () => {
             updatedAt={comment.updatedAt}
           />
         ))}
-        <hr css={horizonStyle} />
       </div>
     </div>
   );
@@ -125,58 +141,4 @@ const CommentListTopStyle = css`
   padding: 8px 0;
 `;
 
-const CommentListStyle = css`
-  margin: 10px 0;
-  display: flex;
-
-  div {
-    display: flex;
-    justify-content: center;
-
-    div {
-      margin-left: 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-
-      ::after {
-        border: 0;
-        height: 1px;
-        background-color: ${theme.colors.tertiary};
-        margin: 10px 0;
-      }
-    }
-  }
-
-  img {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-  }
-  h1 {
-    font-size: ${theme.fontSizes.normal};
-    height: 17px;
-    max-width: 100px; //한글 8글자 기준
-  }
-
-  h2 {
-    font-size: ${theme.fontSizes.small};
-    height: 14px;
-    max-width: 70px; // 0000-00-00 형태 기준
-  }
-  h3 {
-    display: flex;
-    align-items: center;
-    margin-top: 12px;
-    // height: 22px;
-    font-size: ${theme.fontSizes.normal};
-  }
-`;
-
-const horizonStyle = css`
-  border: 0;
-  height: 1px;
-  background-color: ${theme.colors.tertiary};
-  margin: 10px 0;
-`;
 export default CommentList;
