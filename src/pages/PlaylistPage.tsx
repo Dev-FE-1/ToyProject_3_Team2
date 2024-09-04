@@ -3,14 +3,16 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
-import { getPlaylistWithUser } from '@/api/endpoints/playlist';
+import { getPlaylistWithUser, deletePlaylist } from '@/api/endpoints/playlist';
 import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
+import BottomSheet from '@/components/common/modals/BottomSheet';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
+import NullBox from '@/components/playlistdetail/nullBox';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import Header from '@/layouts/layout/Header';
@@ -29,7 +31,8 @@ const PlaylistPage: React.FC = () => {
   const showToast = useToastStore((state) => state.showToast);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const navigate = useNavigate();
   // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
   const userSessionStr = sessionStorage.getItem('userSession');
   if (!userSessionStr) {
@@ -77,6 +80,28 @@ const PlaylistPage: React.FC = () => {
   const handleAddPlaylist = () => {
     console.log('플레이리스트 링크 추가하는 모달 팝업');
   };
+  const onClickKebob = () => {
+    setIsBottomSheetOpen(true);
+  };
+
+  const handleBottomSheetClose = () => {
+    setIsBottomSheetOpen(false);
+  };
+
+  const handlePlaylistDelete = async (playlistId: string) => {
+    try {
+      setIsLoading(true);
+      await deletePlaylist(playlistId);
+      showToast('플레이리스트가 성공적으로 삭제되었습니다.');
+      navigate(-1); // 이전 페이지로 이동
+    } catch (error) {
+      console.error('Error deleting playlist:', error);
+      showToast('플레이리스트 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div css={spinnerContainerStyle}>
@@ -88,11 +113,7 @@ const PlaylistPage: React.FC = () => {
     return (
       <div>
         <Header customStyle={kebabStyle} />
-        <div css={nullContentStyle}>
-          <div>앗! 아직 영상이 없어요</div>
-          <div>영상을 추가하여</div>
-          <div>나만의 플리를 만들어보세요</div>
-        </div>
+        <NullBox />
       </div>
     );
   }
@@ -102,7 +123,11 @@ const PlaylistPage: React.FC = () => {
 
   return (
     <div css={containerStyle}>
-      <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} />
+      {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
+        <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} onIcon={onClickKebob} />
+      ) : (
+        <Header />
+      )}
       {playlist && (
         <ThumBoxDetail
           playlist={playlist}
@@ -139,13 +164,9 @@ const PlaylistPage: React.FC = () => {
           />
         ))
       ) : (
-        <div css={nullContentStyle}>
-          <div>앗! 아직 영상이 없어요</div>
-          <div>영상을 추가하여</div>
-          <div>나만의 플리를 만들어보세요</div>
-        </div>
+        <NullBox />
       )}
-      {playlist.userId === userId ? null : (
+      {playlist.userId === userId ? (
         <div css={addButtonContainerStyle}>
           <IconButton
             Icon={RiAddLargeLine}
@@ -153,8 +174,23 @@ const PlaylistPage: React.FC = () => {
             onClick={handleAddPlaylist}
           />
         </div>
-      )}
+      ) : null}
       <Toast />
+      <BottomSheet
+        contentType='deleteFromPlaylist'
+        isOpen={isBottomSheetOpen}
+        onClose={handleBottomSheetClose}
+        playlists={[
+          {
+            id: playlist.playlistId,
+            title: playlist.title,
+            isPublic: playlist.isPublic,
+            isBookmarked: false,
+            thumURL: playlist.thumbnailUrl,
+          },
+        ]}
+        onPlaylistClick={handlePlaylistDelete}
+      />
     </div>
   );
 };
@@ -188,15 +224,7 @@ const spinnerContainerStyle = css`
   align-items: center;
   height: 100vh;
 `;
-const nullContentStyle = css`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  div {
-    text-align: center;
-    margin: 1rem;
-  }
-`;
+
 const addButtonContainerStyle = css`
   position: fixed;
   left: 50%;
