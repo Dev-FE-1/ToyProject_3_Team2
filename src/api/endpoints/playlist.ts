@@ -12,8 +12,9 @@ import {
   startAt,
   endAt,
   setDoc,
+  deleteDoc,
 } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadString } from 'firebase/storage';
+import { getDownloadURL, ref, uploadString, deleteObject } from 'firebase/storage';
 
 import { app, storage } from '@/api'; // Firebase 앱 초기화 파일
 import { PlaylistFormDataModel, PlaylistModel, Video } from '@/types/playlist';
@@ -322,5 +323,36 @@ export const addPlaylist = async (
   } catch (error) {
     console.error('Error adding playlist:', error);
     throw error; // Add a throw statement to propagate the error
+  }
+};
+
+export const deletePlaylist = async (playlistId: string): Promise<void> => {
+  try {
+    // 플레이리스트 문서 참조 생성
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    // 플레이리스트 데이터 가져오기
+    const playlistSnapshot = await getDoc(playlistRef);
+
+    if (!playlistSnapshot.exists()) {
+      throw new Error('Playlist not found');
+    }
+
+    const playlistData = playlistSnapshot.data();
+
+    // 썸네일 URL이 존재하고 storage 경로를 포함하는 경우 삭제
+    if (playlistData.thumbnailUrl && playlistData.thumbnailUrl.includes('firebasestorage')) {
+      const imageRef = ref(storage, playlistData.thumbnailUrl);
+      await deleteObject(imageRef);
+      console.log('Thumbnail image deleted from storage');
+    }
+
+    // Firestore에서 플레이리스트 문서 삭제
+    await deleteDoc(playlistRef);
+
+    console.log('Playlist deleted successfully');
+  } catch (error) {
+    console.error('Error deleting playlist:', error);
+    throw error; // 에러를 상위로 전파
   }
 };

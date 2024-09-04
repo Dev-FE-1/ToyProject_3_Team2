@@ -10,9 +10,16 @@ interface HeaderProps {
   children?: React.ReactNode;
   onBack?: () => void;
   customStyle?: SerializedStyles;
+  onIcon?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ Icon, children, onBack, customStyle }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({
+  Icon,
+  children,
+  onBack,
+  customStyle,
+  onIcon,
+}: HeaderProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -25,7 +32,7 @@ const Header: React.FC<HeaderProps> = ({ Icon, children, onBack, customStyle }: 
       </button>
       {children && <h1 css={titleStyle}>{children}</h1>}
       {Icon && (
-        <button css={[buttonStyle, customStyle]}>
+        <button css={[buttonStyle, customStyle]} onClick={onIcon}>
           <Icon />
         </button>
       )}
