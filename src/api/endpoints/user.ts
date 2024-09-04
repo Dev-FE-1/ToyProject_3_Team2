@@ -39,7 +39,7 @@ export const getUserData = async (userId: string): Promise<UserModel | null> => 
     const data = userDoc.data();
 
     return {
-      id: userDoc.id,
+      userId: userDoc.id,
       userName: data.userName || '',
       userBio: data.userBio || '',
       email: data.email || '',

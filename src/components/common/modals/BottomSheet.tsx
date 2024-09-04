@@ -106,7 +106,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
             }}
           >
             <RiBookmarkFill css={iconStyle} />
-            <span css={titleStyle}>재생목록에서 삭제</span>
+            <span css={titleStyle}>플레이리스트 삭제</span>
           </button>
         );
 

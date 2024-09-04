@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { css } from '@emotion/react';
-import { VscKebabVertical } from 'react-icons/vsc';
+import { GoKebabHorizontal } from 'react-icons/go';
 
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
@@ -35,7 +35,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
   return (
     <div css={containerStyle} onClick={onClick}>
       {type === 'host' && (
-        <VscKebabVertical
+        <GoKebabHorizontal
           css={kebabIconStyle}
           onClick={(e) => {
             e.stopPropagation();
@@ -59,6 +59,9 @@ const kebabIconStyle = css`
   right: 8px;
   color: ${theme.colors.white};
   cursor: pointer;
+  transform: rotate(90deg);
+  width: 16px;
+  height: 16px;
 `;
 
 const containerStyle = css`

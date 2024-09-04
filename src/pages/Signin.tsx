@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '@/api/index';
 import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
+import GoogleLoginButton from '@/components/signin/GoogleLogin';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
@@ -69,6 +70,12 @@ const SignIn = () => {
         </Button>
       )}
       {errorMessage && <p css={errorMessageStyle}>{errorMessage}</p>}
+      <div css={dividerStyle}>
+        <div className='line' />
+        <span className='text'>또는</span>
+        <div className='line' />
+      </div>
+      <GoogleLoginButton />
     </div>
   );
 };
@@ -93,6 +100,25 @@ const errorMessageStyle = css`
   color: red;
   font-size: ${theme.fontSizes.normal};
   margin-top: 10px;
+`;
+const dividerStyle = css`
+  display: flex;
+  align-items: center;
+  width: 91.5%;
+  text-align: center;
+  margin: 2rem 0;
+
+  .line {
+    flex: 1;
+    height: 1px;
+    background: ${theme.colors.bgSwitchOff};
+  }
+
+  .text {
+    padding: 0 0.5rem;
+    color: ${theme.colors.bgSwitchOff};
+    font-size: ${theme.fontSizes.normal};
+  }
 `;
 
 export default SignIn;

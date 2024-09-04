@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import { FaRegComment } from 'react-icons/fa';
+import { RiChat3Line } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import theme from '@/styles/theme';
@@ -20,7 +20,7 @@ const CommentsButton: React.FC<CommentsButtonProps> = ({ playListId, commentCoun
   return (
     // aria-label: 스크린 리더 사용자에게 요소의 목적이나 기능을 설명 */
     <button css={buttonStyle} onClick={handleCommentClick} aria-label='Comments'>
-      <FaRegComment />
+      <RiChat3Line />
       <span>{formattedCommentCount}</span>
     </button>
   );
@@ -36,9 +36,9 @@ const buttonStyle = css`
   color: inherit;
   border: 0;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 
-  &:active {
+  &:active svg {
     transform: scale(0.95);
   }
 

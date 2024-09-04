@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-
 import { css } from '@emotion/react';
 
-import { titleStyle } from './PlaylistSection';
-import ThumBox from '../common/ThumBox';
+import ThumBox from '@/components/common/ThumBox';
+import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface RecentUpdateSectionProps {
   title: string;
@@ -12,8 +11,8 @@ interface RecentUpdateSectionProps {
 }
 
 const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playlists }) => (
-  <div css={listStyle}>
-    <h2 css={titleStyle2}>{title}</h2>
+  <div>
+    <h2 css={titleStyle}>{title}</h2>
     {playlists.map((playlist) => (
       <ThumBox
         key={playlist.playlistId}
@@ -23,18 +22,19 @@ const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playli
         subtitle={playlist.description}
         likes={playlist.likeCount}
         comments={playlist.commentCount}
-        uploader={playlist.userId}
-        update={playlist.updatedAt}
+        uploader={playlist.userName}
+        update={formatTimeWithUpdated(playlist.updatedAt)}
         listnum={playlist.videoCount}
       />
     ))}
   </div>
 );
 
-const listStyle = css``;
-
-const titleStyle2 = css`
-  ${titleStyle}
+const titleStyle = css`
+  display: flex;
+  align-items: center;
+  font-size: ${theme.fontSizes.normal};
+  font-weight: 700;
   margin-left: 1rem;
 `;
 

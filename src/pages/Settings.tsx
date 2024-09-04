@@ -19,6 +19,7 @@ const Settings = () => {
   const confirmSignOut = () => {
     //로그인 상태를 로그아웃으로 변경하는 코드
     // 토스트는 없어도 됨
+    sessionStorage.removeItem('userSession');
     closeModal();
     navigate(PATH.SIGNIN);
   };

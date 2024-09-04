@@ -17,7 +17,7 @@ export interface PlaylistFormDataModel {
   videoCount: number;
   thumbnailUrl: string;
   isPublic: boolean;
-  videos: Array[];
+  videos: Video[];
 }
 
 export interface PlaylistModel extends PlaylistFormDataModel {
