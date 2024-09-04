@@ -45,7 +45,6 @@ const CustomDialog: React.FC<DialogProps> = ({
       setVideoData({ ...videoData, videoId: getVideoId(youtubeUrl), videoUrl: youtubeUrl });
   }, [videoData]);
 
-  // console.log(videoData);
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
       case 'alertConfirm':

@@ -23,6 +23,7 @@ import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
 import { PlaylistModel, Video } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistPage: React.FC = () => {
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
@@ -41,13 +42,8 @@ const PlaylistPage: React.FC = () => {
   const { openModal, closeModal } = useModalStore(); // 추가추가
 
   const navigate = useNavigate();
-  // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
-  const userSessionStr = sessionStorage.getItem('userSession');
-  if (!userSessionStr) {
-    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
-  }
-  const userSession = JSON.parse(userSessionStr);
-  const userId = userSession.uid;
+
+  const userId = getUserIdBySession();
 
   useEffect(() => {
     async function fetchPlaylistWithUser() {
