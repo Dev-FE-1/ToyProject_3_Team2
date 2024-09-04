@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
+// import { useVideoData } from '@/hooks/query/useYoutube';
 import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
 
@@ -13,7 +14,7 @@ interface contentType {
 }
 
 interface DialogProps {
-  type: 'alertconfirm' | 'videoLink' | 'videoimageLink';
+  type: 'alertConfirm' | 'videoLink';
   customContent?: contentType;
   isOpen: boolean;
   onClose: () => void;
@@ -30,14 +31,21 @@ const CustomDialog: React.FC<DialogProps> = ({
   onCancel,
 }) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
-  const { data: videoData, isLoading, error } = useVideoData(youtubeUrl as string);
+  const { data: videoData, isLoading } = useVideoData(youtubeUrl as string);
+
+  useEffect(() => {
+    if (type === 'alertConfirm') {
+      setIsConfirmDisabled(false);
+    } else {
+      setIsConfirmDisabled(!(videoData?.thumbnailUrl?.trim() ?? ''));
+    }
+  }, [type, videoData]);
 
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
-      case 'alertconfirm':
+      case 'alertConfirm':
         return {
           title: customContent?.title || '로그아웃 하시겠습니까?',
           content: null,
@@ -50,32 +58,15 @@ const CustomDialog: React.FC<DialogProps> = ({
         };
       case 'videoLink':
         return {
-          title: '영상링크',
-          content: (
-            <input
-              type='text'
-              placeholder='영상 링크를 입력하세요'
-              css={inputStyle}
-              defaultValue=''
-            />
-          ),
-          titleStyle: css`
-            text-align: left;
-            width: 100%;
-          `,
-          confirmText: '등록',
-          cancelText: '취소',
-        };
-      case 'videoimageLink':
-        return {
           title: null,
           content: (
             <>
-              {/* {thumbnailUrl && (
-                <img src={thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
-              )} */}
-              {videoData && (
-                <img src={videoData.thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
+              {isLoading ? (
+                <div>불러오는 중!</div>
+              ) : (
+                videoData && (
+                  <img src={videoData.thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
+                )
               )}
               <Dialog.Title
                 css={css`
@@ -106,43 +97,13 @@ const CustomDialog: React.FC<DialogProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //   const extractVideoId = (url: string) => {
-  //     const regex =
-  //       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
-  //     const match = url.match(regex);
-  //     return match ? match[1] : null;
-  //   };
-
-  //   const videoId = extractVideoId(youtubeUrl);
-  //   if (videoId) {
-  //     setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`);
-  //   } else {
-  //     setThumbnailUrl('');
-  //   }
-  //   setIsConfirmDisabled(!youtubeUrl.trim());
-  // }, [youtubeUrl]);
-
-  useEffect(() => {
-    if (type === 'alertconfirm') {
-      setIsConfirmDisabled(false);
-    } else {
-      setIsConfirmDisabled(!(videoData?.thumbnailUrl?.trim() ?? ''));
-    }
-  }, [type, videoData]);
+  const handleConfirm = () => (onConfirm ? onConfirm() : onClose());
 
   const modalContent = getModalContent(type);
 
   if (!modalContent) {
     return null;
   }
-
-  const handleConfirm = () => {
-    if (onConfirm) {
-      onConfirm();
-    }
-    onClose();
-  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
@@ -175,7 +136,6 @@ const CustomDialog: React.FC<DialogProps> = ({
   );
 };
 
-// CSS Styles
 const overlayStyle = css`
   background-color: ${theme.colors.black + '7a'};
   position: absolute;

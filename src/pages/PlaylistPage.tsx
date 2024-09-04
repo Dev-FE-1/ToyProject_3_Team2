@@ -10,12 +10,14 @@ import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
+import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import NullBox from '@/components/playlistdetail/nullBox';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import Header from '@/layouts/layout/Header';
+import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
@@ -32,6 +34,10 @@ const PlaylistPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
+  const { openModal, closeModal } = useModalStore(); // 추가추가
+
   const navigate = useNavigate();
   // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
   const userSessionStr = sessionStorage.getItem('userSession');
@@ -78,7 +84,11 @@ const PlaylistPage: React.FC = () => {
     console.log('플레이리스트 수정페이지로 이동');
   };
   const handleAddPlaylist = () => {
-    console.log('플레이리스트 링크 추가하는 모달 팝업');
+    // console.log('플레이리스트 링크 추가하는 모달 팝업');
+    openModal();
+  };
+  const confirmSignOut = () => {
+    closeModal();
   };
   const onClickKebob = () => {
     setIsBottomSheetOpen(true);
@@ -148,7 +158,15 @@ const PlaylistPage: React.FC = () => {
         {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
           <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
-          <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
+          <>
+            <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
+            <CustomDialog
+              type='videoLink'
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              onConfirm={confirmSignOut}
+            />
+          </>
         )}
       </div>
       {playlist.videos.length > 0 ? (
