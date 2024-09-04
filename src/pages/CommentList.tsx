@@ -58,7 +58,7 @@ const CommentList = () => {
   return (
     <div>
       <Header />
-      <div css={commentTop}>
+      <div css={CommentTabStyle}>
         <div>
           <img src={playlistData?.thumbnailUrl} alt='미니 썸네일' />
           <div>
@@ -98,7 +98,7 @@ const CommentList = () => {
   );
 };
 
-const commentTop = css`
+const CommentTabStyle = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
