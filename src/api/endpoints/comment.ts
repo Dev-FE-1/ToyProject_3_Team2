@@ -39,7 +39,7 @@ export const getPlaylistComments = async (
         userId: data.userId,
         profileImg: data.profileImg,
         playlistId: data.playlistId,
-        userName: data.username,
+        userName: data.userName,
         content: data.content,
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
