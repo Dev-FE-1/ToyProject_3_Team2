@@ -211,7 +211,7 @@ const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
   display: flex;
   justify-content: center;
   align-items: ${isMinimized ? 'flex-end' : 'flex-start'};
-  z-index: 1000;
+  z-index: 100;
   transition: all 300ms ease-in-out;
 `;
 
