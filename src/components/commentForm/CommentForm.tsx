@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
-import { getPlaylistById } from '@/api/endpoints/playlist';
 import Button from '@/components/common/buttons/Button';
 import Header from '@/layouts/layout/Header';
 import { CommentTabStyle } from '@/pages/CommentList';
 import theme from '@/styles/theme';
 
+interface CommentFormProps {
+  onSubmit: (data: { playlistId: string; content: string }) => void;
+}
+
 const MAX_COMMENT_LENGTH = 500;
 
-const CommentForm = () => {
+const CommentForm: React.FC<CommentFormProps> = ({ onSubmit }) => {
   const location = useLocation();
-  const navigate = useNavigate();
-
-  // location.state에서 필요한 데이터를 받음
-  const { playlistId, title, userName, thumbnailUrl } = location.state || {};
+  const { playlistId, title, userName, thumbnailUrl } = location.state || {}; // state에서 데이터 받기
 
   const [comment, setComment] = useState('');
   const [isActive, setIsActive] = useState(false);
@@ -32,12 +32,10 @@ const CommentForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isActive) {
-      console.log('댓글이 등록되었습니다:', comment);
+      onSubmit({ playlistId, content: comment });
       setComment('');
-      navigate(-1);
     }
   };
-
   return (
     <div>
       <Header />
