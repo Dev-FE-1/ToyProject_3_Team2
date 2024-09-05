@@ -8,6 +8,7 @@ interface MiniPlayerProps {
   playlist: PlaylistModel | null;
   userId: string | null;
   openMiniPlayer: (videoId: string, playlist: PlaylistModel, userId: string) => void;
+  updateMiniPlayer: (videoId: string, playlist: PlaylistModel) => void;
   closeMiniPlayer: () => void;
 }
 
@@ -17,5 +18,6 @@ export const useMiniPlayerStore = create<MiniPlayerProps>((set) => ({
   playlist: null,
   userId: null,
   openMiniPlayer: (videoId, playlist, userId) => set({ isOpen: true, videoId, playlist, userId }),
+  updateMiniPlayer: (videoId, playlist) => set((state) => ({ videoId, playlist, isOpen: true })),
   closeMiniPlayer: () => set({ isOpen: false, videoId: null, playlist: null, userId: null }),
 }));

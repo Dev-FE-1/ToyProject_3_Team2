@@ -17,21 +17,24 @@ interface VideoModalProps {
   playlist: PlaylistModel;
   userId: string;
 }
-const VideoModal = ({
-  isOpen,
-  onClose,
-  videoId: initialVideoId,
-  playlist,
-  userId,
-}: VideoModalProps) => {
+const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalProps) => {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMaximizing, setIsMaximizing] = useState(false); // 모달이 최대화 중 인지 추적
   const [isPlaying, setIsPlaying] = useState(true);
-  const [currentVideoId, setCurrentVideoId] = useState(initialVideoId);
+  const [currentVideoId, setCurrentVideoId] = useState(videoId);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    setCurrentVideoId(videoId); // 비디오 ID가 변경되면 현재 비디오 ID를 업데이트
+    setCurrentPlaylist(playlist); // 플레이리스트가 변경되면 현재 플레이리스트를 업데이트
+    setIsPlaying(true); // 비디오 ID가 변경되면 비디오를 재생
+    const index = playlist.videos.findIndex((video) => video.videoId === videoId); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+    setCurrentVideoIndex(index !== -1 ? index : 0); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+  }, [videoId, playlist]); // 비디오 ID와 플레이리스트가 변경되면 실행
 
   useEffect(() => {
     if (isOpen && !iframeLoaded) {
@@ -176,14 +179,14 @@ const VideoModal = ({
             </div>
           ) : (
             <div css={playlistContainerStyle}>
-              {playlist.videos.map((video) => (
+              {currentPlaylist.videos.map((video) => (
                 <div key={video.videoId} css={videoBoxWrapperStyle}>
                   <VideoBoxDetail
                     key={video.videoId}
                     video={video}
-                    type={playlist.userId === userId ? 'host' : 'visitor'}
-                    channelName={playlist.userName}
-                    uploadDate={formatTimeWithUpdated(playlist.createdAt)}
+                    type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
+                    channelName={currentPlaylist.userName}
+                    uploadDate={formatTimeWithUpdated(currentPlaylist.createdAt)}
                     onClickVideo={handleVideoClick(video.videoId)}
                     onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
                   />

@@ -35,7 +35,8 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  const openMiniPlayer = useMiniPlayerStore((state) => state.openMiniPlayer);
+  const isOpen = useMiniPlayerStore((state) => state.isOpen);
+  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
 
   const navigate = useNavigate();
   // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
@@ -88,7 +89,11 @@ const PlaylistPage: React.FC = () => {
 
   const handleVideoClick = (videoId: string) => {
     if (playlist) {
-      openMiniPlayer(videoId, playlist, userId);
+      if (isOpen) {
+        updateMiniPlayer(videoId, playlist);
+      } else {
+        openMiniPlayer(videoId, playlist, userId);
+      }
     }
   };
   const onClickKebob = () => {
