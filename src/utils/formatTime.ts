@@ -7,6 +7,10 @@ export const formatDurationSecondToTime = (seconds: number): string => {
 
 // ISO 8601(PT5M42S) -> 00:00:00
 export const formatDurationISOToTime = (isoDuration: string): string => {
+  if (!/^PT(\d+H)?(\d+M)?(\d+S)?$/.test(isoDuration)) {
+    throw new Error('Invalid ISO 8601 duration format');
+  }
+
   const match = isoDuration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
 
   // 타입 가드

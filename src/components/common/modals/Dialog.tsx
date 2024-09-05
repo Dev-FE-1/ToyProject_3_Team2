@@ -21,7 +21,7 @@ interface DialogProps {
   onClose: () => void;
   onConfirm?: () => void;
   onCancel?: () => void;
-  setVideoData: Dispatch<SetStateAction<Partial<Video> | undefined>>;
+  setVideoData?: Dispatch<SetStateAction<Partial<Video> | undefined>>;
 }
 
 const CustomDialog: React.FC<DialogProps> = ({
@@ -40,9 +40,9 @@ const CustomDialog: React.FC<DialogProps> = ({
   const { data: videoData } = useVideoData(youtubeUrl as string);
 
   useEffect(() => {
-    type === 'alertConfirm' ? setIsConfirmDisabled(false) : setIsConfirmDisabled(!videoData);
+    setIsConfirmDisabled(type !== 'alertConfirm' && !videoData);
 
-    if (videoData)
+    if (setVideoData && videoData)
       setVideoData({
         ...videoData,
         videoId: getVideoId(youtubeUrl),
