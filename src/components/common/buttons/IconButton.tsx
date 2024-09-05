@@ -1,4 +1,4 @@
-import { ComponentType, SVGProps } from 'react';
+import { ComponentType, Dispatch, SetStateAction, SVGProps } from 'react';
 
 import { css, SerializedStyles } from '@emotion/react';
 
@@ -6,15 +6,15 @@ import theme from '@/styles/theme';
 interface IconButtonProps {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;
   type?: 'reset' | 'button' | 'submit';
-  onClick?: () => void;
   customStyle?: SerializedStyles;
+  onClick?: () => void;
 }
 
 const IconButton: React.FC<IconButtonProps> = ({
   Icon,
-  onClick,
   type = 'button',
   customStyle,
+  onClick,
 }: IconButtonProps) => (
   <button type={type} css={[iconButtonStyle, customStyle]} onClick={onClick}>
     <Icon />

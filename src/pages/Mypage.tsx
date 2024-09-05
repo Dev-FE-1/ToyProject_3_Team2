@@ -21,6 +21,7 @@ const MyPage = () => {
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {

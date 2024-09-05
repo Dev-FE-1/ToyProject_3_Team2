@@ -6,6 +6,7 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatDurationISOToTime, formatDurationSecondToTime } from '@/utils/formatTime';
 
 interface VideoBoxDetailProps {
   video: PlaylistModel['videos'][0];
@@ -26,14 +27,8 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
 }) => {
   const { thumbnailUrl, duration, title, videoId } = video;
 
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
   return (
-    <div css={containerStyle} onClick={() => onClickVideo(videoId)}>
+    <div css={containerStyle} onClick={() => onClickVideo(videoId as string)}>
       {type === 'host' && (
         <GoKebabHorizontal
           css={kebabIconStyle}
@@ -43,7 +38,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
           }}
         />
       )}
-      <VideoCard type='main' thumbURL={thumbnailUrl} time={formatDuration(duration)} />
+      <VideoCard type='main' thumbURL={thumbnailUrl} duration={duration} />
       <div css={detailsStyle}>
         <h3 css={titleStyle}>{title}</h3>
         <p css={channelStyle}>{channelName}</p>
@@ -75,7 +70,6 @@ const detailsStyle = css`
   margin-left: 1rem;
   flex: 1;
   cursor: pointer;
-  e
 `;
 
 const titleStyle = css`

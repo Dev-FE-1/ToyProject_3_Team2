@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
+import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
@@ -9,6 +10,8 @@ import { useLikeStore } from '@/store/useLikeStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
+import { getUserIdBySession } from '@/utils/user';
 
 interface ThumBoxDetailProps {
   playlist: PlaylistModel;
@@ -17,15 +20,9 @@ interface ThumBoxDetailProps {
   onClickProfile?: () => void;
 }
 
-const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
-  playlist,
-  user,
-  profileURL,
-  onClickProfile,
-}) => {
+const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickProfile }) => {
   const {
     playlistId,
-    userId,
     title,
     description,
     updatedAt,
@@ -37,7 +34,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
     isPublic,
   } = playlist;
 
-  const { profileImg, userName } = user;
+  const { profileImg = defaultProfileImage, userName } = user;
 
   const likes = useLikeStore((state) => state.likes);
   const isLiked = useLikeStore((state) => state.isLiked);
@@ -46,15 +43,8 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
   const decrementLike = useLikeStore((state) => state.decrementLike);
   const toggleLiked = useLikeStore((state) => state.toggleLiked);
 
-  const userSessionStr = sessionStorage.getItem('userSession');
-  if (!userSessionStr) {
-    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
-  }
-  const userSession = JSON.parse(userSessionStr);
-  const userID = userSession.uid;
-  if (!userSessionStr) {
-    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
-  }
+  const userId = getUserIdBySession();
+
   useEffect(() => {
     initializeLikes([
       {
@@ -94,10 +84,12 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
       <div css={statsRowStyle}>
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
-        {userId === userID ? (
-          <span css={statsStyle}>{isPublic ? '공개' : '비공개'}</span>
+
+        {/* 여긴 뭘까??????????????///// */}
+        {userId === userId ? (
+          <span css={statsStyle}>{isPublic ? '' : '비공개'}</span>
         ) : (
-          <span css={statsStyle}>{new Date(updatedAt).toLocaleDateString()}</span>
+          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
         )}
       </div>
       <p css={subtitleStyle}>{description}</p>

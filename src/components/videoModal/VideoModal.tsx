@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
 
-import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
+import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
@@ -177,7 +177,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                     type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
                     channelName={currentPlaylist.userName}
                     uploadDate={formatTimeWithUpdated(currentPlaylist.createdAt)}
-                    onClickVideo={handleVideoClick(video.videoId)}
+                    onClickVideo={handleVideoClick(video.videoId as string)}
                     onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
                   />
                 </div>

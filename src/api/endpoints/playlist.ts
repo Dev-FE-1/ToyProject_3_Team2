@@ -9,10 +9,10 @@ import {
   getDoc,
   where,
   addDoc,
-  startAt,
-  endAt,
   setDoc,
   deleteDoc,
+  arrayUnion,
+  increment,
   arrayRemove,
   updateDoc,
 } from 'firebase/firestore';
@@ -232,52 +232,6 @@ export const getPlaylistsByCategory = async (
   }
 };
 
-export const getPlaylistsByKeyword = async (
-  keyword: string,
-  limitCount: number = 20
-): Promise<PlaylistModel[]> => {
-  try {
-    const keywordLower = keyword.toLowerCase();
-    const keywordUpper = keyword.toLowerCase() + '\uf8ff';
-
-    const playlistsCol = collection(db, 'playlists');
-    const playlistQuery = query(
-      playlistsCol,
-      orderBy('title'),
-      startAt(keywordLower),
-      endAt(keywordUpper),
-      orderBy('createdAt', 'desc'),
-      limit(limitCount)
-    );
-
-    const playlistSnapshot = await getDocs(playlistQuery);
-
-    return playlistSnapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        playlistId: doc.id,
-        userName: data.userName,
-        userId: data.userId,
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        videoCount: data.videoCount,
-        likeCount: data.likeCount,
-        forkCount: data.forkCount,
-        commentCount: data.commentCount,
-        thumbnailUrl: data.thumbnailUrl,
-        isPublic: data.isPublic,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-        videos: data.videos,
-      };
-    });
-  } catch (error) {
-    console.error('Error fetching playlists by keyword:', error);
-    return [];
-  }
-};
-
 // 새 플레이리스트 만들기
 export const addPlaylist = async (
   playlistData: PlaylistFormDataModel,
@@ -354,6 +308,32 @@ export const deletePlaylist = async (playlistId: string): Promise<void> => {
   } catch (error) {
     console.error('Error deleting playlist:', error);
     throw error; // 에러를 상위로 전파
+  }
+};
+
+// 플레이리스트에 비디오 추가
+export const addVideoToPlaylist = async (
+  playlistId: string | undefined,
+  newVideo: Video
+): Promise<boolean> => {
+  try {
+    if (!playlistId) {
+      throw new Error('Playlist ID is missing in the URL.');
+    }
+
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    await updateDoc(playlistRef, {
+      // 중복 방지, 여러 사용자가 동시에 업데이트를 시도해도 데이터 일관성 유지 가능
+      videos: arrayUnion(newVideo),
+      videoCount: increment(1),
+      updatedAt: new Date().toISOString(),
+    });
+
+    return true;
+  } catch (error) {
+    console.error('Error adding video to playlist:', error);
+    return false;
   }
 };
 

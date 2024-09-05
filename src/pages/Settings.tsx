@@ -47,7 +47,7 @@ const Settings = () => {
       </ul>
       {isModalOpen && (
         <CustomDialog
-          type='alertconfirm'
+          type='alertConfirm'
           isOpen={isModalOpen}
           onClose={closeModal}
           onConfirm={confirmSignOut}
