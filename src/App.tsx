@@ -7,7 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import SectionListPage from '@/components/home/SectionListPage';
+import DetailList from '@/components/page/home/DetailList';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import CommentForm from '@/pages/CommentForm';
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
               { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
             ],
           },
-          { path: '/section-list', element: <SectionListPage /> },
+          { path: PATH.DETAIL_LIST, element: <DetailList /> },
           { path: PATH.COMMENT, element: <CommentList /> }, // 댓글목록 페이지
           { path: PATH.COMMENT_FORM, element: <CommentForm /> },
         ],

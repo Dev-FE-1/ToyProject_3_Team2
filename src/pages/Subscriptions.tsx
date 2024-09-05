@@ -5,7 +5,7 @@ import { collection, getDocs } from 'firebase/firestore';
 
 import { db } from '@/api/index';
 import Toast from '@/components/common/Toast';
-import PlaylistBox from '@/components/playlist/PlaylistBox';
+import PlaylistBox from '@/components/page/playlist/PlaylistBox';
 import { Playlist } from '@/mock/data';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';

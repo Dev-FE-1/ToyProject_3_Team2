@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
 
-import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
+import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';

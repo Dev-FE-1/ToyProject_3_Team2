@@ -5,12 +5,12 @@ import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 
-interface RecentUpdateSectionProps {
+interface RecentUpdateListProps {
   title: string;
   playlists: PlaylistModel[];
 }
 
-const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playlists }) => (
+const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title, playlists }) => (
   <div>
     <h2 css={titleStyle}>{title}</h2>
     {playlists.map((playlist) => (
@@ -38,4 +38,4 @@ const titleStyle = css`
   margin-left: 1rem;
 `;
 
-export default RecentUpdateSection;
+export default RecentUpdateList;

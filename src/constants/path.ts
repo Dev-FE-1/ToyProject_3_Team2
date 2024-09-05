@@ -1,5 +1,6 @@
 export const PATH = {
   HOME: '/',
+  DETAIL_LIST: '/detail-list',
   SEARCH: '/search',
   SUBSCRIPTIONS: '/subscriptions',
   MYPAGE: '/mypage/:userId',

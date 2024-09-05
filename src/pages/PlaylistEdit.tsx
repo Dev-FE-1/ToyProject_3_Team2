@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { updatePlaylist } from '@/api/endpoints/playlist';
 import Toast from '@/components/common/Toast';
-import PlaylistForm from '@/components/playlistForm/PlaylistForm';
+import PlaylistForm from '@/components/page/playlistForm/PlaylistForm';
 import { CATEGORY_OPTIONS } from '@/constants/playlist';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';

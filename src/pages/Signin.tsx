@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '@/api/index';
 import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
-import GoogleLoginButton from '@/components/signin/GoogleLogin';
+import GoogleLoginButton from '@/components/page/signin/GoogleLogin';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 

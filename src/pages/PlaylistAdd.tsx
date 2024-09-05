@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { addPlaylist } from '@/api/endpoints/playlist';
 import { getUserData } from '@/api/endpoints/user';
 import Toast from '@/components/common/Toast';
-import PlaylistForm from '@/components/playlistForm/PlaylistForm';
+import PlaylistForm from '@/components/page/playlistForm/PlaylistForm';
 import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';

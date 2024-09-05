@@ -3,7 +3,7 @@ import { GoStar, GoStarFill } from 'react-icons/go';
 import { useNavigate } from 'react-router-dom';
 
 import IconTextButton from '@/components/common/buttons/IconTextButton';
-import Profile from '@/components/profile/Profile';
+import Profile from '@/components/page/profile/Profile';
 import theme from '@/styles/theme';
 
 export interface PlaylistBoxProps {
