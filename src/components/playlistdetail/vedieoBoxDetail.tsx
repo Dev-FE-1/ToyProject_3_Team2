@@ -12,8 +12,8 @@ interface VideoBoxDetailProps {
   channelName: string;
   uploadDate: string;
   type: 'host' | 'visitor';
-  onClick?: () => void;
   onClickKebob?: (_event: React.MouseEvent<SVGElement, MouseEvent>) => void;
+  onClickVideo: (videoId: string) => void;
 }
 
 const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
@@ -21,10 +21,10 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
   channelName,
   uploadDate,
   type,
-  onClick,
   onClickKebob,
+  onClickVideo,
 }) => {
-  const { thumbnailUrl, duration, title } = video;
+  const { thumbnailUrl, duration, title, videoId } = video;
 
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
@@ -33,7 +33,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
   };
 
   return (
-    <div css={containerStyle} onClick={onClick}>
+    <div css={containerStyle} onClick={() => onClickVideo(videoId)}>
       {type === 'host' && (
         <GoKebabHorizontal
           css={kebabIconStyle}
@@ -69,8 +69,6 @@ const containerStyle = css`
   display: flex;
   align-items: flex-start;
   margin-bottom: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
 `;
 
 const detailsStyle = css`

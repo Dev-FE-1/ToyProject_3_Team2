@@ -15,6 +15,7 @@ import Toast from '@/components/common/Toast';
 import NullBox from '@/components/playlistdetail/nullBox';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
+import VideoModal from '@/components/videoModal/VideoModal';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
@@ -32,6 +33,10 @@ const PlaylistPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+
   const navigate = useNavigate();
   // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
   const userSessionStr = sessionStorage.getItem('userSession');
@@ -79,6 +84,11 @@ const PlaylistPage: React.FC = () => {
   };
   const handleAddPlaylist = () => {
     console.log('플레이리스트 링크 추가하는 모달 팝업');
+  };
+
+  const handleVideoClick = (videoId: string) => {
+    setSelectedVideoId(videoId);
+    setIsVideoModalOpen(true);
   };
   const onClickKebob = () => {
     setIsBottomSheetOpen(true);
@@ -159,7 +169,7 @@ const PlaylistPage: React.FC = () => {
             type={playlist.userId === userId ? 'host' : 'visitor'} // 로그인한 사용자 아이디 비교해서 값이 참이면 host 다르면 visitor
             channelName={playlist.userName}
             uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-            onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
+            onClickVideo={handleVideoClick}
             onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
           />
         ))
@@ -191,10 +201,22 @@ const PlaylistPage: React.FC = () => {
         ]}
         onPlaylistClick={handlePlaylistDelete}
       />
+
+      {/* 비디오 재생 모달 */}
+      {isVideoModalOpen && selectedVideoId && (
+        <VideoModal
+          isOpen={isVideoModalOpen}
+          onClose={() => setIsVideoModalOpen(false)}
+          videoId={selectedVideoId}
+          playlist={playlist}
+          userId={userId}
+        />
+      )}
     </div>
   );
 };
 const containerStyle = css`
+  position: relative;
   padding-bottom: 90px;
 `;
 const kebabStyle = css`
