@@ -74,6 +74,8 @@ const containerStyle = css`
 const detailsStyle = css`
   margin-left: 1rem;
   flex: 1;
+  cursor: pointer;
+  e
 `;
 
 const titleStyle = css`

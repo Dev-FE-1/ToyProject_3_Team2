@@ -16,6 +16,7 @@ import NullBox from '@/components/playlistdetail/nullBox';
 import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import VideoModal from '@/components/videoModal/VideoModal';
+import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useToastStore } from '@/store/useToastStore';
@@ -118,6 +119,10 @@ const PlaylistPage: React.FC = () => {
     }
   };
 
+  const handleHeaderBack = () => {
+    navigate(`${PATH.MYPAGE}`); // 이전 페이지로 이동
+  };
+
   if (isLoading) {
     return (
       <div css={spinnerContainerStyle}>
@@ -128,7 +133,7 @@ const PlaylistPage: React.FC = () => {
   if (!playlist || !user) {
     return (
       <div>
-        <Header customStyle={kebabStyle} />
+        <Header onBack={handleHeaderBack} customStyle={kebabStyle} />
         <NullBox />
       </div>
     );
@@ -140,9 +145,14 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
-        <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} onIcon={onClickKebob} />
+        <Header
+          Icon={GoKebabHorizontal}
+          customStyle={kebabStyle}
+          onIcon={onClickKebob}
+          onBack={handleHeaderBack}
+        />
       ) : (
-        <Header />
+        <Header onBack={handleHeaderBack} />
       )}
       {playlist && (
         <ThumBoxDetail
@@ -212,7 +222,7 @@ const PlaylistPage: React.FC = () => {
 };
 const containerStyle = css`
   position: relative;
-  padding-bottom: 90px;
+  padding-bottom: 160px;
 `;
 const kebabStyle = css`
   transform: rotate(90deg);
