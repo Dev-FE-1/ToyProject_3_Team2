@@ -47,17 +47,6 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     setCurrentVideoIndex(index !== -1 ? index : 0);
   }, [currentVideoId, playlist.videos]);
 
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-
   const handleIframeLoad = () => {
     setIframeLoaded(true);
   };
@@ -116,7 +105,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
         <div css={headerStyle(isMinimized)}>
           <Header LeftIcon={GoChevronDown} onBack={handleMinimize} />
         </div>
-        <div>
+        <div css={playerContainerStyle}>
           <div css={videoContainerStyle(isMinimized)}>
             {isOpen && (
               <iframe
@@ -131,7 +120,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
             )}
           </div>
           {!isMinimized && (
-            <>
+            <div>
               <div css={playlistInfoStyle}>
                 <h1>{playlist.title}</h1>
                 <span css={videoCountStyle}>
@@ -139,8 +128,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                 </span>
               </div>
               <div css={userNameStyle}>{playlist.userName}</div>
-            </>
+            </div>
           )}
+
           {isMinimized && <div css={overlayStyle} onClick={handleOverlayClick} />}
         </div>
         <div css={controlsContainerStyle(isMinimized)}>
@@ -148,9 +138,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
             <div css={minimizedControlsStyle} onClick={handleMinimize}>
               <div css={videoInfoStyle}>
                 <h3 css={videoTitleStyle}>{currentVideo?.title}</h3>
-                <p css={uploaderNameStyle}>{playlist.userName}</p>
+                <span css={uploaderNameStyle}>{playlist.userName}</span>
               </div>
-              <div css={controlButtonsStyle}>
+              <div>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -199,13 +189,20 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     </div>
   );
 };
+const playerContainerStyle = css`
+  background-color: ${theme.colors.black};
+  display: flex;
+  flex-direction: column;
+`;
+
 const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
-  position: ${isMinimized ? 'absolute' : 'sticky'};
+  position: ${isMinimized ? 'fixed' : 'sticky'};
   top: ${isMinimized ? 'auto' : '0'};
   left: 0;
   right: 0;
   bottom: ${isMinimized ? '80px' : '0'};
-  width: 100%;
+
+  width: 498px;
   height: ${isMinimized ? '60px' : '100vh'};
   background-color: ${isMinimized ? 'transparent' : theme.colors.black};
   display: flex;
@@ -213,6 +210,7 @@ const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
   align-items: ${isMinimized ? 'flex-end' : 'flex-start'};
   z-index: 100;
   transition: all 300ms ease-in-out;
+  margin: 0 auto;
 `;
 
 const modalContentStyle = (
@@ -222,7 +220,7 @@ const modalContentStyle = (
   isOpen: boolean
 ) => css`
   background-color: ${theme.colors.black};
-  max-width: 498px;
+  width: 498px;
   height: ${isMinimized ? '60px' : '100vh'};
   margin: 0 auto;
   transform: translateY(${getTransformY(isMinimized, isClosing, isMaximizing)});
@@ -283,11 +281,10 @@ const headerStyle = (isMinimized: boolean) => css`
 `;
 const videoContainerStyle = (isMinimized: boolean) => css`
   width: 100%;
-  max-width: 498px;
+  width: 498px;
   aspect-ratio: 16 / 9;
-  overflow: hidden;
+  //   overflow: hidden;
   position: relative;
-  margin: 0 auto;
 
   ${isMinimized &&
   `
@@ -355,7 +352,6 @@ const minimizedControlsStyle = css`
   align-items: center;
   padding: 0 1rem;
   height: 60px;
-  width: calc(100% - 106px);
 `;
 
 const videoInfoStyle = css`
@@ -366,7 +362,7 @@ const videoInfoStyle = css`
 const videoTitleStyle = css`
   font-size: ${theme.fontSizes.small};
   color: ${theme.colors.white};
-  width: 38vw;
+  width: 280px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -378,10 +374,10 @@ const uploaderNameStyle = css`
   color: ${theme.colors.disabled};
 `;
 
-const controlButtonsStyle = css`
-  display: flex;
-  align-items: center;
-`;
+// const controlButtonsStyle = css`
+//   display: flex;
+//   align-items: center;
+// `;
 
 const iconButtonStyle = css`
   background: none;
