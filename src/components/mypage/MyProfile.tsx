@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { GoChevronLeft } from 'react-icons/go';
 import { RiSettings5Line } from 'react-icons/ri'; // setting 아이콘
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +17,10 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
   const handleNavigate = () => {
     navigate(`${PATH.SETTINGS}/`); // 설정 페이지로 이동
   };
-
+  const handleNavigateBack = () => {
+    navigate(-1);
+  };
+  const sessionUid = JSON.parse(sessionStorage.getItem('userSession') || '{}').uid;
   // userData가 없으면 아무것도 렌더링하지 않음
   if (!userData) {
     return null;
@@ -25,7 +29,11 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
 
   return (
     <div css={containerStyle}>
-      <RiSettings5Line css={topIconStyle} onClick={handleNavigate} />
+      {userData.userId === sessionUid ? (
+        <RiSettings5Line css={topIconStyle} onClick={handleNavigate} />
+      ) : (
+        <GoChevronLeft css={topleftIconStyle} onClick={handleNavigateBack} />
+      )}
       <h1 css={a11yStyle}>MyPage</h1>
 
       <section css={sectionStyle}>
@@ -83,6 +91,17 @@ const topIconStyle = css`
   position: absolute;
   top: 18px;
   right: 22px;
+  font-size: 24px;
+  color: ${theme.colors.white};
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  z-index: 5;
+`;
+const topleftIconStyle = css`
+  position: absolute;
+  top: 13px;
+  right: 92%;
   font-size: 24px;
   color: ${theme.colors.white};
   cursor: pointer;

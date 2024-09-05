@@ -16,7 +16,7 @@ const RootLayout = () => {
   const { closeMiniPlayer } = useMiniPlayerStore();
 
   const noShowNavbar = () => {
-    const noNavbarPaths = [PATH.SIGNIN, PATH.ONBOARDING, PATH.SETTINGS, PATH.PLAYLIST];
+    const noNavbarPaths = [PATH.SIGNIN, PATH.ONBOARDING];
 
     return !noNavbarPaths.some((path) => location.pathname.startsWith(path));
   };
