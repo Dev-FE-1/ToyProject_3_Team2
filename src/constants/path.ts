@@ -9,6 +9,7 @@ export const PATH = {
   SETTINGS: '/mypage/settings',
   PLAYLIST: '/playlist/:playlistId',
   COMMENT: '/comments/:playlistId',
+  COMMENT_FORM: '/comments/:playlistId/form',
 };
 export const PATH_TITLE = {
   HOME: '홈',
