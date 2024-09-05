@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { RiAddLargeLine } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { getUserPlaylists } from '@/api/endpoints/playlist';
 import { getUserData } from '@/api/endpoints/user';
@@ -21,23 +21,29 @@ const MyPage = () => {
   const [userData, setUserData] = useState<UserModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const { userId } = useParams<{ userId?: string }>();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [sessionUserId, setSessionUserId] = useState('');
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
         setIsLoading(true);
 
+        if (!userId) {
+          throw new Error('유효한 사용자 ID가 없습니다.');
+        }
         // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
         const userSessionStr = sessionStorage.getItem('userSession');
         if (!userSessionStr) {
           throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
         }
         const userSession = JSON.parse(userSessionStr);
-        const userId = userSession.uid;
-
-        if (!userId) {
+        const sessionUserId = userSession.uid;
+        setSessionUserId(sessionUserId);
+        if (!sessionUserId) {
           throw new Error('유효한 사용자 ID가 없습니다.');
         }
-
+        setIsAdmin(sessionUserId === userId);
         // 사용자 데이터 가져오기
         const user = await getUserData(userId);
         if (!user) {
@@ -55,10 +61,10 @@ const MyPage = () => {
       }
     };
     fetchPlaylists();
-  }, []);
+  }, [userId]);
 
   const handleAddPlaylist = () => {
-    navigate(`${PATH.MYPAGE}/${PATH.MYPAGE_ADD_PLAYLIST}`);
+    navigate(PATH.MYPAGE_ADD_PLAYLIST);
   };
   if (isLoading) {
     return (
@@ -67,19 +73,27 @@ const MyPage = () => {
       </div>
     );
   }
+  if (error) {
+    return <div>에러 발생: {error.message}</div>;
+  }
+  if (!userData) {
+    return <div>사용자 데이터를 찾을 수 없습니다.</div>;
+  }
 
   return (
     <>
       <div css={containerStyle}>
         <MyProfile userData={userData} />
-        <MyPlaylists playlists={playlists} />
-        <div css={addButtonContainerStyle}>
-          <IconButton
-            Icon={RiAddLargeLine}
-            customStyle={floatAddButtonStyle}
-            onClick={handleAddPlaylist}
-          />
-        </div>
+        <MyPlaylists playlists={playlists} sessionUserId={sessionUserId} />
+        {isAdmin && (
+          <div css={addButtonContainerStyle}>
+            <IconButton
+              Icon={RiAddLargeLine}
+              customStyle={floatAddButtonStyle}
+              onClick={handleAddPlaylist}
+            />
+          </div>
+        )}
       </div>
       <Toast />
     </>

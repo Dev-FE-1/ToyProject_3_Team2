@@ -91,6 +91,9 @@ const PlaylistPage: React.FC = () => {
   const handleAddPlaylist = () => {
     console.log('플레이리스트 링크 추가하는 모달 팝업');
   };
+  const handleProfileClick = () => {
+    navigate(`/mypage/${playlist?.userId}`);
+  };
   const onClickKebob = () => {
     setBottomSheetContentType('deleteFromPlaylist');
     setIsBottomSheetOpen(true);
@@ -187,7 +190,7 @@ const PlaylistPage: React.FC = () => {
           playlist={playlist}
           user={user}
           profileURL={user.profileImg || defaultProfileImage}
-          onClickProfile={() => console.log('프로필 클릭')}
+          onClickProfile={handleProfileClick}
         />
       )}
       <div css={buttonBoxStyle}>

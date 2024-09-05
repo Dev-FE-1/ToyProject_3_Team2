@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { useParams } from 'react-router-dom';
 
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import FlipCard from '@/components/mypage/FlipCard';
@@ -14,18 +15,30 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
   const [activeFlipCard, setActiveFlipCard] = useState<string | null>(null);
   const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
+  const { userId } = useParams<{ userId?: string }>();
 
   const handleFlip = (id: string) => {
     setActiveFlipCard((prevActive) => (prevActive === id ? null : id));
   };
-  const filteredPlaylists = useMemo(
-    () => (isToggled ? playlists.filter((playlist) => playlist.isPublic) : playlists),
-    [playlists, isToggled]
-  );
+  const sessionUid = JSON.parse(sessionStorage.getItem('userSession') || '{}').uid;
+  const isAdmin = sessionUid === userId;
+
+  const filteredPlaylists = useMemo(() => {
+    // 먼저 소유자 여부에 따라 필터링
+    const ownerFilteredPlaylists = isAdmin
+      ? playlists
+      : playlists.filter((playlist) => playlist.isPublic);
+    // 그 다음 토글 상태에 따라 추가 필터링
+    return isToggled
+      ? ownerFilteredPlaylists.filter((playlist) => playlist.isPublic)
+      : ownerFilteredPlaylists;
+  }, [playlists, isAdmin, isToggled]);
+
   // 토글 상태가 변경될 때 모든 카드를 초기 상태로 되돌려 줘
   useEffect(() => {
     setActiveFlipCard(null);
   }, [isToggled]);
+
   return (
     <div css={wrapperStyle}>
       <header css={headerStyle}>
@@ -33,9 +46,11 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
           <h1>PlayLists</h1>
           <strong>{playlists.length}</strong>
         </div>
-        <div css={flexStyle}>
-          <ToggleSwitch checked={isToggled} onCheckedChange={toggle} />
-        </div>
+        {isAdmin && (
+          <div css={flexStyle}>
+            <ToggleSwitch checked={isToggled} onCheckedChange={toggle} />
+          </div>
+        )}
       </header>
       <div css={flipContainerStyle}>
         {filteredPlaylists.map((playlist, index) => (
