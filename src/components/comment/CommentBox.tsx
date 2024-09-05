@@ -95,7 +95,10 @@ const CommentListStyle = css`
 `;
 
 const deleteIconStyle = css`
+  display: flex;
   cursor: pointer;
+  width: 20px;
+  height: 20px;
 `;
 
 const CommentHorizonSytle = css`
