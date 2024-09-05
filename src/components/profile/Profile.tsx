@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import theme from '@/styles/theme';
 interface ProfileProps {
   onClick?: () => void;
-  nickname: string;
+  userName: string;
   profileImageSrc?: string;
   marginSide?: string; // props로 관리
 }
@@ -13,15 +13,15 @@ interface ProfileProps {
 const DEFAULT_IMAGE =
   'https://img.freepik.com/premium-vector/bald-empty-face-icon-avatar-vector-illustration_601298-13391.jpg?w=1480';
 
-const Profile: React.FC<ProfileProps> = ({ onClick, nickname, profileImageSrc, marginSide }) => {
+const Profile: React.FC<ProfileProps> = ({ onClick, userName, profileImageSrc, marginSide }) => {
   const imageSrc = profileImageSrc || DEFAULT_IMAGE;
 
   return (
     <div css={containerStyle(marginSide)} onClick={onClick}>
       <div css={imageContainerStyle}>
-        <img src={imageSrc} alt={`${nickname}의 프로필`} css={imageStyle} />
+        <img src={imageSrc} alt={`${userName}의 프로필`} css={imageStyle} />
       </div>
-      <span css={nameStyle}>{nickname}</span>
+      <span css={nameStyle}>{userName}</span>
     </div>
   );
 };

@@ -18,10 +18,13 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistdetail/nullBox';
-import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistdetail/VideoBoxDetail';
+import NullBox from '@/components/playlistDetail/nullBox';
+import ThumBoxDetail from '@/components/playlistDetail/thumBoxDetail';
+import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
+import VideoModal from '@/components/videoModal/VideoModal';
+import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
+import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
@@ -41,6 +44,8 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
+  const isOpen = useMiniPlayerStore((state) => state.isOpen);
+  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
 
   const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
@@ -98,6 +103,16 @@ const PlaylistPage: React.FC = () => {
   const handleAddPlaylist = () => {
     openModal();
   };
+
+  const handleVideoClick = (videoId: string) => {
+    if (playlist) {
+      if (isOpen) {
+        updateMiniPlayer(videoId, playlist);
+      } else {
+        openMiniPlayer(videoId, playlist, userId);
+      }
+    }
+  };
   const confirmSignOut = () => {
     addVideoToPlaylist(playlistId, videoData as Video);
     setRefreshTrigger(Date());
@@ -128,6 +143,9 @@ const PlaylistPage: React.FC = () => {
     }
   };
 
+  const handleHeaderBack = () => {
+    navigate(`${PATH.MYPAGE}`); // 이전 페이지로 이동
+  };
   const handleVideoDelete = async () => {
     if (!playlist || !selectedVideo) {
       console.error('Playlist or selected video is null');
@@ -179,7 +197,7 @@ const PlaylistPage: React.FC = () => {
   if (!playlist || !user) {
     return (
       <div>
-        <Header customStyle={kebabStyle} />
+        <Header onBack={handleHeaderBack} customStyle={kebabStyle} />
         <NullBox />
       </div>
     );
@@ -191,9 +209,14 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
-        <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} onIcon={onClickKebob} />
+        <Header
+          Icon={GoKebabHorizontal}
+          customStyle={kebabStyle}
+          onIcon={onClickKebob}
+          onBack={handleHeaderBack}
+        />
       ) : (
-        <Header />
+        <Header onBack={handleHeaderBack} />
       )}
       {playlist && (
         <ThumBoxDetail
@@ -225,7 +248,7 @@ const PlaylistPage: React.FC = () => {
             type={playlist.userId === userId ? 'host' : 'visitor'} // 로그인한 사용자 아이디 비교해서 값이 참이면 host 다르면 visitor
             channelName={playlist.userName}
             uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-            onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
+            onClickVideo={handleVideoClick}
             onClickKebob={() =>
               onClickVideoKebob({ videoId: video.videoId as string, title: video.title })
             }
@@ -278,7 +301,8 @@ const PlaylistPage: React.FC = () => {
   );
 };
 const containerStyle = css`
-  padding-bottom: 90px;
+  position: relative;
+  padding-bottom: 160px;
 `;
 const kebabStyle = css`
   transform: rotate(90deg);

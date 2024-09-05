@@ -69,7 +69,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
       <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
-        <Profile profileImageSrc={profileImg} nickname={userName} onClick={onClickProfile} />
+        <Profile profileImageSrc={profileImg} userName={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
           <CommentsButton playListId={playlistId} commentCount={commentCount} />
           <div css={dividerStyle} />
