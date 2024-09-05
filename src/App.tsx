@@ -10,6 +10,7 @@ import {
 import SectionListPage from '@/components/home/SectionListPage';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
+import CommentList from '@/pages/CommentList';
 import HomePage from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
 import NotFoundPage from '@/pages/NotFound';
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
           },
           { path: PATH.PLAYLIST, element: <PlaylistPage /> },
           { path: '/section-list', element: <SectionListPage /> },
+          { path: PATH.COMMENT, element: <CommentList /> }, // 댓글목록 페이지
         ],
       },
     ],
