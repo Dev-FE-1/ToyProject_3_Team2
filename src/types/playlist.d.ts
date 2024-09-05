@@ -28,7 +28,7 @@ export interface PlaylistModel extends PlaylistFormDataModel {
 }
 
 export interface Comment {
-  commentId?: string;
+  commentId?: string | undefined;
   playlistId?: string;
   profileImg: string;
   userId?: string;

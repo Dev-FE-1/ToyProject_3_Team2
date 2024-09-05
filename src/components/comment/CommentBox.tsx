@@ -1,23 +1,46 @@
 import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { doc, deleteDoc } from 'firebase/firestore';
 import { RiCloseFill } from 'react-icons/ri';
 
+import { db } from '@/api';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
+import Toast from '@/components/common/Toast';
+import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { Comment } from '@/types/playlist';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 import { getUserIdBySession } from '@/utils/user';
-
-const CommentBox: React.FC<Comment> = ({
-  profileImg,
-  userName,
-  content,
-  createdAt,
-  userId: curUserId,
-}: Comment) => {
+interface CommentBoxProps extends Comment {
+  comments: Comment;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+}
+const CommentBox: React.FC<CommentBoxProps> = ({ comments, setComments }: CommentBoxProps) => {
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
-  const handleDelBtnClick = () => {
-    console.log('delete!');
+  const { showToast } = useToastStore();
+
+  const handleDelBtnClick = async () => {
+    if (!comments.commentId) {
+      console.error('commentId가 없습니다.');
+      return;
+    }
+    try {
+      if (commentUserId === comments.userId) {
+        const commentRef = doc(db, 'comments', comments.commentId);
+        await deleteDoc(commentRef);
+
+        showToast('댓글이 삭제되었습니다');
+      } else {
+        console.log('삭제 권한이 없습니다.');
+      }
+    } catch (error) {
+      console.error('댓글 삭제 중 오류 발생:', error);
+    }
+
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.commentId !== comments.commentId)
+    );
   };
 
   useEffect(() => {
@@ -29,18 +52,19 @@ const CommentBox: React.FC<Comment> = ({
     <>
       <div css={CommentListStyle}>
         <div>
-          <img src={profileImg || defaultImg} alt='미니 썸네일' />
+          <img src={comments.profileImg || defaultImg} alt='미니 썸네일' />
           <div>
-            <h1>{userName}</h1>
-            <h2>{createdAt}</h2>
-            <h3>{content}</h3>
+            <h1>{comments.userName}</h1>
+            <h2>{formatTimeWithUpdated(comments.createdAt)}</h2>
+            <h3>{comments.content}</h3>
           </div>
         </div>
-        {commentUserId === curUserId && (
+        {commentUserId === comments.userId && (
           <RiCloseFill css={deleteIconStyle} onClick={handleDelBtnClick} />
         )}
       </div>
       <hr css={CommentHorizonSytle} />
+      <Toast />
     </>
   );
 };

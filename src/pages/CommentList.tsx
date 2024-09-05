@@ -83,6 +83,8 @@ const CommentList = () => {
             userName={comment.userName}
             content={comment.content}
             createdAt={formatTimeWithUpdated(comment.createdAt)}
+            comments={comment}
+            setComments={setComments}
           />
         ))}
       </div>
