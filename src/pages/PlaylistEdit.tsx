@@ -16,10 +16,10 @@ const PlaylistEdit = () => {
   const { playlist, isLoading, error } = usePlaylistData(playlistId);
 
   const getCategoryValue = (label: string): string => {
-    const category = CATEGORY_OPTIONS.find((option) => option.label === label);
+    const category = CATEGORY_OPTIONS.find((option) => option.value === label);
+
     return category ? category.value : '';
   };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }

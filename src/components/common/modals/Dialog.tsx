@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
 import { useVideoData } from '@/hooks/query/useYoutube';
 import theme from '@/styles/theme';
+import { Video } from '@/types/playlist';
+import { formatDurationISOToTime } from '@/utils/formatTime';
+import { getVideoId } from '@/utils/getVideoId';
 
 interface contentType {
   title?: string;
   confirmText?: string;
   cancelText?: string;
 }
-
 interface DialogProps {
-  type: 'alertconfirm' | 'videoLink' | 'videoimageLink';
+  type: 'alertConfirm' | 'videoLink';
   customContent?: contentType;
   isOpen: boolean;
   onClose: () => void;
   onConfirm?: () => void;
   onCancel?: () => void;
+  setVideoData?: Dispatch<SetStateAction<Partial<Video> | undefined>>;
 }
 
 const CustomDialog: React.FC<DialogProps> = ({
@@ -28,16 +31,29 @@ const CustomDialog: React.FC<DialogProps> = ({
   onClose,
   onConfirm,
   onCancel,
+  setVideoData,
 }) => {
   const [youtubeUrl, setYoutubeUrl] = useState('');
-  const [thumbnailUrl, setThumbnailUrl] = useState('');
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
-  const { data: videoData, isLoading, error } = useVideoData(youtubeUrl as string);
+  // videoData를 상위 컴포넌트(Playlist)로 넘기기 위한 커스텀훅 사용
+  const { data: videoData } = useVideoData(youtubeUrl as string);
+
+  useEffect(() => {
+    setIsConfirmDisabled(type !== 'alertConfirm' && !videoData);
+
+    if (setVideoData && videoData)
+      setVideoData({
+        ...videoData,
+        videoId: getVideoId(youtubeUrl),
+        videoUrl: youtubeUrl,
+        duration: formatDurationISOToTime(videoData.duration),
+      });
+  }, [videoData]);
 
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
-      case 'alertconfirm':
+      case 'alertConfirm':
         return {
           title: customContent?.title || '로그아웃 하시겠습니까?',
           content: null,
@@ -50,41 +66,37 @@ const CustomDialog: React.FC<DialogProps> = ({
         };
       case 'videoLink':
         return {
-          title: '영상링크',
-          content: (
-            <input
-              type='text'
-              placeholder='영상 링크를 입력하세요'
-              css={inputStyle}
-              defaultValue=''
-            />
-          ),
-          titleStyle: css`
-            text-align: left;
-            width: 100%;
-          `,
-          confirmText: '등록',
-          cancelText: '취소',
-        };
-      case 'videoimageLink':
-        return {
           title: null,
           content: (
             <>
-              {/* {thumbnailUrl && (
-                <img src={thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
-              )} */}
               {videoData && (
                 <img src={videoData.thumbnailUrl} alt='YouTube Thumbnail' css={thumbnailStyle} />
               )}
-              <Dialog.Title
-                css={css`
-                  text-align: left;
-                  width: 100%;
-                `}
-              >
-                영상링크
-              </Dialog.Title>
+              {!videoData ? (
+                <Dialog.Title
+                  css={css`
+                    text-align: left;
+                    width: 100%;
+                  `}
+                >
+                  영상링크
+                  <div css={descriptionStyle}>
+                    잘못된 URL 및 공개가 허용되지 않는 영상일 경우 동록할수 없습니다. 등록가능
+                    영상은 썸네일이 표시됩니다.
+                  </div>
+                </Dialog.Title>
+              ) : (
+                <Dialog.Title
+                  css={css`
+                    text-align: left;
+                    width: 100%;
+                  `}
+                >
+                  {videoData.title}
+                  <div css={descriptionStyle}>등록 가능한 영상입니다.</div>
+                </Dialog.Title>
+              )}
+
               <input
                 type='text'
                 css={inputStyle}
@@ -106,43 +118,13 @@ const CustomDialog: React.FC<DialogProps> = ({
     }
   };
 
-  // useEffect(() => {
-  //   const extractVideoId = (url: string) => {
-  //     const regex =
-  //       /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/;
-  //     const match = url.match(regex);
-  //     return match ? match[1] : null;
-  //   };
-
-  //   const videoId = extractVideoId(youtubeUrl);
-  //   if (videoId) {
-  //     setThumbnailUrl(`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`);
-  //   } else {
-  //     setThumbnailUrl('');
-  //   }
-  //   setIsConfirmDisabled(!youtubeUrl.trim());
-  // }, [youtubeUrl]);
-
-  useEffect(() => {
-    if (type === 'alertconfirm') {
-      setIsConfirmDisabled(false);
-    } else {
-      setIsConfirmDisabled(!(videoData?.thumbnailUrl?.trim() ?? ''));
-    }
-  }, [type, videoData]);
+  const handleConfirm = () => (onConfirm ? onConfirm() : onClose());
 
   const modalContent = getModalContent(type);
 
   if (!modalContent) {
     return null;
   }
-
-  const handleConfirm = () => {
-    if (onConfirm) {
-      onConfirm();
-    }
-    onClose();
-  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
@@ -175,12 +157,11 @@ const CustomDialog: React.FC<DialogProps> = ({
   );
 };
 
-// CSS Styles
 const overlayStyle = css`
   background-color: ${theme.colors.black + '7a'};
   position: absolute;
   width: 498px;
-  height: 100vh;
+  height: 100%;
   margin: 0 auto;
   inset: 0;
   z-index: 5;
@@ -262,6 +243,14 @@ const thumbnailStyle = css`
   border-radius: 4px;
   margin-bottom: 10px;
   object-fit: cover;
+`;
+
+const descriptionStyle = css`
+  font-size: ${theme.fontSizes.small};
+  color: ${theme.colors.disabledText};
+  margin-top: 8px;
+  letter-spacing: -0.4px;
+  line-height: 16px;
 `;
 
 export default CustomDialog;
