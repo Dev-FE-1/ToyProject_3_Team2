@@ -84,7 +84,7 @@ const MyPage = () => {
     <>
       <div css={containerStyle}>
         <MyProfile userData={userData} />
-        <MyPlaylists playlists={playlists} sessionUserId={sessionUserId} />
+        <MyPlaylists playlists={playlists} />
         {isAdmin && (
           <div css={addButtonContainerStyle}>
             <IconButton
