@@ -101,8 +101,8 @@ const topIconStyle = css`
 `;
 const topleftIconStyle = css`
   position: absolute;
-  top: 18px;
-  right: 90%;
+  top: 13px;
+  right: 92%;
   font-size: 24px;
   color: ${theme.colors.white};
   cursor: pointer;
