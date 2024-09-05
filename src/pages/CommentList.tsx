@@ -83,7 +83,6 @@ const CommentList = () => {
             userName={comment.userName}
             content={comment.content}
             createdAt={formatTimeWithUpdated(comment.createdAt)}
-            updatedAt={comment.updatedAt}
           />
         ))}
       </div>

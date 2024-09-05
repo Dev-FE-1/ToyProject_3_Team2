@@ -35,5 +35,4 @@ export interface Comment {
   userName: string;
   content: string;
   createdAt: string;
-  updatedAt?: string;
 }

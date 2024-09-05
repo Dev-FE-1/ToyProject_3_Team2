@@ -1,26 +1,54 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { RiCloseFill } from 'react-icons/ri';
 
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import theme from '@/styles/theme';
 import { Comment } from '@/types/playlist';
-const CommentBox: React.FC<Comment> = ({ profileImg, userName, content, createdAt }: Comment) => (
-  <div css={CommentListStyle}>
-    <div>
-      <img src={profileImg || defaultImg} alt='미니 썸네일' />
-      <div>
-        <h1>{userName}</h1>
-        <h2>{createdAt}</h2>
-        <h3>{content}</h3>
+import { getUserIdBySession } from '@/utils/user';
+
+const CommentBox: React.FC<Comment> = ({
+  profileImg,
+  userName,
+  content,
+  createdAt,
+  userId: curUserId,
+}: Comment) => {
+  const [commentUserId, setCommentUserId] = useState<string | null>(null);
+  const handleDelBtnClick = () => {
+    console.log('delete!');
+  };
+
+  useEffect(() => {
+    const uid = getUserIdBySession();
+    setCommentUserId(uid);
+  }, []);
+
+  return (
+    <>
+      <div css={CommentListStyle}>
+        <div>
+          <img src={profileImg || defaultImg} alt='미니 썸네일' />
+          <div>
+            <h1>{userName}</h1>
+            <h2>{createdAt}</h2>
+            <h3>{content}</h3>
+          </div>
+        </div>
+        {commentUserId === curUserId && (
+          <RiCloseFill css={deleteIconStyle} onClick={handleDelBtnClick} />
+        )}
       </div>
-    </div>
-  </div>
-);
+      <hr css={CommentHorizonSytle} />
+    </>
+  );
+};
 
 const CommentListStyle = css`
   margin: 10px 0;
   display: flex;
+  justify-content: space-between;
 
   div {
     display: flex;
@@ -66,4 +94,14 @@ const CommentListStyle = css`
   }
 `;
 
+const deleteIconStyle = css`
+  cursor: pointer;
+`;
+
+const CommentHorizonSytle = css`
+  border: 0;
+  height: 1px;
+  background-color: ${theme.colors.tertiary};
+  margin: 10px 0;
+`;
 export default CommentBox;

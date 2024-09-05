@@ -42,7 +42,6 @@ export const getPlaylistComments = async (
         userName: data.userName,
         content: data.content,
         createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
       };
     });
   } catch (error) {
