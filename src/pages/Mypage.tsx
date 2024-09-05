@@ -23,7 +23,7 @@ const MyPage = () => {
   const [error, setError] = useState<Error | null>(null);
   const { userId } = useParams<{ userId?: string }>();
   const [isAdmin, setIsAdmin] = useState(false);
-  const [sessionUserId, setSessionUserId] = useState('');
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
@@ -39,7 +39,6 @@ const MyPage = () => {
         }
         const userSession = JSON.parse(userSessionStr);
         const sessionUserId = userSession.uid;
-        setSessionUserId(sessionUserId);
         if (!sessionUserId) {
           throw new Error('유효한 사용자 ID가 없습니다.');
         }
@@ -61,7 +60,7 @@ const MyPage = () => {
       }
     };
     fetchPlaylists();
-  }, [userId]);
+  }, []);
 
   const handleAddPlaylist = () => {
     navigate(PATH.MYPAGE_ADD_PLAYLIST);

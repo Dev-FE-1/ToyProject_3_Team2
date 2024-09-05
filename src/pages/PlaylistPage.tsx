@@ -92,7 +92,11 @@ const PlaylistPage: React.FC = () => {
     console.log('플레이리스트 링크 추가하는 모달 팝업');
   };
   const handleProfileClick = () => {
-    navigate(`/mypage/${playlist?.userId}`);
+    if (playlist?.userId) {
+      navigate(`/mypage/${playlist.userId}`);
+    } else {
+      console.error('Unable to navigate: playlist or userId is undefined');
+    }
   };
   const onClickKebob = () => {
     setBottomSheetContentType('deleteFromPlaylist');
