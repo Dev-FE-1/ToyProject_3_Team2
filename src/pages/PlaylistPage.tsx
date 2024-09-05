@@ -115,7 +115,13 @@ const PlaylistPage: React.FC = () => {
     setRefreshTrigger(Date());
     closeModal();
   };
-
+  const handleProfileClick = () => {
+    if (playlist?.userId) {
+      navigate(`/mypage/${playlist.userId}`);
+    } else {
+      console.error('Unable to navigate: playlist or userId is undefined');
+    }
+  };
   const onClickKebob = () => {
     setBottomSheetContentType('deleteFromPlaylist');
     setIsBottomSheetOpen(true);
@@ -219,7 +225,8 @@ const PlaylistPage: React.FC = () => {
         <ThumbNailBoxDetail
           playlist={playlist}
           user={user}
-          onClickProfile={() => console.log('프로필 클릭')}
+          profileURL={user.profileImg || defaultProfileImage}
+          onClickProfile={handleProfileClick}
         />
       )}
       <div css={buttonBoxStyle}>

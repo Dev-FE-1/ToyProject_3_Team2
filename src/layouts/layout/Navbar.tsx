@@ -13,8 +13,10 @@ import { NavLink } from 'react-router-dom';
 
 import { PATH, PATH_TITLE } from '@/constants/path';
 import theme from '@/styles/theme';
+import { getUserIdBySession } from '@/utils/user';
 
 const Navbar = () => {
+  const userId = getUserIdBySession();
   const menus = [
     { path: PATH.HOME, title: PATH_TITLE.HOME, Icon: RiHome5Line, ActiveIcon: RiHome5Fill },
     { path: PATH.SEARCH, title: PATH_TITLE.SEARCH, Icon: RiSearchLine, ActiveIcon: RiSearch2Fill },
@@ -24,7 +26,12 @@ const Navbar = () => {
       Icon: RiStackLine,
       ActiveIcon: RiStackFill,
     },
-    { path: PATH.MYPAGE, title: PATH_TITLE.MYPAGE, Icon: RiUserLine, ActiveIcon: RiUserFill },
+    {
+      path: `mypage/${userId}`,
+      title: PATH_TITLE.MYPAGE,
+      Icon: RiUserLine,
+      ActiveIcon: RiUserFill,
+    },
   ];
   return (
     <nav css={navStyle}>
