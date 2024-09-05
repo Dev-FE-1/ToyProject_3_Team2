@@ -5,7 +5,7 @@ export const getVideoData = async (url: string) => {
   const videoId = getVideoId(url);
   const response = await fetchYoutubeData.get('/videos', {
     params: {
-      part: 'snippet,statistics,player',
+      part: 'snippet,statistics,player,contentDetails',
       id: videoId,
     },
   });
@@ -18,10 +18,11 @@ export const getVideoData = async (url: string) => {
 
   return {
     title: item.snippet.title,
-    channelTitle: item.snippet.channelTitle,
-    channelId: item.snippet.channelId,
+    // channelTitle: item.snippet.channelTitle,
+    // channelId: item.snippet.channelId,
     thumbnailUrl: item.snippet.thumbnails.medium.url,
-    publishedAt: new Date(item.snippet.publishedAt).toLocaleDateString(),
+    duration: item.contentDetails.duration,
+    // publishedAt: new Date(item.snippet.publishedAt).toLocaleDateString(),
   };
 };
 

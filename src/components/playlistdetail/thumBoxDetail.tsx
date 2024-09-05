@@ -1,16 +1,15 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import { css } from '@emotion/react';
 
-import { toggleLike } from '@/api/endpoints/like';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
-// import { useLikeStore } from '@/store/useLikeStore';
 import { useLikeManagement } from '@/hooks/useLike';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 import { getUserIdBySession } from '@/utils/user';
 
 interface ThumBoxDetailProps {
@@ -36,6 +35,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
     // likeCount,
     commentCount,
     thumbnailUrl,
+    isPublic,
   } = playlist;
 
   const { profileImg, userName } = user;
@@ -48,7 +48,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
       <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
-        <Profile profileImageSrc={profileImg} nickname={userName} onClick={onClickProfile} />
+        <Profile profileImageSrc={profileImg} userName={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
           <CommentsButton playListId={playlistId} commentCount={commentCount} />
           <div css={dividerStyle} />
@@ -63,7 +63,13 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
       <div css={statsRowStyle}>
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
-        <span css={statsStyle}>{new Date(updatedAt).toLocaleDateString()}</span>
+
+        {/* 여긴 뭘까??????????????///// */}
+        {userId === userId ? (
+          <span css={statsStyle}>{isPublic ? '' : '비공개'}</span>
+        ) : (
+          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
+        )}
       </div>
       <p css={subtitleStyle}>{description}</p>
     </div>

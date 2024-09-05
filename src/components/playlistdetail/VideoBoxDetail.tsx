@@ -6,14 +6,15 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatDurationISOToTime, formatDurationSecondToTime } from '@/utils/formatTime';
 
 interface VideoBoxDetailProps {
   video: PlaylistModel['videos'][0];
   channelName: string;
   uploadDate: string;
   type: 'host' | 'visitor';
-  onClick?: () => void;
   onClickKebob?: (_event: React.MouseEvent<SVGElement, MouseEvent>) => void;
+  onClickVideo: (videoId: string) => void;
 }
 
 const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
@@ -21,19 +22,13 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
   channelName,
   uploadDate,
   type,
-  onClick,
   onClickKebob,
+  onClickVideo,
 }) => {
-  const { thumbnailUrl, duration, title } = video;
-
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
+  const { thumbnailUrl, duration, title, videoId } = video;
 
   return (
-    <div css={containerStyle} onClick={onClick}>
+    <div css={containerStyle} onClick={() => onClickVideo(videoId as string)}>
       {type === 'host' && (
         <GoKebabHorizontal
           css={kebabIconStyle}
@@ -43,7 +38,7 @@ const VideoBoxDetail: React.FC<VideoBoxDetailProps> = ({
           }}
         />
       )}
-      <VideoCard type='main' thumbURL={thumbnailUrl} time={formatDuration(duration)} />
+      <VideoCard type='main' thumbURL={thumbnailUrl} duration={duration} />
       <div css={detailsStyle}>
         <h3 css={titleStyle}>{title}</h3>
         <p css={channelStyle}>{channelName}</p>
@@ -69,13 +64,12 @@ const containerStyle = css`
   display: flex;
   align-items: flex-start;
   margin-bottom: 1rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
 `;
 
 const detailsStyle = css`
   margin-left: 1rem;
   flex: 1;
+  cursor: pointer;
 `;
 
 const titleStyle = css`

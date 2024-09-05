@@ -1,4 +1,4 @@
-export const getVideoId = (url: string): string | null => {
+export const getVideoId = (url: string): string | null | undefined => {
   // URL 객체를 생성
   const parsedUrl = new URL(url);
   // URLSearchParams 객체를 통해 쿼리 파라미터를 가져옴

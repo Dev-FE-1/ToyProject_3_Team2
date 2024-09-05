@@ -5,26 +5,36 @@ import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getPlaylistWithUser, deletePlaylist } from '@/api/endpoints/playlist';
-import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
+import {
+  getPlaylistWithUser,
+  deletePlaylist,
+  deleteVideoFromPlaylist,
+  addVideoToPlaylist,
+} from '@/api/endpoints/playlist';
+// import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
+import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistdetail/nullBox';
-import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
+import NullBox from '@/components/playlistDetail/nullBox';
+import ThumBoxDetail from '@/components/playlistDetail/thumBoxDetail';
+import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
+import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
+import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
+import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
-import { PlaylistModel } from '@/types/playlist';
+import { PlaylistModel, Video } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistPage: React.FC = () => {
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
+  const [playlist, setPlaylist] = useState<PlaylistModel | null>();
   const [user, setUser] = useState<UserModel | null>(null);
   const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
@@ -32,19 +42,27 @@ const PlaylistPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const navigate = useNavigate();
-  // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
-  const userSessionStr = sessionStorage.getItem('userSession');
-  if (!userSessionStr) {
-    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
-  }
-  const userSession = JSON.parse(userSessionStr);
-  const userId = userSession.uid;
 
+  const [videoData, setVideoData] = useState<Partial<Video>>();
   const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
+  const [bottomSheetContentType, setBottomSheetContentType] = useState<
+    'deleteFromPlaylist' | 'deleteVideo'
+  >('deleteFromPlaylist');
+  const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
+    null
+  );
+
+  const isOpen = useMiniPlayerStore((state) => state.isOpen);
+  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
+  const isModalOpen = useModalStore((state) => state.isModalOpen);
+  const { openModal, closeModal } = useModalStore();
+
+  const navigate = useNavigate();
+
+  const userId = getUserIdBySession();
 
   useEffect(() => {
-    async function fetchPlaylistWithUser() {
+    const fetchPlaylistWithUser = async () => {
       if (!playlistId) {
         setError('Playlist ID is missing');
         setIsLoading(false);
@@ -66,7 +84,7 @@ const PlaylistPage: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     fetchPlaylistWithUser();
   }, [playlistId, refreshTrigger]);
@@ -77,17 +95,36 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handlePlaylistEdit = () => {
-    console.log('플레이리스트 수정페이지로 이동');
+    // console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
+    navigate('/playlist/' + playlist?.playlistId + '/edit');
   };
   const handleAddPlaylist = () => {
-    console.log('플레이리스트 링크 추가하는 모달 팝업');
+    openModal();
   };
+
+  const handleVideoClick = (videoId: string) => {
+    if (playlist) {
+      if (isOpen) {
+        updateMiniPlayer(videoId, playlist);
+      } else {
+        openMiniPlayer(videoId, playlist, userId);
+      }
+    }
+  };
+  const confirmSignOut = () => {
+    addVideoToPlaylist(playlistId, videoData as Video);
+    setRefreshTrigger(Date());
+    closeModal();
+  };
+
   const onClickKebob = () => {
+    setBottomSheetContentType('deleteFromPlaylist');
     setIsBottomSheetOpen(true);
   };
 
   const handleBottomSheetClose = () => {
     setIsBottomSheetOpen(false);
+    setSelectedVideo(null);
   };
 
   const handlePlaylistDelete = async (playlistId: string) => {
@@ -104,6 +141,50 @@ const PlaylistPage: React.FC = () => {
     }
   };
 
+  const handleHeaderBack = () => {
+    navigate(`${PATH.MYPAGE}`); // 이전 페이지로 이동
+  };
+  const handleVideoDelete = async () => {
+    if (!playlist || !selectedVideo) {
+      console.error('Playlist or selected video is null');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await deleteVideoFromPlaylist(playlist.playlistId, selectedVideo.videoId);
+
+      setPlaylist((prevPlaylist) => {
+        if (!prevPlaylist) {
+          console.error('Previous playlist is null');
+          return null;
+        }
+        const updatedVideos = prevPlaylist.videos.filter(
+          (video) => video.videoId !== selectedVideo.videoId
+        );
+        return {
+          ...prevPlaylist,
+          videos: updatedVideos,
+          videoCount: updatedVideos.length,
+        };
+      });
+
+      showToast('동영상이 성공적으로 삭제되었습니다.');
+    } catch (error) {
+      console.error('Error in handleVideoDelete:', error);
+      showToast('동영상 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+      setSelectedVideo(null);
+      handleBottomSheetClose();
+    }
+  };
+  const onClickVideoKebob = (video: { videoId: string; title: string }) => {
+    setSelectedVideo(video);
+    setBottomSheetContentType('deleteVideo');
+    setIsBottomSheetOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div css={spinnerContainerStyle}>
@@ -114,7 +195,7 @@ const PlaylistPage: React.FC = () => {
   if (!playlist || !user) {
     return (
       <div>
-        <Header customStyle={kebabStyle} />
+        <Header onBack={handleHeaderBack} customStyle={kebabStyle} />
         <NullBox />
       </div>
     );
@@ -126,9 +207,14 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
-        <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} onIcon={onClickKebob} />
+        <Header
+          Icon={GoKebabHorizontal}
+          customStyle={kebabStyle}
+          onIcon={onClickKebob}
+          onBack={handleHeaderBack}
+        />
       ) : (
-        <Header />
+        <Header onBack={handleHeaderBack} />
       )}
       {playlist && (
         <ThumBoxDetail
@@ -161,8 +247,10 @@ const PlaylistPage: React.FC = () => {
             type={playlist.userId === userId ? 'host' : 'visitor'} // 로그인한 사용자 아이디 비교해서 값이 참이면 host 다르면 visitor
             channelName={playlist.userName}
             uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-            onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
-            onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
+            onClickVideo={handleVideoClick}
+            onClickKebob={() =>
+              onClickVideoKebob({ videoId: video.videoId as string, title: video.title })
+            }
           />
         ))
       ) : (
@@ -179,25 +267,41 @@ const PlaylistPage: React.FC = () => {
       ) : null}
       <Toast />
       <BottomSheet
-        contentType='deleteFromPlaylist'
+        contentType={bottomSheetContentType}
         isOpen={isBottomSheetOpen}
         onClose={handleBottomSheetClose}
-        playlists={[
-          {
-            id: playlist.playlistId,
-            title: playlist.title,
-            isPublic: playlist.isPublic,
-            isBookmarked: false,
-            thumURL: playlist.thumbnailUrl,
-          },
-        ]}
+        playlists={
+          bottomSheetContentType === 'deleteFromPlaylist'
+            ? [
+                {
+                  id: playlist.playlistId,
+                  title: playlist.title,
+                  isPublic: playlist.isPublic,
+                  isBookmarked: false,
+                  thumURL: playlist.thumbnailUrl,
+                },
+              ]
+            : undefined
+        }
+        video={selectedVideo || undefined}
         onPlaylistClick={handlePlaylistDelete}
+        onVideoDelete={handleVideoDelete}
       />
+      {isModalOpen && (
+        <CustomDialog
+          type='videoLink'
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={confirmSignOut}
+          setVideoData={setVideoData}
+        />
+      )}
     </div>
   );
 };
 const containerStyle = css`
-  padding-bottom: 90px;
+  position: relative;
+  padding-bottom: 160px;
 `;
 const kebabStyle = css`
   transform: rotate(90deg);
