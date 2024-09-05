@@ -1,5 +1,3 @@
-import React, { Dispatch, SetStateAction } from 'react';
-
 import { css } from '@emotion/react';
 
 import CommentsButton from '@/components/common/buttons/CommentsButton';
@@ -12,18 +10,16 @@ import { UserModel } from '@/types/user';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 import { getUserIdBySession } from '@/utils/user';
 
-interface ThumBoxDetailProps {
+interface ThumbNailBoxDetailProps {
   playlist: PlaylistModel;
   user: UserModel;
   onClickProfile?: () => void;
-  setRefreshTrigger: Dispatch<SetStateAction<string>>;
 }
 
-const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
+const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
   playlist,
   user,
   onClickProfile,
-  setRefreshTrigger,
 }) => {
   const {
     playlistId,
@@ -32,7 +28,6 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
     updatedAt,
     videoCount,
     forkCount,
-    // likeCount,
     commentCount,
     thumbnailUrl,
     isPublic,
@@ -64,11 +59,10 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
 
-        {/* 여긴 뭘까??????????????///// */}
         {userId === userId ? (
           <span css={statsStyle}>{isPublic ? '' : '비공개'}</span>
         ) : (
-          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
+          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)}</span>
         )}
       </div>
       <p css={subtitleStyle}>{description}</p>
@@ -140,4 +134,4 @@ const subtitleStyle = css`
   margin: 1rem;
 `;
 
-export default ThumBoxDetail;
+export default ThumbNailBoxDetail;

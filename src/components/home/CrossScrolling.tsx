@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
-import ThumBox from '@/components/common/ThumBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatNumberToK } from '@/utils/formatNumber';
@@ -77,7 +77,7 @@ const CrossScrolling: React.FC<CrossScrollingProps> = ({ title, playlists }) => 
       >
         {playlists.map((playlist) => (
           <div key={playlist.playlistId} css={playlistItemStyle}>
-            <ThumBox
+            <ThumbNailBox
               type='main1'
               thumURL={playlist.thumbnailUrl}
               title={playlist.title}

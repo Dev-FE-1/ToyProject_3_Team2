@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { titleStyle } from './PlaylistSection';
-import ThumBox from '../common/ThumBox';
+import ThumbNailBox from '../common/ThumbNailBox';
 import Header from '@/layouts/layout/Header';
 import { PlaylistModel } from '@/types/playlist';
 
@@ -18,7 +18,7 @@ const SectionListPage: React.FC = () => {
   const navigate = useNavigate();
   const { title, playlists } = location.state as LocationState;
 
-  const handleThumBoxClick = (playlist: PlaylistModel) => {
+  const handleThumbNailBoxClick = (playlist: PlaylistModel) => {
     navigate(`/Playlist/${playlist.playlistId}`, {
       state: { playlist },
     });
@@ -30,7 +30,7 @@ const SectionListPage: React.FC = () => {
       <div css={listStyle}>
         <h2 css={titleStyle2}>{title}</h2>
         {playlists.map((playlist) => (
-          <ThumBox
+          <ThumbNailBox
             key={playlist.playlistId}
             type='details'
             thumURL={playlist.thumbnailUrl}
@@ -41,7 +41,7 @@ const SectionListPage: React.FC = () => {
             uploader={playlist.userId}
             update={playlist.updatedAt}
             listnum={playlist.videoCount}
-            onClick={() => handleThumBoxClick(playlist)}
+            onClick={() => handleThumbNailBoxClick(playlist)}
           />
         ))}
       </div>

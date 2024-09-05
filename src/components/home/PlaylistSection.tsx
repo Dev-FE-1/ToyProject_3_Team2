@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
-import ThumBox from '@/components/common/ThumBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 
@@ -46,7 +46,7 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) =
     navigate('/section-list', { state: { title, playlists } });
   };
 
-  const handleThumBoxClick = (playlist: PlaylistModel) => {
+  const handleThumbNailBoxClick = (playlist: PlaylistModel) => {
     navigate(`Playlist/${playlist.playlistId}`, { state: { playlist } });
   };
 
@@ -73,14 +73,14 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) =
       >
         {playlists.map((playlist) => (
           <div key={playlist.playlistId} css={playlistItemStyle}>
-            <ThumBox
+            <ThumbNailBox
               type='main1'
               thumURL={playlist.thumbnailUrl}
               title={playlist.title}
               likes={playlist.likeCount}
               uploader={playlist.userId}
               listnum={playlist.videoCount}
-              onClick={() => handleThumBoxClick(playlist)}
+              onClick={() => handleThumbNailBoxClick(playlist)}
             />
           </div>
         ))}

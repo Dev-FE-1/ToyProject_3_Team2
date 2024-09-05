@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 
-import ThumBox from '@/components/common/ThumBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
@@ -14,7 +14,7 @@ const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playli
   <div>
     <h2 css={titleStyle}>{title}</h2>
     {playlists.map((playlist) => (
-      <ThumBox
+      <ThumbNailBox
         key={playlist.playlistId}
         type='details'
         thumURL={playlist.thumbnailUrl}

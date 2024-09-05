@@ -11,15 +11,14 @@ import {
   deleteVideoFromPlaylist,
   addVideoToPlaylist,
 } from '@/api/endpoints/playlist';
-// import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistDetail/nullBox';
-import ThumBoxDetail from '@/components/playlistDetail/thumBoxDetail';
+import NullBox from '@/components/playlistDetail/NullBox';
+import ThumbNailBoxDetail from '@/components/playlistDetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
 import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
@@ -217,11 +216,10 @@ const PlaylistPage: React.FC = () => {
         <Header onBack={handleHeaderBack} />
       )}
       {playlist && (
-        <ThumBoxDetail
+        <ThumbNailBoxDetail
           playlist={playlist}
           user={user}
           onClickProfile={() => console.log('프로필 클릭')}
-          setRefreshTrigger={setRefreshTrigger}
         />
       )}
       <div css={buttonBoxStyle}>

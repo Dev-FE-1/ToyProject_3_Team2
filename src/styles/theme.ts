@@ -17,7 +17,7 @@ const colors = {
   darkGray: '#8B95A1', // placeholder
   bgMypage: '#353535', // 마이페이지 프로필 배경색
   goldStar: '#FFC700', // 별점 색상
-  ThumBox: '#8C8C8C', // 썸네일 두겹박스 색
+  ThumbNailBox: '#8C8C8C', // 썸네일 두겹박스 색
 };
 
 const fontSizes = {
