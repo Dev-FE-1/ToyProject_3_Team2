@@ -3,7 +3,6 @@ import { GoChevronLeft } from 'react-icons/go';
 import { RiSettings5Line } from 'react-icons/ri'; // setting 아이콘
 import { useNavigate } from 'react-router-dom';
 
-import defaultAvatar from '@/assets/images/default-avatar-woman.svg';
 import Badge from '@/components/common/Badge';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';

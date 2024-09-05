@@ -10,6 +10,7 @@ export const PATH = {
   PLAYLIST: '/playlist/:playlistId',
   PLAYLIST_EDIT: 'edit',
   COMMENT: '/comments/:playlistId',
+  COMMENT_FORM: '/comments/:playlistId/form',
 };
 export const PATH_TITLE = {
   HOME: '홈',

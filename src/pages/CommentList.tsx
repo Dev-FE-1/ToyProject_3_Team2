@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getPlaylistById } from '@/api/endpoints/playlist';
 import CommentBox from '@/components/comment/CommentBox';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import { PATH } from '@/constants/path';
 import { useCommentsList } from '@/hooks/query/useComments';
 import Header from '@/layouts/layout/Header';
 import theme from '@/styles/theme';
@@ -19,6 +20,17 @@ const CommentList = () => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
   const navigate = useNavigate();
+
+  const goToCommentForm = () => {
+    navigate(`${PATH.COMMENT_FORM.replace(':playlistId', playlistId ?? '')}`, {
+      state: {
+        playlistId,
+        title: playlistData?.title,
+        userName: playlistData?.userName,
+        thumbnailUrl: playlistData?.thumbnailUrl,
+      },
+    });
+  };
 
   const { data: commentsData, error } = useCommentsList(playlistId);
 
@@ -62,7 +74,7 @@ const CommentList = () => {
           Icon={RiPencilLine}
           variant='light'
           iconPosition='left'
-          onClick={() => navigate('/')}
+          onClick={goToCommentForm}
         >
           쓰기
         </IconTextButton>
@@ -91,7 +103,7 @@ const CommentList = () => {
   );
 };
 
-const CommentTabStyle = css`
+export const CommentTabStyle = css`
   display: flex;
   align-items: center;
   justify-content: space-between;

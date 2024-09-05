@@ -9,26 +9,33 @@ import {
   getPlaylistWithUser,
   deletePlaylist,
   deleteVideoFromPlaylist,
+  addVideoToPlaylist,
 } from '@/api/endpoints/playlist';
-import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
+// import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
+import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistdetail/nullBox';
-import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
+import NullBox from '@/components/playlistDetail/nullBox';
+import ThumBoxDetail from '@/components/playlistDetail/thumBoxDetail';
+import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
+import VideoModal from '@/components/videoModal/VideoModal';
+import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
+import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
+import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
-import { PlaylistModel } from '@/types/playlist';
+import { PlaylistModel, Video } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistPage: React.FC = () => {
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
+  const [playlist, setPlaylist] = useState<PlaylistModel | null>();
   const [user, setUser] = useState<UserModel | null>(null);
   const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
@@ -36,23 +43,28 @@ const PlaylistPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const isOpen = useMiniPlayerStore((state) => state.isOpen);
+  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
+  const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
+
+  const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
+  const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
+  const { openModal, closeModal } = useModalStore(); // 추가추가
+
   const navigate = useNavigate();
+
+  const userId = getUserIdBySession();
+
   const [bottomSheetContentType, setBottomSheetContentType] = useState<
     'deleteFromPlaylist' | 'deleteVideo'
   >('deleteFromPlaylist');
   const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
     null
   );
-  // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
-  const userSessionStr = sessionStorage.getItem('userSession');
-  if (!userSessionStr) {
-    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
-  }
-  const userSession = JSON.parse(userSessionStr);
-  const userId = userSession.uid;
 
   useEffect(() => {
-    async function fetchPlaylistWithUser() {
+    const fetchPlaylistWithUser = async () => {
       if (!playlistId) {
         setError('Playlist ID is missing');
         setIsLoading(false);
@@ -74,10 +86,10 @@ const PlaylistPage: React.FC = () => {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
     fetchPlaylistWithUser();
-  }, [playlistId]);
+  }, [playlistId, refreshTrigger]);
 
   const handleIconButtonClick = () => {
     showToast('내 재생목록에 저장되었습니다.');
@@ -89,7 +101,22 @@ const PlaylistPage: React.FC = () => {
     navigate('/playlist/' + playlist?.playlistId + '/edit');
   };
   const handleAddPlaylist = () => {
-    console.log('플레이리스트 링크 추가하는 모달 팝업');
+    openModal();
+  };
+
+  const handleVideoClick = (videoId: string) => {
+    if (playlist) {
+      if (isOpen) {
+        updateMiniPlayer(videoId, playlist);
+      } else {
+        openMiniPlayer(videoId, playlist, userId);
+      }
+    }
+  };
+  const confirmSignOut = () => {
+    addVideoToPlaylist(playlistId, videoData as Video);
+    setRefreshTrigger(Date());
+    closeModal();
   };
   const handleProfileClick = () => {
     if (playlist?.userId) {
@@ -122,6 +149,9 @@ const PlaylistPage: React.FC = () => {
     }
   };
 
+  const handleHeaderBack = () => {
+    navigate(`${PATH.MYPAGE}`); // 이전 페이지로 이동
+  };
   const handleVideoDelete = async () => {
     if (!playlist || !selectedVideo) {
       console.error('Playlist or selected video is null');
@@ -173,7 +203,7 @@ const PlaylistPage: React.FC = () => {
   if (!playlist || !user) {
     return (
       <div>
-        <Header customStyle={kebabStyle} />
+        <Header onBack={handleHeaderBack} customStyle={kebabStyle} />
         <NullBox />
       </div>
     );
@@ -185,9 +215,14 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
-        <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} onIcon={onClickKebob} />
+        <Header
+          Icon={GoKebabHorizontal}
+          customStyle={kebabStyle}
+          onIcon={onClickKebob}
+          onBack={handleHeaderBack}
+        />
       ) : (
-        <Header />
+        <Header onBack={handleHeaderBack} />
       )}
       {playlist && (
         <ThumBoxDetail
@@ -220,8 +255,10 @@ const PlaylistPage: React.FC = () => {
             type={playlist.userId === userId ? 'host' : 'visitor'} // 로그인한 사용자 아이디 비교해서 값이 참이면 host 다르면 visitor
             channelName={playlist.userName}
             uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-            onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
-            onClickKebob={() => onClickVideoKebob({ videoId: video.videoId, title: video.title })}
+            onClickVideo={handleVideoClick}
+            onClickKebob={() =>
+              onClickVideoKebob({ videoId: video.videoId as string, title: video.title })
+            }
           />
         ))
       ) : (
@@ -258,11 +295,21 @@ const PlaylistPage: React.FC = () => {
         onPlaylistClick={handlePlaylistDelete}
         onVideoDelete={handleVideoDelete}
       />
+      {isModalOpen && (
+        <CustomDialog
+          type='videoLink'
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={confirmSignOut}
+          setVideoData={setVideoData}
+        />
+      )}
     </div>
   );
 };
 const containerStyle = css`
-  padding-bottom: 90px;
+  position: relative;
+  padding-bottom: 160px;
 `;
 const kebabStyle = css`
   transform: rotate(90deg);
