@@ -7,12 +7,21 @@ import { useNavigate } from 'react-router-dom';
 import theme from '@/styles/theme';
 interface HeaderProps {
   Icon?: ComponentType<SVGProps<SVGElement>>;
+  LeftIcon?: ComponentType<SVGProps<SVGElement>>;
   children?: React.ReactNode;
   onBack?: () => void;
   customStyle?: SerializedStyles;
+  onIcon?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ Icon, children, onBack, customStyle }: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({
+  Icon,
+  LeftIcon = GoChevronLeft,
+  children,
+  onBack,
+  customStyle,
+  onIcon,
+}: HeaderProps) => {
   const navigate = useNavigate();
 
   const handleBack = () => {
@@ -21,11 +30,11 @@ const Header: React.FC<HeaderProps> = ({ Icon, children, onBack, customStyle }: 
   return (
     <header css={headerStyle}>
       <button css={buttonStyle} onClick={handleBack}>
-        <GoChevronLeft />
+        <LeftIcon />
       </button>
       {children && <h1 css={titleStyle}>{children}</h1>}
       {Icon && (
-        <button css={[buttonStyle, customStyle]}>
+        <button css={[buttonStyle, customStyle]} onClick={onIcon}>
           <Icon />
         </button>
       )}

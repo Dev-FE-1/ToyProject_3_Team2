@@ -1,48 +1,40 @@
-import React from 'react';
-
 import { css } from '@emotion/react';
-import { useNavigate } from 'react-router-dom';
 
-import { titleStyle } from './PlaylistSection';
-import ThumBox from '../common/ThumBox';
+import ThumBox from '@/components/common/ThumBox';
+import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface RecentUpdateSectionProps {
   title: string;
   playlists: PlaylistModel[];
 }
 
-const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playlists }) => {
-  const navigate = useNavigate();
+const RecentUpdateSection: React.FC<RecentUpdateSectionProps> = ({ title, playlists }) => (
+  <div>
+    <h2 css={titleStyle}>{title}</h2>
+    {playlists.map((playlist) => (
+      <ThumBox
+        key={playlist.playlistId}
+        type='details'
+        thumURL={playlist.thumbnailUrl}
+        title={playlist.title}
+        subtitle={playlist.description}
+        likes={playlist.likeCount}
+        comments={playlist.commentCount}
+        uploader={playlist.userName}
+        update={formatTimeWithUpdated(playlist.updatedAt)}
+        listnum={playlist.videoCount}
+      />
+    ))}
+  </div>
+);
 
-  const handleThumBoxClick = (playlist: PlaylistModel) => {
-    navigate(`Playlist/${playlist.playlistId}`, { state: { playlist } });
-  };
-
-  return (
-    <div>
-      <h2 css={titleStyle2}>{title}</h2>
-      {playlists.map((playlist) => (
-        <ThumBox
-          key={playlist.playlistId}
-          type='details'
-          thumURL={playlist.thumbnailUrl}
-          title={playlist.title}
-          subtitle={playlist.description}
-          likes={playlist.likeCount}
-          comments={playlist.commentCount}
-          uploader={playlist.userId}
-          update={playlist.updatedAt}
-          listnum={playlist.videoCount}
-          onClick={() => handleThumBoxClick(playlist)}
-        />
-      ))}
-    </div>
-  );
-};
-
-const titleStyle2 = css`
-  ${titleStyle}
+const titleStyle = css`
+  display: flex;
+  align-items: center;
+  font-size: ${theme.fontSizes.normal};
+  font-weight: 700;
   margin-left: 1rem;
 `;
 

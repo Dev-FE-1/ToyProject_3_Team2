@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import CustomDialog from '@/components/common/modals/Dialog';
 import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
+import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
 import theme from '@/styles/theme';
 
 const Settings = () => {
   const isModalOpen = useModalStore((state) => state.isModalOpen);
   const { openModal, closeModal } = useModalStore();
+  const resetMiniPlayer = useMiniPlayerStore((state) => state.resetMiniPlayer);
   const navigate = useNavigate();
 
   const handleSignOut = () => {
@@ -19,6 +21,8 @@ const Settings = () => {
   const confirmSignOut = () => {
     //로그인 상태를 로그아웃으로 변경하는 코드
     // 토스트는 없어도 됨
+    sessionStorage.removeItem('userSession');
+    resetMiniPlayer(); // 미니 플레이어 상태 초기화
     closeModal();
     navigate(PATH.SIGNIN);
   };

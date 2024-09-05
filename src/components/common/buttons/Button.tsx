@@ -65,7 +65,7 @@ const sizeStyles = {
   `,
   large: css`
     height: ${theme.heights.tall};
-    font-size: ${theme.fontSizes.normal};
+    font-size: ${theme.fontSizes.large};
   `,
 };
 

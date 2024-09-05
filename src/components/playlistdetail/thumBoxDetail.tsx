@@ -34,6 +34,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
     likeCount,
     commentCount,
     thumbnailUrl,
+    isPublic,
   } = playlist;
 
   const { profileImg, userName } = user;
@@ -45,6 +46,15 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
   const decrementLike = useLikeStore((state) => state.decrementLike);
   const toggleLiked = useLikeStore((state) => state.toggleLiked);
 
+  const userSessionStr = sessionStorage.getItem('userSession');
+  if (!userSessionStr) {
+    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
+  }
+  const userSession = JSON.parse(userSessionStr);
+  const userID = userSession.uid;
+  if (!userSessionStr) {
+    throw new Error('세션에 유저 ID를 찾을 수 없습니다.');
+  }
   useEffect(() => {
     initializeLikes([
       {
@@ -69,7 +79,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
       <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
-        <Profile profileImageSrc={profileImg} nickname={userName} onClick={onClickProfile} />
+        <Profile profileImageSrc={profileImg} userName={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
           <CommentsButton playListId={playlistId} commentCount={commentCount} />
           <div css={dividerStyle} />
@@ -84,7 +94,11 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({
       <div css={statsRowStyle}>
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
-        <span css={statsStyle}>{new Date(updatedAt).toLocaleDateString()}</span>
+        {userId === userID ? (
+          <span css={statsStyle}>{isPublic ? '공개' : '비공개'}</span>
+        ) : (
+          <span css={statsStyle}>{new Date(updatedAt).toLocaleDateString()}</span>
+        )}
       </div>
       <p css={subtitleStyle}>{description}</p>
     </div>
