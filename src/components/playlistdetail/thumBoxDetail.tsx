@@ -11,6 +11,7 @@ import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
+import { getUserIdBySession } from '@/utils/user';
 
 interface ThumBoxDetailProps {
   playlist: PlaylistModel;
@@ -30,6 +31,7 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
     likeCount,
     commentCount,
     thumbnailUrl,
+    isPublic,
   } = playlist;
 
   const { profileImg = defaultProfileImage, userName } = user;
@@ -40,6 +42,8 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
   const incrementLike = useLikeStore((state) => state.incrementLike);
   const decrementLike = useLikeStore((state) => state.decrementLike);
   const toggleLiked = useLikeStore((state) => state.toggleLiked);
+
+  const userId = getUserIdBySession();
 
   useEffect(() => {
     initializeLikes([
@@ -80,7 +84,13 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
       <div css={statsRowStyle}>
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
-        <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
+
+        {/* 여긴 뭘까??????????????///// */}
+        {userId === userId ? (
+          <span css={statsStyle}>{isPublic ? '' : '비공개'}</span>
+        ) : (
+          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
+        )}
       </div>
       <p css={subtitleStyle}>{description}</p>
     </div>

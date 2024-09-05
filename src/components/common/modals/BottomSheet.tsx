@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from 'react';
 
 import { css, keyframes } from '@emotion/react';
-import { RiBookmarkLine, RiBookmarkFill } from 'react-icons/ri';
+import { RiBookmarkLine, RiBookmarkFill, RiDeleteBin6Line } from 'react-icons/ri';
 
 import PlaylistItem from '../PlaylistItem';
 import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
 
 interface BottomSheetProps {
-  contentType: 'saveToPlaylist' | 'deleteFromPlaylist';
+  contentType: 'saveToPlaylist' | 'deleteFromPlaylist' | 'deleteVideo';
   isOpen: boolean;
   onClose: () => void;
-  playlists: {
+  playlists?: {
     id: string;
     title: string;
     isPublic: boolean;
     isBookmarked: boolean;
     thumURL: string;
   }[];
-  // eslint-disable-next-line no-unused-vars
-  onPlaylistClick: (playlistId: string) => void;
+  video?: {
+    videoId: string;
+    title: string;
+  };
+  onPlaylistClick?: (_playlistId: string) => void;
+  onVideoDelete?: () => void;
 }
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
@@ -27,16 +31,18 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   onClose,
   contentType,
   playlists,
+  video,
   onPlaylistClick,
+  onVideoDelete,
 }) => {
   const [step, setStep] = useState<'initial' | 'choosePlaylist'>('initial');
-  const [localPlaylists, setLocalPlaylists] = useState(playlists);
+  const [localPlaylists, setLocalPlaylists] = useState(playlists || []);
   const [isClosing, setIsClosing] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
       setStep('initial');
-    } else {
+    } else if (playlists) {
       setLocalPlaylists(playlists);
     }
   }, [isOpen, playlists]);
@@ -50,17 +56,19 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   };
 
   const handlePlaylistClick = (playlistId: string) => {
-    setLocalPlaylists((prevPlaylists) =>
-      prevPlaylists.map((playlist) =>
-        playlist.id === playlistId
-          ? { ...playlist, isBookmarked: !playlist.isBookmarked }
-          : playlist
-      )
-    );
-    onPlaylistClick(playlistId);
-    setTimeout(() => {
-      handleClose();
-    }, 500);
+    if (onPlaylistClick) {
+      setLocalPlaylists((prevPlaylists) =>
+        prevPlaylists.map((playlist) =>
+          playlist.id === playlistId
+            ? { ...playlist, isBookmarked: !playlist.isBookmarked }
+            : playlist
+        )
+      );
+      onPlaylistClick(playlistId);
+      setTimeout(() => {
+        handleClose();
+      }, 500);
+    }
   };
 
   const renderContent = () => {
@@ -101,12 +109,30 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
           <button
             css={actionButtonStyle}
             onClick={() => {
-              onPlaylistClick(localPlaylists[0].id);
+              if (playlists && playlists.length > 0 && onPlaylistClick) {
+                onPlaylistClick(playlists[0].id);
+                handleClose();
+              }
+            }}
+          >
+            <RiDeleteBin6Line css={iconStyle} />
+            <span css={titleStyle}>플레이리스트 삭제</span>
+          </button>
+        );
+
+      case 'deleteVideo':
+        return (
+          <button
+            css={actionButtonStyle}
+            onClick={() => {
+              if (onVideoDelete) {
+                onVideoDelete();
+              }
               handleClose();
             }}
           >
-            <RiBookmarkFill css={iconStyle} />
-            <span css={titleStyle}>플레이리스트 삭제</span>
+            <RiDeleteBin6Line css={iconStyle} />
+            <span css={titleStyle}>동영상 삭제</span>
           </button>
         );
 

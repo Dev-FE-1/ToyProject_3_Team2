@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react';
+
 import { css } from '@emotion/react';
 import { RiCloseLine } from 'react-icons/ri';
 
@@ -12,8 +14,11 @@ import { PlaylistFormDataModel } from '@/types/playlist';
 interface PlaylistFormProps {
   initialData?: Partial<PlaylistFormDataModel>;
   onSubmit: (data: PlaylistFormDataModel) => void;
+  type?: 'add' | 'edit';
 }
-const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit }) => {
+
+const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit, type }) => {
+  const [description, setDescription] = useState(initialData.description || '');
   const {
     titleValue,
     categoryValue,
@@ -30,6 +35,18 @@ const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit 
     handleSubmitForm,
     toggle,
   } = usePlaylistForm({ ...INITIAL_FORM_STATE, ...initialData, videos: [] });
+
+  useEffect(() => {
+    if (initialData.isPublic !== undefined) {
+      toggle();
+    }
+  }, [initialData.isPublic, toggle]);
+
+  useEffect(() => {
+    if (textAreaRef.current) {
+      textAreaRef.current.value = description;
+    }
+  }, [description, textAreaRef]);
 
   const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const data = handleSubmitForm(event);
@@ -86,20 +103,27 @@ const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit 
           <SelectBox
             items={CATEGORY_OPTIONS}
             onChange={handleCategoryChange}
-            value={categoryValue}
+            value={categoryValue || initialData.category}
             name='category'
           />
         </div>
-        <textarea ref={textAreaRef} css={textareaStyle} placeholder='설명을 입력하세요.' />
+        <textarea
+          ref={textAreaRef}
+          css={textareaStyle}
+          placeholder='설명을 입력하세요.'
+          defaultValue={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
         <div css={buttonStyle}>
           <Button type='submit' styleType={`${!titleValue.trim() ? 'disabled' : 'primary'}`}>
-            만들기
+            {type === 'add' ? '만들기' : '수정하기'}
           </Button>
         </div>
       </form>
     </div>
   );
 };
+
 const containerStyle = css`
   padding: 0 1rem 90px;
   color: ${theme.colors.white};

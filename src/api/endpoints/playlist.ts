@@ -9,13 +9,12 @@ import {
   getDoc,
   where,
   addDoc,
-  startAt,
-  endAt,
   setDoc,
   deleteDoc,
-  updateDoc,
   arrayUnion,
   increment,
+  arrayRemove,
+  updateDoc,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString, deleteObject } from 'firebase/storage';
 
@@ -283,6 +282,7 @@ export const addPlaylist = async (
   }
 };
 
+//플레이리스트 삭제
 export const deletePlaylist = async (playlistId: string): Promise<void> => {
   try {
     // 플레이리스트 문서 참조 생성
@@ -301,13 +301,10 @@ export const deletePlaylist = async (playlistId: string): Promise<void> => {
     if (playlistData.thumbnailUrl && playlistData.thumbnailUrl.includes('firebasestorage')) {
       const imageRef = ref(storage, playlistData.thumbnailUrl);
       await deleteObject(imageRef);
-      console.log('Thumbnail image deleted from storage');
     }
 
     // Firestore에서 플레이리스트 문서 삭제
     await deleteDoc(playlistRef);
-
-    console.log('Playlist deleted successfully');
   } catch (error) {
     console.error('Error deleting playlist:', error);
     throw error; // 에러를 상위로 전파
@@ -337,5 +334,107 @@ export const addVideoToPlaylist = async (
   } catch (error) {
     console.error('Error adding video to playlist:', error);
     return false;
+  }
+};
+
+// playlist 아이디로 해당 플레이리스트의 데이터 받아오기
+export const getPlaylistById = async (playlistId: string): Promise<PlaylistModel | null> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+    const playlistDoc = await getDoc(playlistRef);
+
+    if (!playlistDoc.exists()) {
+      throw new Error(`Playlist with ID ${playlistId} not found`);
+    }
+
+    return playlistDoc.data() as PlaylistModel;
+  } catch (error) {
+    console.error(`Error fetching playlist ${playlistId}:`, error);
+    throw error;
+  }
+};
+
+// 비디오 삭제
+export const deleteVideoFromPlaylist = async (
+  playlistId: string,
+  videoId: string
+): Promise<void> => {
+  try {
+    // 플레이리스트 문서 참조 생성
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    // 플레이리스트 데이터 가져오기
+    const playlistSnapshot = await getDoc(playlistRef);
+
+    if (!playlistSnapshot.exists()) {
+      throw new Error('Playlist not found');
+    }
+
+    const playlistData = playlistSnapshot.data() as PlaylistModel;
+
+    // 삭제할 비디오 찾기
+    const videoToDelete = playlistData.videos.find((video) => video.videoId === videoId);
+
+    if (!videoToDelete) {
+      throw new Error('Video not found in the playlist');
+    }
+
+    // videos 배열에서 해당 비디오 제거
+    await updateDoc(playlistRef, {
+      videos: arrayRemove(videoToDelete),
+      videoCount: playlistData.videoCount - 1,
+    });
+  } catch (error) {
+    console.error('Error deleting video from playlist:', error);
+    throw error; // 에러를 상위로 전파
+  }
+};
+
+// 플레이리스트 업데이트
+export const updatePlaylist = async (
+  playlistId: string,
+  formData: PlaylistFormDataModel
+): Promise<void> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    // 이미지가 base64 형식인 경우에만, storage에 업로드하고 URL을 받아옴
+    let updatedUrl = formData.thumbnailUrl;
+    if (updatedUrl && updatedUrl.startsWith('data:image')) {
+      // 기존 이미지가 있다면 삭제
+      const oldPlaylistData = (await getDoc(playlistRef)).data();
+      if (
+        oldPlaylistData?.thumbnailUrl &&
+        oldPlaylistData.thumbnailUrl.includes('firebasestorage')
+      ) {
+        const oldImageRef = ref(storage, oldPlaylistData.thumbnailUrl);
+        await deleteObject(oldImageRef);
+      }
+
+      // 새 이미지 업로드
+      const storageRef = ref(storage, `thumbnails/${Date.now()}_${formData.title}`);
+      await uploadString(storageRef, updatedUrl, 'data_url');
+
+      // 업로드 된 이미지의 다운로드 URL을 받아옴
+      updatedUrl = await getDownloadURL(storageRef);
+    }
+
+    // 업데이트할 데이터 준비
+    const updateData = {
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      thumbnailUrl: updatedUrl,
+      isPublic: formData.isPublic,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Firestore 문서 업데이트
+    await updateDoc(playlistRef, updateData);
+
+    console.log('Playlist updated successfully');
+  } catch (error) {
+    console.error('Error updating playlist:', error);
+    throw error;
   }
 };

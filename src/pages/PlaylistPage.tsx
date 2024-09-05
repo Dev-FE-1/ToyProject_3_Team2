@@ -5,7 +5,13 @@ import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getPlaylistWithUser, deletePlaylist, addVideoToPlaylist } from '@/api/endpoints/playlist';
+import {
+  getPlaylistWithUser,
+  deletePlaylist,
+  deleteVideoFromPlaylist,
+  addVideoToPlaylist,
+} from '@/api/endpoints/playlist';
+// import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
@@ -45,6 +51,13 @@ const PlaylistPage: React.FC = () => {
 
   const userId = getUserIdBySession();
 
+  const [bottomSheetContentType, setBottomSheetContentType] = useState<
+    'deleteFromPlaylist' | 'deleteVideo'
+  >('deleteFromPlaylist');
+  const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
+    null
+  );
+
   useEffect(() => {
     const fetchPlaylistWithUser = async () => {
       if (!playlistId) {
@@ -79,7 +92,8 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handlePlaylistEdit = () => {
-    console.log('플레이리스트 수정페이지로 이동');
+    console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
+    navigate('/playlist/' + playlist?.playlistId + '/edit');
   };
   const handleAddPlaylist = () => {
     openModal();
@@ -91,11 +105,13 @@ const PlaylistPage: React.FC = () => {
   };
 
   const onClickKebob = () => {
+    setBottomSheetContentType('deleteFromPlaylist');
     setIsBottomSheetOpen(true);
   };
 
   const handleBottomSheetClose = () => {
     setIsBottomSheetOpen(false);
+    setSelectedVideo(null);
   };
 
   const handlePlaylistDelete = async (playlistId: string) => {
@@ -110,6 +126,47 @@ const PlaylistPage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleVideoDelete = async () => {
+    if (!playlist || !selectedVideo) {
+      console.error('Playlist or selected video is null');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      await deleteVideoFromPlaylist(playlist.playlistId, selectedVideo.videoId);
+
+      setPlaylist((prevPlaylist) => {
+        if (!prevPlaylist) {
+          console.error('Previous playlist is null');
+          return null;
+        }
+        const updatedVideos = prevPlaylist.videos.filter(
+          (video) => video.videoId !== selectedVideo.videoId
+        );
+        return {
+          ...prevPlaylist,
+          videos: updatedVideos,
+          videoCount: updatedVideos.length,
+        };
+      });
+
+      showToast('동영상이 성공적으로 삭제되었습니다.');
+    } catch (error) {
+      console.error('Error in handleVideoDelete:', error);
+      showToast('동영상 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
+      setSelectedVideo(null);
+      handleBottomSheetClose();
+    }
+  };
+  const onClickVideoKebob = (video: { videoId: string; title: string }) => {
+    setSelectedVideo(video);
+    setBottomSheetContentType('deleteVideo');
+    setIsBottomSheetOpen(true);
   };
 
   if (isLoading) {
@@ -169,7 +226,9 @@ const PlaylistPage: React.FC = () => {
             channelName={playlist.userName}
             uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
             onClick={() => console.log(`비디오 클릭됨: ${video.videoId}`)}
-            onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
+            onClickKebob={() =>
+              onClickVideoKebob({ videoId: video.videoId as string, title: video.title })
+            }
           />
         ))
       ) : (
@@ -186,19 +245,25 @@ const PlaylistPage: React.FC = () => {
       ) : null}
       <Toast />
       <BottomSheet
-        contentType='deleteFromPlaylist'
+        contentType={bottomSheetContentType}
         isOpen={isBottomSheetOpen}
         onClose={handleBottomSheetClose}
-        playlists={[
-          {
-            id: playlist.playlistId,
-            title: playlist.title,
-            isPublic: playlist.isPublic,
-            isBookmarked: false,
-            thumURL: playlist.thumbnailUrl,
-          },
-        ]}
+        playlists={
+          bottomSheetContentType === 'deleteFromPlaylist'
+            ? [
+                {
+                  id: playlist.playlistId,
+                  title: playlist.title,
+                  isPublic: playlist.isPublic,
+                  isBookmarked: false,
+                  thumURL: playlist.thumbnailUrl,
+                },
+              ]
+            : undefined
+        }
+        video={selectedVideo || undefined}
         onPlaylistClick={handlePlaylistDelete}
+        onVideoDelete={handleVideoDelete}
       />
       {isModalOpen && (
         <CustomDialog
