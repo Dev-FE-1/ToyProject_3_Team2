@@ -17,6 +17,7 @@ import ThumBoxDetail from '@/components/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/playlistdetail/vedieoBoxDetail';
 import VideoModal from '@/components/videoModal/VideoModal';
 import Header from '@/layouts/layout/Header';
+import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
@@ -34,8 +35,7 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-  const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
+  const openMiniPlayer = useMiniPlayerStore((state) => state.openMiniPlayer);
 
   const navigate = useNavigate();
   // 세션 스토리지에서 userSession 문자열을 가져와서 파싱
@@ -87,8 +87,9 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handleVideoClick = (videoId: string) => {
-    setSelectedVideoId(videoId);
-    setIsVideoModalOpen(true);
+    if (playlist) {
+      openMiniPlayer(videoId, playlist, userId);
+    }
   };
   const onClickKebob = () => {
     setIsBottomSheetOpen(true);
@@ -201,17 +202,6 @@ const PlaylistPage: React.FC = () => {
         ]}
         onPlaylistClick={handlePlaylistDelete}
       />
-
-      {/* 비디오 재생 모달 */}
-      {isVideoModalOpen && selectedVideoId && (
-        <VideoModal
-          isOpen={isVideoModalOpen}
-          onClose={() => setIsVideoModalOpen(false)}
-          videoId={selectedVideoId}
-          playlist={playlist}
-          userId={userId}
-        />
-      )}
     </div>
   );
 };
