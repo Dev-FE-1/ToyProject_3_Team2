@@ -15,6 +15,7 @@ import MyPage from '@/pages/Mypage';
 import NotFoundPage from '@/pages/NotFound';
 import Onboarding from '@/pages/Onboarding';
 import PlaylistAdd from '@/pages/PlaylistAdd';
+import PlaylistEdit from '@/pages/PlaylistEdit';
 import PlaylistPage from '@/pages/PlaylistPage';
 import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
@@ -73,7 +74,13 @@ const router = createBrowserRouter([
               { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
             ],
           },
-          { path: PATH.PLAYLIST, element: <PlaylistPage /> },
+          {
+            path: PATH.PLAYLIST,
+            children: [
+              { index: true, element: <PlaylistPage /> },
+              { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
+            ],
+          },
           { path: '/section-list', element: <SectionListPage /> },
         ],
       },

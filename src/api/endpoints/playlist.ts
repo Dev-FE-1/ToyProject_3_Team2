@@ -392,3 +392,52 @@ export const deleteVideoFromPlaylist = async (
     throw error; // 에러를 상위로 전파
   }
 };
+
+// 플레이리스트 업데이트
+export const updatePlaylist = async (
+  playlistId: string,
+  formData: PlaylistFormDataModel
+): Promise<void> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+
+    // 이미지가 base64 형식인 경우에만, storage에 업로드하고 URL을 받아옴
+    let updatedUrl = formData.thumbnailUrl;
+    if (updatedUrl && updatedUrl.startsWith('data:image')) {
+      // 기존 이미지가 있다면 삭제
+      const oldPlaylistData = (await getDoc(playlistRef)).data();
+      if (
+        oldPlaylistData?.thumbnailUrl &&
+        oldPlaylistData.thumbnailUrl.includes('firebasestorage')
+      ) {
+        const oldImageRef = ref(storage, oldPlaylistData.thumbnailUrl);
+        await deleteObject(oldImageRef);
+      }
+
+      // 새 이미지 업로드
+      const storageRef = ref(storage, `thumbnails/${Date.now()}_${formData.title}`);
+      await uploadString(storageRef, updatedUrl, 'data_url');
+
+      // 업로드 된 이미지의 다운로드 URL을 받아옴
+      updatedUrl = await getDownloadURL(storageRef);
+    }
+
+    // 업데이트할 데이터 준비
+    const updateData = {
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      thumbnailUrl: updatedUrl,
+      isPublic: formData.isPublic,
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Firestore 문서 업데이트
+    await updateDoc(playlistRef, updateData);
+
+    console.log('Playlist updated successfully');
+  } catch (error) {
+    console.error('Error updating playlist:', error);
+    throw error;
+  }
+};

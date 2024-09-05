@@ -8,6 +8,7 @@ export const PATH = {
   ONBOARDING: '/onboarding',
   SETTINGS: '/mypage/settings',
   PLAYLIST: '/playlist/:playlistId',
+  PLAYLIST_EDIT: 'edit',
 };
 export const PATH_TITLE = {
   HOME: '홈',
