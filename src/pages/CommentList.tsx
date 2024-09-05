@@ -20,25 +20,17 @@ const CommentList = () => {
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
   const navigate = useNavigate();
 
-  // const fetchComments = async () => {
-  //   const q = query(collection(db, 'comments'), where('playlistId', '==', 'playlist101'));
-  //   try {
-  //     const querySnapshot = await getDocs(q);
-  //     const commentsData = querySnapshot.docs.map((doc) => doc.data() as Comment);
-  //     setComments(commentsData);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   const { data: commentsData, error } = useCommentsList(playlistId);
 
   useEffect(() => {
     if (commentsData) {
       setComments(commentsData);
-    } else if (error) {
+    }
+
+    if (error) {
       console.error('Failed to fetch comments:', error);
     }
+
     async function fetchPlaylistData() {
       if (playlistId) {
         try {
@@ -85,6 +77,7 @@ const CommentList = () => {
           <CommentBox
             key={comment.commentId}
             commentId={comment.commentId}
+            profileImg={comment.profileImg}
             playlistId={comment.playlistId}
             userId={comment.userId}
             userName={comment.userName}

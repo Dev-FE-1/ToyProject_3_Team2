@@ -363,15 +363,13 @@ export const getPlaylistById = async (playlistId: string): Promise<PlaylistModel
     const playlistRef = doc(db, 'playlists', playlistId);
     const playlistDoc = await getDoc(playlistRef);
 
-    if (playlistDoc.exists()) {
-      const data = playlistDoc.data() as PlaylistModel;
-      return data;
-    } else {
-      console.error('No such playlist found!');
-      return null;
+    if (!playlistDoc.exists()) {
+      throw new Error(`Playlist with ID ${playlistId} not found`);
     }
+
+    return playlistDoc.data() as PlaylistModel;
   } catch (error) {
-    console.error('Error fetching playlist:', error);
+    console.error(`Error fetching playlist ${playlistId}:`, error);
     throw error;
   }
 };

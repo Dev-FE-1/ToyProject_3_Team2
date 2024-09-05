@@ -18,6 +18,10 @@ export const getPlaylistComments = async (
   limitCount: number = 10
 ): Promise<Comment[]> => {
   try {
+    if (!playlistId) {
+      throw new Error('Playlist ID is required');
+    }
+
     const commentsRef = collection(db, 'comments');
     const q = query(
       commentsRef,
@@ -33,6 +37,7 @@ export const getPlaylistComments = async (
       return {
         commentId: doc.id,
         userId: data.userId,
+        profileImg: data.profileImg,
         playlistId: data.playlistId,
         userName: data.username,
         content: data.content,

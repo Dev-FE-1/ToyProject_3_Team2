@@ -2,38 +2,21 @@ import React from 'react';
 
 import { css } from '@emotion/react';
 
+import defaultImg from '@/assets/images/default-avatar-man.svg';
 import theme from '@/styles/theme';
 import { Comment } from '@/types/playlist';
-
-const CommentBox: React.FC<Comment> = ({
-  commentId,
-  userId,
-  playlistId,
-  userName,
-  content,
-  createdAt,
-  updatedAt,
-}: Comment) => {
-  const a = 1;
-
-  return (
-    <div css={CommentListStyle}>
+const CommentBox: React.FC<Comment> = ({ profileImg, userName, content, createdAt }: Comment) => (
+  <div css={CommentListStyle}>
+    <div>
+      <img src={profileImg || defaultImg} alt='미니 썸네일' />
       <div>
-        <img src='' alt='미니 썸네일' />
-        <div>
-          <h1>{userName}</h1>
-          <h2>{createdAt}</h2>
-          <h3>
-            {content}
-            {/* {' '}
-            나 지금 심심한데 뭐 할거없나...? 이거 누가 봐??? 아님 혼자 그냥 하는거야? 나 지금
-            심심한데 뭐 할거없나...? 이거 누가 봐??? 아님 혼자 그냥 하는거야? */}
-          </h3>
-        </div>
+        <h1>{userName}</h1>
+        <h2>{createdAt}</h2>
+        <h3>{content}</h3>
       </div>
     </div>
-  );
-};
+  </div>
+);
 
 const CommentListStyle = css`
   margin: 10px 0;
