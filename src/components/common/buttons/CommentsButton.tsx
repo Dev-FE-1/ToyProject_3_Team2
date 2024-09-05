@@ -13,7 +13,7 @@ interface CommentsButtonProps {
 const CommentsButton: React.FC<CommentsButtonProps> = ({ playListId, commentCount = 0 }) => {
   const navigate = useNavigate();
 
-  const handleCommentClick = () => navigate(`/${playListId}/comments`);
+  const handleCommentClick = () => navigate(`/comments/${playListId}`);
 
   const formattedCommentCount = formatNumberToK(commentCount);
 
