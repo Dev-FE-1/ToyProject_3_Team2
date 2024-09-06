@@ -23,7 +23,6 @@ export const usePopularPlaylists = () => {
   const { data: forkedPlaylists } = useForkedPlaylists(userId); // 사용자가 포크한 플레이리스트 가져오기
   const userIds = forkedPlaylists?.map((playlist: PlaylistModel) => playlist.userId);
   const uniqueUserIds = [...new Set(userIds)]; // 중복 userId 제거 후, 다시 배열로
-
   const forkedPlaylistsQueries = useForkedPlaylistsByUserIds(uniqueUserIds); // 여러 사용자가 포크한 플레이리스트 가져오기
 
   const isLoadingForAllForkedPlaylist = forkedPlaylistsQueries.some((query) => query.isLoading);

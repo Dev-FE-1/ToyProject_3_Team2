@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import ThumBox from '@/components/common/ThumBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
@@ -19,7 +19,7 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title, playlists })
       <h2 css={titleStyle}>{title}</h2>
       {playlists.map((playlist) => (
         <div key={playlist.playlistId} onClick={() => navigate(`playlist/${playlist.playlistId}`)}>
-          <ThumBox
+          <ThumbNailBox
             type='details'
             thumURL={playlist.thumbnailUrl}
             title={playlist.title}
