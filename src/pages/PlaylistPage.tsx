@@ -17,10 +17,9 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistDetail/NullBox';
-import ThumbNailBoxDetail from '@/components/playlistDetail/ThumbNailBoxDetail';
+import NullBox from '@/components/playlistdetail/nullBox';
+import ThumbNailBoxDetail from '@/components/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
-import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
@@ -147,7 +146,7 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handleHeaderBack = () => {
-    navigate(`${PATH.MYPAGE}`); // 이전 페이지로 이동
+    navigate(`/mypage/${userId}`); // 이전 페이지로 이동
   };
   const handleVideoDelete = async () => {
     if (!playlist || !selectedVideo) {
@@ -222,12 +221,7 @@ const PlaylistPage: React.FC = () => {
         <Header onBack={handleHeaderBack} />
       )}
       {playlist && (
-        <ThumbNailBoxDetail
-          playlist={playlist}
-          user={user}
-          profileURL={user.profileImg || defaultProfileImage}
-          onClickProfile={handleProfileClick}
-        />
+        <ThumbNailBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
       )}
       <div css={buttonBoxStyle}>
         <Button

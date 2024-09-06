@@ -1,49 +1,70 @@
-import { getFirestore, runTransaction, doc } from 'firebase/firestore';
+import { getFirestore, runTransaction, doc, getDoc } from 'firebase/firestore';
 
 const db = getFirestore();
 
-export const toggleLike = async (userId: string, playlistId: string): Promise<boolean> => {
+// isLiked 상태 초기화 함수
+export const getInitialLikedState = async (
+  userId: string,
+  playlistId: string
+): Promise<boolean> => {
+  const userPlaylistRef = doc(db, 'userPlaylists', userId);
+  const userPlaylistSnap = await getDoc(userPlaylistRef);
+  if (userPlaylistSnap.exists()) {
+    const userData = userPlaylistSnap.data();
+    return userData.liked?.includes(playlistId) || false;
+  }
+  return false;
+};
+
+// 좋아요 토글 함수
+export const togglePlaylistLike = async (
+  playlistId: string,
+  userId: string,
+  isCurrentlyLiked: boolean
+) => {
   try {
-    await runTransaction(db, async (transaction) => {
-      const userPlaylistsRef = doc(db, 'userPlaylists', userId);
+    const newLikeState = await runTransaction(db, async (transaction) => {
       const playlistRef = doc(db, 'playlists', playlistId);
+      const userPlaylistRef = doc(db, 'userPlaylists', userId);
 
-      const userPlaylistsDoc = await transaction.get(userPlaylistsRef);
-      const playlistDoc = await transaction.get(playlistRef);
+      const [playlistDoc, userPlaylistDoc] = await Promise.all([
+        transaction.get(playlistRef),
+        transaction.get(userPlaylistRef),
+      ]);
 
-      if (!userPlaylistsDoc.exists() || !playlistDoc.exists()) {
-        throw 'Document does not exist!';
+      if (!playlistDoc.exists()) {
+        throw new Error('Playlist not found');
       }
 
-      const userData = userPlaylistsDoc.data();
       const playlistData = playlistDoc.data();
+      const userPlaylistData = userPlaylistDoc.data() || { liked: [] };
+      const likedPlaylists = userPlaylistData.liked || [];
 
-      const likedPlaylists = userData.liked || [];
-      const isLiked = likedPlaylists.includes(playlistId);
-
-      if (isLiked) {
-        // 좋아요 취소
-        transaction.update(userPlaylistsRef, {
+      if (isCurrentlyLiked) {
+        // Unlike
+        transaction.update(userPlaylistRef, {
           liked: likedPlaylists.filter((id: string) => id !== playlistId),
         });
         transaction.update(playlistRef, {
-          likeCount: playlistData.likeCount - 1,
+          likeCount: (playlistData.likeCount || 0) - 1,
         });
       } else {
-        // 좋아요
-        transaction.update(userPlaylistsRef, {
+        // Like
+        transaction.update(userPlaylistRef, {
           liked: [...likedPlaylists, playlistId],
         });
         transaction.update(playlistRef, {
-          likeCount: playlistData.likeCount + 1,
+          likeCount: (playlistData.likeCount || 0) + 1,
         });
       }
+
+      return !isCurrentlyLiked;
     });
 
-    console.log('Transaction successfully committed!');
-    return true;
-  } catch (e) {
-    console.log('Transaction failed: ', e);
-    return false;
+    console.log('Like toggled successfully');
+    return newLikeState;
+  } catch (error) {
+    console.error('Error toggling like:', error);
+    throw error;
   }
 };

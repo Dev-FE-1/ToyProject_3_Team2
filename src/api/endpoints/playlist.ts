@@ -99,17 +99,21 @@ export const getPlaylistWithUser = async (
   try {
     // 1. 플레이리스트 가져오기
     const playlistRef = doc(db, 'playlists', playlistId);
+
     const playlistSnap = await getDoc(playlistRef);
+
     if (!playlistSnap.exists()) {
       console.log('No such playlist!');
       return null;
     }
+
     const playlistData = playlistSnap.data() as PlaylistModel;
     const playlist: PlaylistModel = {
       ...playlistData,
       playlistId: playlistSnap.id,
       videos: playlistData.videos || [], // 비디오가 없으면 빈 배열로 초기화
     };
+
     // 2. 플레이리스트의 유저 정보 가져오기
     const userRef = doc(db, 'users', playlist.userId);
     const userSnap = await getDoc(userRef);

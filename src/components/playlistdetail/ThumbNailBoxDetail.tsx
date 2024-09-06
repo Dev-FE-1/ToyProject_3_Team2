@@ -1,9 +1,11 @@
+import { useEffect, useState } from 'react';
+
 import { css } from '@emotion/react';
 
+import { getInitialLikedState, togglePlaylistLike } from '@/api/endpoints/like';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/profile/Profile';
-import { useLikeManagement } from '@/hooks/useLike';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
@@ -29,6 +31,7 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
     videoCount,
     forkCount,
     commentCount,
+    likeCount,
     thumbnailUrl,
     isPublic,
   } = playlist;
@@ -36,7 +39,40 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
   const { profileImg, userName } = user;
   const userId = getUserIdBySession();
 
-  const { likeCount, isLiked, handleLikeToggle } = useLikeManagement(playlistId, userId);
+  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+  const [localLikeCount, setLocalLikeCount] = useState(likeCount);
+
+  useEffect(() => {
+    const fetchInitialLikedState = async () => {
+      try {
+        const initialLikedState = await getInitialLikedState(userId, playlistId);
+        setIsLiked(initialLikedState);
+      } catch (error) {
+        console.error('Error fetching initial liked state:', error);
+      }
+    };
+
+    fetchInitialLikedState();
+  }, [userId, playlistId]);
+
+  useEffect(() => {
+    setLocalLikeCount(likeCount);
+  }, [likeCount]);
+
+  const handleLikeToggle = async () => {
+    if (isLiked === null) return;
+
+    try {
+      const newLikeState = await togglePlaylistLike(playlistId, userId, isLiked);
+      const newLikeCount = newLikeState ? localLikeCount + 1 : localLikeCount - 1;
+      setIsLiked(newLikeState);
+      setLocalLikeCount(newLikeCount);
+    } catch (error) {
+      console.error('Failed to toggle like:', error);
+    }
+  };
+
+  if (isLiked === null) return;
 
   return (
     <div>
@@ -49,7 +85,7 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
           <div css={dividerStyle} />
           <LikesButton
             playlistId={playlistId}
-            likeCount={likeCount}
+            localLikeCount={localLikeCount}
             isLiked={isLiked}
             handleLikeToggle={handleLikeToggle}
           />
