@@ -11,7 +11,7 @@ export const PATH = {
   PLAYLIST: '/playlist/:playlistId',
   PLAYLIST_EDIT: 'edit',
   COMMENT: '/comments/:playlistId',
-  COMMENT_FORM: '/comments/:playlistId/form',
+  COMMENT_ADD: '/comments/:playlistId/add',
 };
 export const PATH_TITLE = {
   HOME: '홈',

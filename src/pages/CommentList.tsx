@@ -3,14 +3,16 @@ import { useState, useEffect } from 'react';
 import { css } from '@emotion/react';
 // import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { getPlaylistById } from '@/api/endpoints/playlist';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import Toast from '@/components/common/Toast';
 import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
 import { useCommentsList } from '@/hooks/query/useComments';
 import Header from '@/layouts/layout/Header';
+import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { Comment, PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
@@ -19,10 +21,15 @@ const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
+
+  const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const { toastMessage, refetchComments } = location.state || {};
 
   const goToCommentForm = () => {
-    navigate(`${PATH.COMMENT_FORM.replace(':playlistId', playlistId ?? '')}`, {
+    navigate(`${PATH.COMMENT_ADD.replace(':playlistId', playlistId ?? '')}`, {
       state: {
         playlistId,
         title: playlistData?.title,
@@ -32,7 +39,7 @@ const CommentList = () => {
     });
   };
 
-  const { data: commentsData, error } = useCommentsList(playlistId);
+  const { data: commentsData, error, refetch } = useCommentsList(playlistId);
 
   useEffect(() => {
     if (commentsData) {
@@ -59,9 +66,24 @@ const CommentList = () => {
     fetchPlaylistData();
   }, [commentsData, error, playlistId]);
 
+  useEffect(() => {
+    if (toastMessage) {
+      showToast(toastMessage);
+      navigate(location.pathname, { replace: true }); // URL을 변경하지 않고 state만 제거
+    }
+  }, [toastMessage, showToast, navigate, location.pathname]);
+
+  useEffect(() => {
+    if (refetchComments) {
+      refetch(); // 댓글을 새로 불러옴
+      navigate(location.pathname, { replace: true }); // state를 초기화
+    }
+  }, [refetchComments, refetch, navigate, location.pathname]);
+
   return (
     <div>
       <Header />
+      <Toast />
       <div css={CommentTabStyle}>
         <div>
           <img src={playlistData?.thumbnailUrl} alt='미니 썸네일' />
@@ -95,7 +117,8 @@ const CommentList = () => {
             userName={comment.userName}
             content={comment.content}
             createdAt={formatTimeWithUpdated(comment.createdAt)}
-            updatedAt={comment.updatedAt}
+            comments={comment}
+            setComments={setComments}
           />
         ))}
       </div>

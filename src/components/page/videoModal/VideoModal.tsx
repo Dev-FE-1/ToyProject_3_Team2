@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'react-beautiful-dnd';
 import { GoX, GoChevronDown } from 'react-icons/go';
+import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
 
+import { updatePlaylistVideoOrder } from '@/api/endpoints/playlist';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
+import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
@@ -27,6 +31,61 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const showToast = useToastStore((state) => state.showToast);
+
+  // 드래그 앤 드롭 이벤트 핸들러
+  const handleDragEnd = async (result: DropResult) => {
+    if (!result.destination) {
+      return;
+    }
+    const newVideos = Array.from(currentPlaylist.videos);
+    const [reorderedItem] = newVideos.splice(result.source.index, 1);
+    newVideos.splice(result.destination.index, 0, reorderedItem);
+
+    setCurrentPlaylist({
+      ...currentPlaylist,
+      videos: newVideos,
+    });
+
+    try {
+      await updatePlaylistVideoOrder(currentPlaylist.playlistId, newVideos);
+      showToast('동영상 순서가 변경되었습니다.');
+    } catch (error) {
+      console.error('비디오 순서 업데이트 실패', error);
+    }
+  };
+
+  const playNextVideo = useCallback(() => {
+    const currentIndex = currentPlaylist.videos.findIndex(
+      (video) => video.videoId === currentVideoId
+    );
+    // 다음 비디오가 있으면 다음 비디오로 전환
+    if (currentIndex < currentPlaylist.videos.length - 1) {
+      const nextVideo = currentPlaylist.videos[currentIndex + 1];
+      setCurrentVideoId(nextVideo.videoId || '');
+      setIsPlaying(true);
+    } else {
+      // 다음 비디오가 없으면 첫 번째 비디오로 전환
+      // setCurrentVideoId(currentPlaylist.videos[0].videoId || '');
+      // setIsPlaying(true);
+
+      // 또는, 마지막 비디오라면 재생을 멈춤
+      setIsPlaying(false); // 재생을 멈춤
+      // onClose(); // 모달을 닫음
+    }
+  }, [currentPlaylist.videos, currentVideoId, onClose]);
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.event === 'onStateChange' && event.data.info === 0) {
+        playNextVideo();
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [playNextVideo]);
 
   useEffect(() => {
     setCurrentVideoId(videoId); // 비디오 ID가 변경되면 현재 비디오 ID를 업데이트
@@ -99,6 +158,13 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
       handleMaximize();
     }
   };
+
+  // 드래그 중 로깅
+  const onDragUpdate = (update: DragUpdate) => {
+    console.log('Drag update:', update);
+    // 여기서 스타일이나 위치 변화를 확인할 수 있습니다.
+  };
+
   return (
     <div css={modalOverlayStyle(isMinimized, isClosing)}>
       <div css={modalContentStyle(isMinimized, isClosing, isMaximizing, isOpen)}>
@@ -168,21 +234,51 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
               </div>
             </div>
           ) : (
-            <div css={playlistContainerStyle}>
-              {currentPlaylist.videos.map((video) => (
-                <div key={video.videoId} css={videoBoxWrapperStyle}>
-                  <VideoBoxDetail
-                    key={video.videoId}
-                    video={video}
-                    type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
-                    channelName={currentPlaylist.userName}
-                    uploadDate={formatTimeWithUpdated(currentPlaylist.createdAt)}
-                    onClickVideo={handleVideoClick(video.videoId as string)}
-                    onClickKebob={(e) => console.log('kebab 아이콘 클릭', video.videoId)}
-                  />
-                </div>
-              ))}
-            </div>
+            <DragDropContext onDragEnd={handleDragEnd} onDragUpdate={onDragUpdate}>
+              <Droppable droppableId='videoList' direction='vertical'>
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    css={playlistContainerStyle}
+                  >
+                    {currentPlaylist.videos.map((video, index) => (
+                      <Draggable
+                        key={video.videoId}
+                        draggableId={video.videoId || ''}
+                        index={index}
+                      >
+                        {(provided, snapshot) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+                            css={videoBoxWrapperStyle(snapshot.isDragging)}
+                          >
+                            <div css={videoBoxInnerStyle}>
+                              <div {...provided.dragHandleProps} css={dragHandleStyle}>
+                                <MdDragHandle />
+                              </div>
+                              <VideoBoxDetail
+                                video={video}
+                                type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
+                                channelName={currentPlaylist.userName}
+                                uploadDate={formatTimeWithUpdated(currentPlaylist.createdAt)}
+                                onClickVideo={handleVideoClick(video.videoId || '')}
+                                onClickKebob={(e) =>
+                                  console.log('kebab 아이콘 클릭', video.videoId)
+                                }
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           )}
         </div>
       </div>
@@ -334,16 +430,48 @@ const overlayStyle = css`
   background: transparent;
   cursor: pointer;
 `;
+const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+  // 기본 스타일
+  userSelect: 'none',
+  padding: 0,
 
-const videoBoxWrapperStyle = css`
+  // 드래그 중일 때 변경하고 싶은 스타일
+  ...draggableStyle,
+  ...(isDragging && {
+    top: 'auto',
+    left: 'auto',
+  }),
+});
+
+const videoBoxWrapperStyle = (isDragging: boolean) => css`
   position: relative;
   cursor: pointer;
+  background-color: ${isDragging ? theme.colors.tertiary : 'transparent'};
+  display: flex;
+  align-items: center;
+  height: 100px;
+  left: ${isDragging ? '0px' : '0'};
 `;
-
+// 겹치지 않도록
+// draggableListStyle을 videoBoxInnerStyle로 변경
+const videoBoxInnerStyle = css`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+const dragHandleStyle = css`
+  // cursor: move;
+  color: ${theme.colors.darkGray};
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
 const playlistContainerStyle = css`
   flex: 1;
+  padding: 0 0.5rem;
+  min-height: 100px;
   overflow-y: auto;
-  padding: 0 1rem;
 `;
 
 const minimizedControlsStyle = css`
@@ -373,11 +501,6 @@ const uploaderNameStyle = css`
   font-size: ${theme.fontSizes.xsmall};
   color: ${theme.colors.disabled};
 `;
-
-// const controlButtonsStyle = css`
-//   display: flex;
-//   align-items: center;
-// `;
 
 const iconButtonStyle = css`
   background: none;

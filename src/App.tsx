@@ -10,7 +10,7 @@ import {
 import DetailList from '@/components/page/home/DetailList';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
-import CommentForm from '@/pages/CommentForm';
+import CommentAdd from '@/pages/CommentAdd';
 import CommentList from '@/pages/CommentList';
 import HomePage from '@/pages/Home';
 import MyPage from '@/pages/Mypage';
@@ -83,9 +83,14 @@ const router = createBrowserRouter([
               { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
             ],
           },
-          { path: PATH.DETAIL_LIST, element: <DetailList /> },
-          { path: PATH.COMMENT, element: <CommentList /> }, // 댓글목록 페이지
-          { path: PATH.COMMENT_FORM, element: <CommentForm /> },
+          { path: '/section-list', element: <DetailList /> },
+          {
+            path: PATH.COMMENT,
+            children: [
+              { index: true, element: <CommentList /> },
+              { path: PATH.COMMENT_ADD, element: <CommentAdd /> },
+            ],
+          },
         ],
       },
     ],

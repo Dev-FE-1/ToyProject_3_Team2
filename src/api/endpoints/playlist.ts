@@ -442,3 +442,21 @@ export const updatePlaylist = async (
     throw error;
   }
 };
+
+// 플레이리스트의 비디오 순서 변경 후 업데이트
+export const updatePlaylistVideoOrder = async (
+  playlistId: string,
+  newVideoOrder: Video[]
+): Promise<void> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+    await updateDoc(playlistRef, {
+      videos: newVideoOrder, // 새로운 비디오 순서로 업데이트
+      updatedAt: new Date().toISOString(), // 업데이트 시간을 업데이트
+    });
+    console.log('플레이리스트 비디오 순서 업데이트 성공!');
+  } catch (error) {
+    console.error('Error updating playlist video order:', error);
+    throw error;
+  }
+};
