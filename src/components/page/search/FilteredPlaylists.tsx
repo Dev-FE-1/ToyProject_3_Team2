@@ -14,6 +14,7 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
   const navigate = useNavigate();
 
   const playlists = displayedPlaylists;
+  console.log(playlists);
   return (
     <div>
       {playlists && playlists.length > 0 ? (
