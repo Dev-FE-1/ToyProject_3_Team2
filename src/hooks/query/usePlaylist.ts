@@ -57,11 +57,8 @@ export const useInfinitePlaylists = () =>
     queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY],
     queryFn: async ({ pageParam }: { pageParam?: QueryDocumentSnapshot<DocumentData> | null }) =>
       getPlaylistsWithPagination(20, pageParam),
-    getNextPageParam: (lastPage) =>
-      // Return the next page parameter based on the last page and pages array
-      // For example:
-      lastPage.nextPageToken,
-    initialPageParam: null, // or some initial page parameter value
+    getNextPageParam: (lastPage) => lastPage.nextPageToken,
+    initialPageParam: null,
   });
 
 // 아래는 useQueries 이해를 위한 주석

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,6 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   const [hasMore] = useState(true);
   const pageSize = 5; // 한 번에 불러올 항목의 개수
   const [lastVisible, setLastVisible] = useState<any>(null); // 페이지네이션을 위한 마지막 문서 스냅샷
-  const [initialLoaded, setInitialLoaded] = useState(false); // 초기 로딩 여부 확인
 
   const loadMoreItems = async () => {
     if (isLoading || !hasMore) return;
@@ -42,12 +41,7 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
           const { playlists: firstPagePlaylists, lastVisible: firstLastVisible } =
             await getPlaylistsWithPagination(pageSize, null);
 
-          // 중복 데이터 방지 (초기 1~5까지 중복 추가하지 않음)
-          if (initialLoaded && firstPagePlaylists.length > 0) {
-            setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists.slice(0)]); // 다시 처음부터 불러오기
-          } else {
-            setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists]);
-          }
+          setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists]);
           setLastVisible(firstLastVisible);
         } else {
           setVisiblePlaylists((prev) => [...prev, ...playlists]); // 새로운 데이터를 기존 배열에 추가
@@ -58,33 +52,10 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
       } finally {
         setIsLoading(false);
       }
-    }, 1000); // 데이터 불러오는 속도가 너무 빨라서 1초 딜레이
+    }, 200); // 데이터 불러오는 속도가 너무 빨라서 딜레이
   };
 
   const targetRef = useInfiniteScroll(loadMoreItems, hasMore);
-
-  // 첫 로딩시 데이터 가져오기
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      setIsLoading(true);
-      try {
-        const { playlists, lastVisible: initialLastVisible } = await getPlaylistsWithPagination(
-          pageSize,
-          null
-        ); // 첫 로딩 시 lastVisible 없이 호출
-
-        setVisiblePlaylists(playlists);
-        setLastVisible(initialLastVisible); // 첫 로딩 후 마지막 문서 스냅샷 저장
-        setInitialLoaded(true); // 초기 로딩 완료 플래그 설정
-      } catch (error) {
-        console.error('Error fetching initial playlists:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchInitialData();
-  }, []);
 
   return (
     <div>
