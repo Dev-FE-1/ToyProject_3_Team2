@@ -1,4 +1,5 @@
 import { css } from '@emotion/react';
+import { useNavigate } from 'react-router-dom';
 
 import ThumBox from '@/components/common/ThumBox';
 import { PLAYLIST } from '@/constants/playlist';
@@ -10,23 +11,30 @@ interface FilteredPlaylistsProps {
   displayedPlaylists: PlaylistModel[] | null | undefined;
 }
 const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylists }) => {
+  const navigate = useNavigate();
+
   const playlists = displayedPlaylists;
+  console.log(playlists);
   return (
     <div>
       {playlists && playlists.length > 0 ? (
         playlists.map((playlist) => (
-          <ThumBox
+          <div
             key={playlist.playlistId}
-            type='details'
-            thumURL={playlist.thumbnailUrl}
-            title={playlist.title}
-            subtitle={playlist.description}
-            likes={playlist.likeCount}
-            comments={playlist.commentCount}
-            uploader={playlist.userName}
-            update={formatTimeWithUpdated(playlist.updatedAt)}
-            listnum={playlist.videos.length}
-          />
+            onClick={() => navigate(`/playlist/${playlist.playlistId}`)}
+          >
+            <ThumBox
+              type='details'
+              thumURL={playlist.thumbnailUrl}
+              title={playlist.title}
+              subtitle={playlist.description}
+              likes={playlist.likeCount}
+              comments={playlist.commentCount}
+              uploader={playlist.userName}
+              update={formatTimeWithUpdated(playlist.updatedAt)}
+              listnum={playlist.videos.length}
+            />
+          </div>
         ))
       ) : (
         <div css={noResultStyle}>{PLAYLIST.search.no_result}</div>

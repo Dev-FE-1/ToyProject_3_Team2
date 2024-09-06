@@ -14,18 +14,15 @@ import {
   addVideoToPlaylist,
   updatePlaylistVideoOrder,
 } from '@/api/endpoints/playlist';
-// import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistDetail/nullBox';
-import ThumBoxDetail from '@/components/playlistDetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
-import VideoModal from '@/components/videoModal/VideoModal';
-import { PATH } from '@/constants/path';
+import NullBox from '@/components/page/playlistdetail/nullBox';
+import ThumBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
@@ -152,6 +149,9 @@ const PlaylistPage: React.FC = () => {
     }
   };
 
+  const handleHeaderBack = () => {
+    navigate(`/mypage/${userId}`); // 이전 페이지로 이동
+  };
   const handleVideoDelete = async () => {
     if (!playlist || !selectedVideo) {
       console.error('Playlist or selected video is null');
@@ -255,12 +255,7 @@ const PlaylistPage: React.FC = () => {
         <Header />
       )}
       {playlist && (
-        <ThumBoxDetail
-          playlist={playlist}
-          user={user}
-          profileURL={user.profileImg || defaultProfileImage}
-          onClickProfile={handleProfileClick}
-        />
+        <ThumBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
       )}
       <div css={buttonBoxStyle}>
         <Button styleType='secondary' customStyle={buttonStyle} onClick={handlePlayAll}>

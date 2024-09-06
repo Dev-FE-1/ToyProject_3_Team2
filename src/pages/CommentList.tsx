@@ -6,9 +6,9 @@ import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { getPlaylistById } from '@/api/endpoints/playlist';
-import CommentBox from '@/components/comment/CommentBox';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Toast from '@/components/common/Toast';
+import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
 import { useCommentsList } from '@/hooks/query/useComments';
 import Header from '@/layouts/layout/Header';
