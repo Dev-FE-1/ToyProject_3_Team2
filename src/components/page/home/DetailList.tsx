@@ -3,9 +3,9 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { titleStyle } from './PlaylistSection';
-import ThumbNailBox from '../common/ThumbNailBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import Header from '@/layouts/layout/Header';
+import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 
 interface LocationState {
@@ -13,7 +13,7 @@ interface LocationState {
   playlists: PlaylistModel[];
 }
 
-const SectionListPage: React.FC = () => {
+const DetailList: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { title, playlists } = location.state as LocationState;
@@ -28,7 +28,7 @@ const SectionListPage: React.FC = () => {
     <div>
       <Header onBack={() => navigate(-1)} />
       <div css={listStyle}>
-        <h2 css={titleStyle2}>{title}</h2>
+        <h2 css={titleStyle}>{title}</h2>
         {playlists.map((playlist) => (
           <ThumbNailBox
             key={playlist.playlistId}
@@ -62,9 +62,12 @@ const listStyle = css`
   scrollbar-width: none;
 `;
 
-const titleStyle2 = css`
-  ${titleStyle}
+const titleStyle = css`
+  display: flex;
+  align-items: center;
+  font-size: ${theme.fontSizes.normal};
+  font-weight: 700;
   margin: 1rem 0 0 1rem;
 `;
 
-export default SectionListPage;
+export default DetailList;

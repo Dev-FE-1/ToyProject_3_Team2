@@ -6,9 +6,9 @@ import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { getPlaylistById } from '@/api/endpoints/playlist';
-import CommentBox from '@/components/comment/CommentBox';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Toast from '@/components/common/Toast';
+import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
 import { useCommentsList } from '@/hooks/query/useComments';
 import Header from '@/layouts/layout/Header';
@@ -46,10 +46,6 @@ const CommentList = () => {
       setComments(commentsData);
     }
 
-    if (error) {
-      console.error('Failed to fetch comments:', error);
-    }
-
     async function fetchPlaylistData() {
       if (playlistId) {
         try {
@@ -69,14 +65,14 @@ const CommentList = () => {
   useEffect(() => {
     if (toastMessage) {
       showToast(toastMessage);
-      navigate(location.pathname, { replace: true }); // URL을 변경하지 않고 state만 제거
+      navigate(location.pathname, { replace: true });
     }
   }, [toastMessage, showToast, navigate, location.pathname]);
 
   useEffect(() => {
     if (refetchComments) {
       refetch(); // 댓글을 새로 불러옴
-      navigate(location.pathname, { replace: true }); // state를 초기화
+      navigate(location.pathname, { replace: true });
     }
   }, [refetchComments, refetch, navigate, location.pathname]);
 

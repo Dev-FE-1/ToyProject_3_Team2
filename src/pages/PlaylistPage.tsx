@@ -20,9 +20,9 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistdetail/nullBox';
-import ThumbNailBoxDetail from '@/components/playlistdetail/ThumbNailBoxDetail';
-import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
+import NullBox from '@/components/page/playlistdetail/nullBox';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
@@ -352,9 +352,19 @@ const PlaylistPage: React.FC = () => {
         onPlaylistClick={handlePlaylistDelete}
         onVideoDelete={handleVideoDelete}
       />
+      {isModalOpen && (
+        <CustomDialog
+          type='videoLink'
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={confirmSignOut}
+          setVideoData={setVideoData}
+        />
+      )}
     </div>
   );
 };
+
 const containerStyle = css`
   position: relative;
   padding-bottom: 160px;

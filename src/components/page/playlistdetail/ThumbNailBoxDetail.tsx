@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { getInitialLikedState, togglePlaylistLike } from '@/api/endpoints/like';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
-import Profile from '@/components/profile/Profile';
+import Profile from '@/components/page/profile/Profile';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';

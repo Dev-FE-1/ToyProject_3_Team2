@@ -11,7 +11,7 @@ import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatNumberToK } from '@/utils/formatNumber';
 
-interface CrossScrollingProps {
+interface CrossScrollingListProps {
   title: string;
   playlists: PlaylistModel[];
 }
@@ -21,7 +21,7 @@ const SEE = {
   ALL: '전체보기',
 };
 
-const CrossScrolling: React.FC<CrossScrollingProps> = ({ title, playlists }) => {
+const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -76,7 +76,11 @@ const CrossScrolling: React.FC<CrossScrollingProps> = ({ title, playlists }) => 
         onMouseLeave={handleMouse.up}
       >
         {playlists.map((playlist) => (
-          <div key={playlist.playlistId} css={playlistItemStyle}>
+          <div
+            key={playlist.playlistId}
+            css={playlistItemStyle}
+            onClick={() => navigate(`playlist/${playlist.playlistId}`)}
+          >
             <ThumbNailBox
               type='main1'
               thumURL={playlist.thumbnailUrl}
@@ -157,4 +161,4 @@ const moreButtonStyle = css`
   font-weight: 500;
 `;
 
-export default CrossScrolling;
+export default CrossScrollingList;

@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { useParams } from 'react-router-dom';
 
 import ToggleSwitch from '@/components/common/ToggleSwitch';
-import FlipCard from '@/components/mypage/FlipCard';
+import FlipCard from '@/components/page/mypage/FlipCard';
 import { useToggleStore } from '@/store/useToggleStore';
 import { PlaylistModel } from '@/types/playlist';
 interface MyPlaylistsProps {

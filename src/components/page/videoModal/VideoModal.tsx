@@ -7,7 +7,7 @@ import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
 
 import { updatePlaylistVideoOrder } from '@/api/endpoints/playlist';
-import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
+import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -31,7 +31,6 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-
   const showToast = useToastStore((state) => state.showToast);
 
   // 드래그 앤 드롭 이벤트 핸들러
