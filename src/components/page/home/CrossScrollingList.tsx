@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 
 import { css } from '@emotion/react';
 import { RiAddLargeLine, RiArrowRightSLine } from 'react-icons/ri';
