@@ -46,10 +46,6 @@ const CommentList = () => {
       setComments(commentsData);
     }
 
-    if (error) {
-      console.error('Failed to fetch comments:', error);
-    }
-
     async function fetchPlaylistData() {
       if (playlistId) {
         try {
@@ -69,14 +65,14 @@ const CommentList = () => {
   useEffect(() => {
     if (toastMessage) {
       showToast(toastMessage);
-      navigate(location.pathname, { replace: true }); // URL을 변경하지 않고 state만 제거
+      navigate(location.pathname, { replace: true });
     }
   }, [toastMessage, showToast, navigate, location.pathname]);
 
   useEffect(() => {
     if (refetchComments) {
       refetch(); // 댓글을 새로 불러옴
-      navigate(location.pathname, { replace: true }); // state를 초기화
+      navigate(location.pathname, { replace: true });
     }
   }, [refetchComments, refetch, navigate, location.pathname]);
 

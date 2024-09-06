@@ -348,9 +348,19 @@ const PlaylistPage: React.FC = () => {
         onPlaylistClick={handlePlaylistDelete}
         onVideoDelete={handleVideoDelete}
       />
+      {isModalOpen && (
+        <CustomDialog
+          type='videoLink'
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onConfirm={confirmSignOut}
+          setVideoData={setVideoData}
+        />
+      )}
     </div>
   );
 };
+
 const containerStyle = css`
   position: relative;
   padding-bottom: 160px;

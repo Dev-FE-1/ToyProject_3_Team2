@@ -351,7 +351,12 @@ export const getPlaylistById = async (playlistId: string): Promise<PlaylistModel
       throw new Error(`Playlist with ID ${playlistId} not found`);
     }
 
-    return playlistDoc.data() as PlaylistModel;
+    const playlistData = playlistDoc.data();
+
+    return {
+      ...playlistData,
+      commentCount: playlistData?.commentCount ?? 0,
+    } as PlaylistModel;
   } catch (error) {
     console.error(`Error fetching playlist ${playlistId}:`, error);
     throw error;
