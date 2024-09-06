@@ -97,6 +97,7 @@ const CommentListStyle = css`
     width: 35px;
     height: 35px;
     border-radius: 50%;
+    object-fit: cover;
   }
   h1 {
     font-size: ${theme.fontSizes.normal};
@@ -107,7 +108,7 @@ const CommentListStyle = css`
   h2 {
     font-size: ${theme.fontSizes.small};
     height: 14px;
-    max-width: 70px; // 0000-00-00 형태 기준
+    max-width: 100px; // 0000-00-00 형태 기준
   }
   h3 {
     display: flex;
