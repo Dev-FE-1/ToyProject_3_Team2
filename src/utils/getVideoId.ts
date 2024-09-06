@@ -2,18 +2,26 @@ export const getVideoId = (url: string): string | null | undefined => {
   try {
     // URL 객체를 생성
     const parsedUrl = new URL(url);
-    // URLSearchParams 객체를 통해 쿼리 파라미터를 가져옴
-    if (parsedUrl.hostname === 'www.youtube.com' || parsedUrl.hostname === 'youtube.com') {
-      return parsedUrl.searchParams.get('v'); // 쿼리 파라미터 'v'에서 추출
-    }
 
-    // 유튜브 공유하기 URL (예: https://youtu.be/VVbZnhQM0lU)
-    if (parsedUrl.hostname === 'youtu.be') {
-      return parsedUrl.pathname.substring(1); // 경로에서 동영상 ID 추출 (첫 '/' 제거)
-    }
+    // 호스트명에 따라 분기 처리
+    switch (parsedUrl.hostname) {
+      case 'www.youtube.com':
+      case 'youtube.com':
+        // Shorts URL 처리
+        if (parsedUrl.pathname.startsWith('/shorts/')) {
+          return parsedUrl.pathname.split('/')[2]; // Shorts의 동영상 ID 추출
+        }
+        // 일반 유튜브 URL 처리
+        return parsedUrl.searchParams.get('v');
 
-    // 유효하지 않은 유튜브 URL일 경우
-    return null;
+      case 'youtu.be':
+        // 짧은 공유 URL 처리
+        return parsedUrl.pathname.substring(1);
+
+      default:
+        // 유효하지 않은 유튜브 URL일 경우
+        return null;
+    }
   } catch (error) {
     console.error('Invalid URL:', error);
     return null;
