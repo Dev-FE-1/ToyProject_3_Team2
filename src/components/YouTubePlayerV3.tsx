@@ -1,7 +1,7 @@
 // YouTube Data API v3를 사용해 영상 가져오기
 import { css } from '@emotion/react';
 
-import { useVideoData } from '@/hooks/query/useYoutube';
+import { useVideoData } from '@/hooks/queries/useYoutubeQueries';
 
 interface YouTubePlayerProps {
   url: string | null;

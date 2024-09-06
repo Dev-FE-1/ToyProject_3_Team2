@@ -5,6 +5,7 @@ import {
   getForkedPlaylists,
   getPlaylistsByCategory,
 } from '@/api/endpoints/playlist';
+import { getUserData } from '@/api/endpoints/user';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { PlaylistModel } from '@/types/playlist';
 
@@ -47,6 +48,14 @@ export const useForkedPlaylistsByUserIds = (userIds: string[]) =>
           queryFn: () => getForkedPlaylists(userId),
         }) as UseQueryOptions<PlaylistModel[], Error, PlaylistModel[], [string, string]>
     ),
+  });
+
+// userId를 통해 해당 사용자 정보 가져오기
+export const useUserData = (userId: string) =>
+  useQuery({
+    queryKey: [QUERY_KEYS.USER_USERID_KEY, userId],
+    queryFn: () => getUserData(userId),
+    ...defaultOptions,
   });
 
 // 아래는 useQueries 이해를 위한 주석
