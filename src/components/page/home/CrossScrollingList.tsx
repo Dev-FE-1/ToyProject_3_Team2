@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
+import { useDragToScroll } from '@/hooks/useDragToScroll';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatNumberToK } from '@/utils/formatNumber';
@@ -23,32 +24,8 @@ const SEE = {
 
 const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
+  const { handlers } = useDragToScroll();
   const navigate = useNavigate();
-
-  const handleMouse = {
-    up: () => {
-      setIsDragging(false);
-    },
-
-    down: (e: React.MouseEvent) => {
-      setIsDragging(true);
-      setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
-      setScrollLeft(scrollRef.current?.scrollLeft || 0);
-    },
-
-    move: (e: React.MouseEvent) => {
-      if (!isDragging) return;
-      e.preventDefault();
-      const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
-      const walk = (x - startX) * 1; // 스크롤 속도 조절
-      if (scrollRef.current) {
-        scrollRef.current.scrollLeft = scrollLeft - walk;
-      }
-    },
-  };
 
   const handleMoreClick = () => {
     navigate('/section-list', { state: { title, playlists } });
@@ -67,14 +44,7 @@ const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlist
           {SEE.ALL}
         </IconTextButton>
       </div>
-      <div
-        css={scrollContainerStyle}
-        ref={scrollRef}
-        onMouseDown={handleMouse.down}
-        onMouseMove={handleMouse.move}
-        onMouseUp={handleMouse.up}
-        onMouseLeave={handleMouse.up}
-      >
+      <div css={scrollContainerStyle} ref={scrollRef} {...handlers}>
         {playlists.map((playlist) => (
           <div
             key={playlist.playlistId}

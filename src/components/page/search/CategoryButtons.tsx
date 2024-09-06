@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { css } from '@emotion/react';
 
 import { PLAYLIST } from '@/constants/playlist';
+import { useDragToScroll } from '@/hooks/useDragToScroll';
 import theme from '@/styles/theme';
 
 interface CategoryButtonsProps {
@@ -14,42 +15,7 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({
   selectedCategory,
   handleButtonClick,
 }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [scrollLeft, setScrollLeft] = useState(0);
-  const [dragDistance, setDragDistance] = useState(0);
-
-  const handleMouse = {
-    up: () => {
-      setIsDragging(false);
-      document.body.style.userSelect = '';
-    },
-
-    down: (e: React.MouseEvent) => {
-      setIsDragging(true);
-      setDragDistance(0);
-      setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
-      setScrollLeft(scrollRef.current?.scrollLeft || 0);
-      document.body.style.userSelect = 'none'; // 텍스트 선택 비활성화
-    },
-
-    move: (e: React.MouseEvent) => {
-      if (!isDragging) return;
-      const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
-      const walk = (x - startX) * 1; // 스크롤 속도 조절
-      setDragDistance(Math.abs(walk)); // 드래그 거리 업데이트
-
-      if (scrollRef.current) {
-        scrollRef.current.scrollLeft = scrollLeft - walk; // 스크롤 처리
-      }
-    },
-
-    leave: () => {
-      setIsDragging(false);
-      document.body.style.userSelect = '';
-    },
-  };
+  const { dragDistance, handlers } = useDragToScroll();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     // 드래그가 아니었을 때만 클릭 이벤트 발생
@@ -60,14 +26,7 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({
 
   return (
     <div css={buttonsWrapperStyle}>
-      <div
-        css={scrollAreaStyle}
-        ref={scrollRef}
-        onMouseDown={handleMouse.down}
-        onMouseMove={handleMouse.move}
-        onMouseUp={handleMouse.up}
-        onMouseLeave={handleMouse.leave}
-      >
+      <div css={scrollAreaStyle} {...handlers}>
         {PLAYLIST.categories &&
           PLAYLIST.categories.map((category) => (
             <button
