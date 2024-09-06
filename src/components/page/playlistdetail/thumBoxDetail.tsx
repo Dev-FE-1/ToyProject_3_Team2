@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
 import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
+// import { useLikeManagement } from '@/hooks/useLike';
 import Profile from '@/components/page/profile/Profile';
 import { useLikeStore } from '@/store/useLikeStore';
 import theme from '@/styles/theme';

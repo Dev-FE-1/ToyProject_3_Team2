@@ -76,7 +76,11 @@ const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlist
         onMouseLeave={handleMouse.up}
       >
         {playlists.map((playlist) => (
-          <div key={playlist.playlistId} css={playlistItemStyle}>
+          <div
+            key={playlist.playlistId}
+            css={playlistItemStyle}
+            onClick={() => navigate(`playlist/${playlist.playlistId}`)}
+          >
             <ThumBox
               type='main1'
               thumURL={playlist.thumbnailUrl}
