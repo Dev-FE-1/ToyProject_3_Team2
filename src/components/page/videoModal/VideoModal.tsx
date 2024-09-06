@@ -297,10 +297,10 @@ const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
   left: 0;
   right: 0;
   bottom: ${isMinimized ? '80px' : '0'};
-
   width: 498px;
   height: ${isMinimized ? '60px' : '100vh'};
   background-color: ${isMinimized ? 'transparent' : theme.colors.black};
+
   display: flex;
   justify-content: center;
   align-items: ${isMinimized ? 'flex-end' : 'flex-start'};
@@ -483,12 +483,14 @@ const minimizedControlsStyle = css`
 `;
 
 const videoInfoStyle = css`
-  flex: 1;
-  margin-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 const videoTitleStyle = css`
-  font-size: ${theme.fontSizes.small};
+  font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.white};
   width: 280px;
   white-space: nowrap;
@@ -498,7 +500,7 @@ const videoTitleStyle = css`
 `;
 
 const uploaderNameStyle = css`
-  font-size: ${theme.fontSizes.xsmall};
+  font-size: ${theme.fontSizes.small};
   color: ${theme.colors.disabled};
 `;
 
@@ -530,16 +532,16 @@ const iconStyle = (isVisible: boolean) => css`
 const controlsContainerStyle = (isMinimized: boolean) => css`
   flex: 1;
   display: flex;
+
   flex-direction: column;
   overflow-y: auto;
-  padding-bottom: 2rem;
   // max-height: calc(70vh - 300px); // 예시 값, 실제 비디오 플레이어와 헤더의 높이에 따라 조정 필요
   // min-height: 1000px; // 최소 높이 설정
-  // background-color: gold;
 
   ${isMinimized
     ? css`
-        display: none;
+        display: block;
+        padding-bottom: 0;
       `
     : css`
         &::-webkit-scrollbar {
