@@ -6,6 +6,7 @@ import {
   getDocs,
   orderBy,
   limit,
+  addDoc,
 } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
@@ -42,11 +43,38 @@ export const getPlaylistComments = async (
         userName: data.userName,
         content: data.content,
         createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
       };
     });
   } catch (error) {
     console.error(`Error fetching comments for playlist ${playlistId}:`, error);
     return [];
+  }
+};
+
+export const addComment = async (
+  playlistId: string,
+  userId: string,
+  userName: string,
+  profileImg: string,
+  content: string
+): Promise<string> => {
+  try {
+    const commentsRef = collection(db, 'comments');
+
+    const newComment = {
+      playlistId,
+      userId,
+      userName,
+      profileImg,
+      content,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    const docRef = await addDoc(commentsRef, newComment);
+    return docRef.id; // 댓글 ID 반환
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw new Error('댓글 추가에 실패했습니다.');
   }
 };
