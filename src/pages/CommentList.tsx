@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-// import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 

@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { doc, deleteDoc, updateDoc, increment } from 'firebase/firestore';
 import { RiCloseFill } from 'react-icons/ri';
-import { useParams } from 'react-router-dom';
 
-import { db } from '@/api';
 import { deleteComment } from '@/api/endpoints/comment';
 import { getPlaylistById } from '@/api/endpoints/playlist';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
