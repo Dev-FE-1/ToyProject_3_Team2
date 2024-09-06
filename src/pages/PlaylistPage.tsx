@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
+import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'react-beautiful-dnd';
 import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
+import { MdDragHandle } from 'react-icons/md';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -10,19 +12,17 @@ import {
   deletePlaylist,
   deleteVideoFromPlaylist,
   addVideoToPlaylist,
+  updatePlaylistVideoOrder,
 } from '@/api/endpoints/playlist';
-// import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/playlistDetail/nullBox';
-import ThumBoxDetail from '@/components/playlistDetail/thumBoxDetail';
-import VideoBoxDetail from '@/components/playlistDetail/VideoBoxDetail';
-import VideoModal from '@/components/videoModal/VideoModal';
-import { PATH } from '@/constants/path';
+import NullBox from '@/components/page/playlistdetail/nullBox';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
@@ -44,24 +44,23 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  const isOpen = useMiniPlayerStore((state) => state.isOpen);
-  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
+  const [videoData, setVideoData] = useState<Partial<Video>>();
   const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
-
-  const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
-  const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
-  const { openModal, closeModal } = useModalStore(); // 추가추가
-
-  const navigate = useNavigate();
-
-  const userId = getUserIdBySession();
-
   const [bottomSheetContentType, setBottomSheetContentType] = useState<
     'deleteFromPlaylist' | 'deleteVideo'
   >('deleteFromPlaylist');
   const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
     null
   );
+
+  const isOpen = useMiniPlayerStore((state) => state.isOpen);
+  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
+  const isModalOpen = useModalStore((state) => state.isModalOpen);
+  const { openModal, closeModal } = useModalStore();
+
+  const navigate = useNavigate();
+
+  const userId = getUserIdBySession();
 
   useEffect(() => {
     const fetchPlaylistWithUser = async () => {
@@ -97,7 +96,7 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handlePlaylistEdit = () => {
-    console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
+    // console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
     navigate('/playlist/' + playlist?.playlistId + '/edit');
   };
   const handleAddPlaylist = () => {
@@ -150,7 +149,7 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handleHeaderBack = () => {
-    navigate(`${PATH.MYPAGE}`); // 이전 페이지로 이동
+    navigate(`/mypage/${userId}`); // 이전 페이지로 이동
   };
   const handleVideoDelete = async () => {
     if (!playlist || !selectedVideo) {
@@ -203,7 +202,7 @@ const PlaylistPage: React.FC = () => {
   if (!playlist || !user) {
     return (
       <div>
-        <Header onBack={handleHeaderBack} customStyle={kebabStyle} />
+        <Header customStyle={kebabStyle} />
         <NullBox />
       </div>
     );
@@ -211,6 +210,41 @@ const PlaylistPage: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
+  // 드래그앤드롭 이벤트 핸들러
+  const handleDragEnd = async (result: DropResult) => {
+    if (!result.destination || !playlist) return;
+    const newVideos = Array.from(playlist.videos);
+    const [reorderedItem] = newVideos.splice(result.source.index, 1);
+    newVideos.splice(result.destination.index, 0, reorderedItem);
+    setPlaylist({
+      ...playlist,
+      videos: newVideos,
+    });
+
+    try {
+      // 그래그 드롭한 순서로 동영상 순서를 업데이트
+      await updatePlaylistVideoOrder(playlist.playlistId, newVideos);
+      showToast('동영상 순서가 변경되었습니다.');
+    } catch (error) {
+      console.error('Error updating playlist video order:', error);
+      showToast('동영상 순서 변경 중 오류가 발생했습니다.');
+    }
+  };
+  // 드래그 중 로깅
+  const onDragUpdate = (update: DragUpdate) => {
+    console.log('Drag update:', update);
+    // 여기서 스타일이나 위치 변화를 확인할 수 있습니다.
+  };
+  // 전체재생하는 미니플레이어(VideoModal) 열기
+  const handlePlayAll = () => {
+    if (playlist && playlist.videos.length > 0) {
+      const firstVideoId = playlist.videos[0].videoId;
+      if (firstVideoId) {
+        openMiniPlayer(firstVideoId, playlist, userId);
+      }
+    }
+  };
 
   return (
     <div css={containerStyle}>
@@ -222,22 +256,13 @@ const PlaylistPage: React.FC = () => {
           onBack={handleHeaderBack}
         />
       ) : (
-        <Header onBack={handleHeaderBack} />
+        <Header />
       )}
       {playlist && (
-        <ThumBoxDetail
-          playlist={playlist}
-          user={user}
-          profileURL={user.profileImg || defaultProfileImage}
-          onClickProfile={handleProfileClick}
-        />
+        <ThumbNailBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
       )}
       <div css={buttonBoxStyle}>
-        <Button
-          styleType='secondary'
-          customStyle={buttonStyle}
-          onClick={() => console.log('전체재생')}
-        >
+        <Button styleType='secondary' customStyle={buttonStyle} onClick={handlePlayAll}>
           <RiPlayLargeFill css={iconStyle} />
           Play all
         </Button>
@@ -248,19 +273,51 @@ const PlaylistPage: React.FC = () => {
         )}
       </div>
       {playlist.videos.length > 0 ? (
-        playlist.videos.map((video) => (
-          <VideoBoxDetail
-            key={video.videoId}
-            video={video}
-            type={playlist.userId === userId ? 'host' : 'visitor'} // 로그인한 사용자 아이디 비교해서 값이 참이면 host 다르면 visitor
-            channelName={playlist.userName}
-            uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-            onClickVideo={handleVideoClick}
-            onClickKebob={() =>
-              onClickVideoKebob({ videoId: video.videoId as string, title: video.title })
-            }
-          />
-        ))
+        <DragDropContext onDragEnd={handleDragEnd} onDragUpdate={onDragUpdate}>
+          <Droppable droppableId='playlistVideos' direction='vertical'>
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                css={playlistContainerStyle}
+              >
+                {playlist.videos.map((video, index) => (
+                  <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
+                    {/* provided: Provided.innerRef를 참조, 동작을 실행하는 매개변수 */}
+                    {/* snapshot: 동작 시, dom 이벤트에 대하여 적용될 style 참조(옵셔널) */}
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        css={videoBoxWrapperStyle(snapshot.isDragging)}
+                      >
+                        <div css={draggableListStyle}>
+                          <div {...provided.dragHandleProps} css={dragHandleStyle}>
+                            <MdDragHandle />
+                          </div>
+                          <VideoBoxDetail
+                            video={video}
+                            type={playlist.userId === userId ? 'host' : 'visitor'}
+                            channelName={playlist.userName}
+                            uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
+                            onClickVideo={() => handleVideoClick(video.videoId || '')}
+                            onClickKebob={() =>
+                              onClickVideoKebob({
+                                videoId: video.videoId || '',
+                                title: video.title,
+                              })
+                            }
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       ) : (
         <NullBox />
       )}
@@ -307,6 +364,7 @@ const PlaylistPage: React.FC = () => {
     </div>
   );
 };
+
 const containerStyle = css`
   position: relative;
   padding-bottom: 160px;
@@ -357,5 +415,35 @@ const floatAddButtonStyle = css`
   &:hover {
     transform: translateY(-2px);
   }
+`;
+
+const videoBoxWrapperStyle = (isDragging: boolean) => css`
+  position: relative;
+  cursor: pointer;
+  background-color: ${isDragging ? theme.colors.darkGray : 'transparent'};
+  display: flex;
+  align-items: center;
+  height: 100px;
+`;
+
+const draggableListStyle = css`
+  display: flex;
+  align-items: center;
+  width: 100%;
+`;
+
+const dragHandleStyle = css`
+  // cursor: move;
+  color: ${theme.colors.darkGray};
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const playlistContainerStyle = css`
+  flex: 1;
+  padding: 0 0.5rem;
+  min-height: 100px;
 `;
 export default PlaylistPage;

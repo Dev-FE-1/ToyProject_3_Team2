@@ -7,6 +7,9 @@ import {
   orderBy,
   limit,
   addDoc,
+  increment,
+  updateDoc,
+  doc,
 } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
@@ -61,7 +64,7 @@ export const addComment = async (
   try {
     const commentsRef = collection(db, 'comments');
 
-    const newComment = {
+    const docRef = await addDoc(commentsRef, {
       playlistId,
       userId,
       userName,
@@ -69,10 +72,17 @@ export const addComment = async (
       content,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    };
+    });
 
-    const docRef = await addDoc(commentsRef, newComment);
-    return docRef.id; // 댓글 ID 반환
+    const commentId = docRef.id;
+    await updateDoc(docRef, { commentId });
+
+    const playlistRef = doc(db, 'playlists', playlistId);
+    await updateDoc(playlistRef, {
+      commentCount: increment(1),
+    });
+
+    return commentId;
   } catch (error) {
     console.error('Error adding comment:', error);
     throw new Error('댓글 추가에 실패했습니다.');

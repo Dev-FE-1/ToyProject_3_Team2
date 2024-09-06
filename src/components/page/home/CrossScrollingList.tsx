@@ -6,48 +6,52 @@ import { useNavigate } from 'react-router-dom';
 
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
-import ThumBox from '@/components/common/ThumBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatNumberToK } from '@/utils/formatNumber';
 
-interface PlaylistSectionProps {
+interface CrossScrollingListProps {
   title: string;
   playlists: PlaylistModel[];
 }
 
-const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) => {
+const SEE = {
+  MORE: '더보기',
+  ALL: '전체보기',
+};
+
+const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
   const navigate = useNavigate();
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    setIsDragging(true);
-    setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
-    setScrollLeft(scrollRef.current?.scrollLeft || 0);
-  };
+  const handleMouse = {
+    up: () => {
+      setIsDragging(false);
+    },
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging) return;
-    e.preventDefault();
-    const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
-    const walk = (x - startX) * 1; // 스크롤 속도 조절
-    if (scrollRef.current) {
-      scrollRef.current.scrollLeft = scrollLeft - walk;
-    }
-  };
+    down: (e: React.MouseEvent) => {
+      setIsDragging(true);
+      setStartX(e.pageX - (scrollRef.current?.offsetLeft || 0));
+      setScrollLeft(scrollRef.current?.scrollLeft || 0);
+    },
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
+    move: (e: React.MouseEvent) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const x = e.pageX - (scrollRef.current?.offsetLeft || 0);
+      const walk = (x - startX) * 1; // 스크롤 속도 조절
+      if (scrollRef.current) {
+        scrollRef.current.scrollLeft = scrollLeft - walk;
+      }
+    },
   };
 
   const handleMoreClick = () => {
     navigate('/section-list', { state: { title, playlists } });
-  };
-
-  const handleThumBoxClick = (playlist: PlaylistModel) => {
-    navigate(`Playlist/${playlist.playlistId}`, { state: { playlist } });
   };
 
   return (
@@ -60,34 +64,39 @@ const PlaylistSection: React.FC<PlaylistSectionProps> = ({ title, playlists }) =
           customStyle={customButtonStyle}
           onClick={handleMoreClick}
         >
-          전체보기
+          {SEE.ALL}
         </IconTextButton>
       </div>
       <div
         css={scrollContainerStyle}
         ref={scrollRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
+        onMouseDown={handleMouse.down}
+        onMouseMove={handleMouse.move}
+        onMouseUp={handleMouse.up}
+        onMouseLeave={handleMouse.up}
       >
         {playlists.map((playlist) => (
-          <div key={playlist.playlistId} css={playlistItemStyle}>
-            <ThumBox
+          <div
+            key={playlist.playlistId}
+            css={playlistItemStyle}
+            onClick={() => navigate(`playlist/${playlist.playlistId}`)}
+          >
+            <ThumbNailBox
               type='main1'
               thumURL={playlist.thumbnailUrl}
               title={playlist.title}
-              likes={playlist.likeCount}
-              uploader={playlist.userId}
+              likes={+formatNumberToK(playlist.likeCount)}
+              uploader={playlist.userName}
               listnum={playlist.videoCount}
-              onClick={() => handleThumBoxClick(playlist)}
             />
           </div>
         ))}
-        <div css={moreButtonStyle} onClick={handleMoreClick}>
-          <IconButton Icon={RiAddLargeLine} />
-          <p>더보기</p>
-        </div>
+        {playlists.length > 8 && (
+          <div css={moreButtonStyle} onClick={handleMoreClick}>
+            <IconButton Icon={RiAddLargeLine} />
+            <p>{SEE.MORE}</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -152,4 +161,4 @@ const moreButtonStyle = css`
   font-weight: 500;
 `;
 
-export default PlaylistSection;
+export default CrossScrollingList;

@@ -99,17 +99,21 @@ export const getPlaylistWithUser = async (
   try {
     // 1. 플레이리스트 가져오기
     const playlistRef = doc(db, 'playlists', playlistId);
+
     const playlistSnap = await getDoc(playlistRef);
+
     if (!playlistSnap.exists()) {
       console.log('No such playlist!');
       return null;
     }
+
     const playlistData = playlistSnap.data() as PlaylistModel;
     const playlist: PlaylistModel = {
       ...playlistData,
       playlistId: playlistSnap.id,
       videos: playlistData.videos || [], // 비디오가 없으면 빈 배열로 초기화
     };
+
     // 2. 플레이리스트의 유저 정보 가져오기
     const userRef = doc(db, 'users', playlist.userId);
     const userSnap = await getDoc(userRef);
@@ -347,7 +351,12 @@ export const getPlaylistById = async (playlistId: string): Promise<PlaylistModel
       throw new Error(`Playlist with ID ${playlistId} not found`);
     }
 
-    return playlistDoc.data() as PlaylistModel;
+    const playlistData = playlistDoc.data();
+
+    return {
+      ...playlistData,
+      commentCount: playlistData?.commentCount ?? 0,
+    } as PlaylistModel;
   } catch (error) {
     console.error(`Error fetching playlist ${playlistId}:`, error);
     throw error;
@@ -435,6 +444,24 @@ export const updatePlaylist = async (
     console.log('Playlist updated successfully');
   } catch (error) {
     console.error('Error updating playlist:', error);
+    throw error;
+  }
+};
+
+// 플레이리스트의 비디오 순서 변경 후 업데이트
+export const updatePlaylistVideoOrder = async (
+  playlistId: string,
+  newVideoOrder: Video[]
+): Promise<void> => {
+  try {
+    const playlistRef = doc(db, 'playlists', playlistId);
+    await updateDoc(playlistRef, {
+      videos: newVideoOrder, // 새로운 비디오 순서로 업데이트
+      updatedAt: new Date().toISOString(), // 업데이트 시간을 업데이트
+    });
+    console.log('플레이리스트 비디오 순서 업데이트 성공!');
+  } catch (error) {
+    console.error('Error updating playlist video order:', error);
     throw error;
   }
 };

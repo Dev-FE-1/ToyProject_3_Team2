@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { Outlet, useLocation } from 'react-router-dom';
 
-import VideoModal from '@/components/videoModal/VideoModal';
+import VideoModal from '@/components/page/videoModal/VideoModal';
 import { PATH } from '@/constants/path';
 import Navbar from '@/layouts/layout/Navbar';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
