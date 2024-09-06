@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import defaultProfileImage from '@/assets/images/default-avatar-man.svg';
+import { getInitialLikedState, togglePlaylistLike } from '@/api/endpoints/like';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
-import Profile from '@/components/profile/Profile';
-import { useLikeStore } from '@/store/useLikeStore';
+import Profile from '@/components/page/profile/Profile';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 import { getUserIdBySession } from '@/utils/user';
 
-interface ThumBoxDetailProps {
+interface ThumbNailBoxDetailProps {
   playlist: PlaylistModel;
   user: UserModel;
-  profileURL?: string;
   onClickProfile?: () => void;
 }
 
-const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickProfile }) => {
+const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
+  playlist,
+  user,
+  onClickProfile,
+}) => {
   const {
     playlistId,
     title,
@@ -28,41 +30,49 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
     updatedAt,
     videoCount,
     forkCount,
-    likeCount,
     commentCount,
+    likeCount,
     thumbnailUrl,
     isPublic,
   } = playlist;
 
-  const { profileImg = defaultProfileImage, userName } = user;
-
-  const likes = useLikeStore((state) => state.likes);
-  const isLiked = useLikeStore((state) => state.isLiked);
-  const initializeLikes = useLikeStore((state) => state.initializeLikes);
-  const incrementLike = useLikeStore((state) => state.incrementLike);
-  const decrementLike = useLikeStore((state) => state.decrementLike);
-  const toggleLiked = useLikeStore((state) => state.toggleLiked);
-
+  const { profileImg, userName } = user;
   const userId = getUserIdBySession();
 
-  useEffect(() => {
-    initializeLikes([
-      {
-        playlistId,
-        initialLikeCount: likeCount,
-        commentCount,
-      },
-    ]);
-  }, [initializeLikes, playlistId, likeCount, commentCount]);
+  const [isLiked, setIsLiked] = useState<boolean | null>(null);
+  const [localLikeCount, setLocalLikeCount] = useState(likeCount);
 
-  const handleLikeClick = () => {
-    if (isLiked[playlistId]) {
-      decrementLike(playlistId);
-    } else {
-      incrementLike(playlistId);
+  useEffect(() => {
+    const fetchInitialLikedState = async () => {
+      try {
+        const initialLikedState = await getInitialLikedState(userId, playlistId);
+        setIsLiked(initialLikedState);
+      } catch (error) {
+        console.error('Error fetching initial liked state:', error);
+      }
+    };
+
+    fetchInitialLikedState();
+  }, [userId, playlistId]);
+
+  useEffect(() => {
+    setLocalLikeCount(likeCount);
+  }, [likeCount]);
+
+  const handleLikeToggle = async () => {
+    if (isLiked === null) return;
+
+    try {
+      const newLikeState = await togglePlaylistLike(playlistId, userId, isLiked);
+      const newLikeCount = newLikeState ? localLikeCount + 1 : localLikeCount - 1;
+      setIsLiked(newLikeState);
+      setLocalLikeCount(newLikeCount);
+    } catch (error) {
+      console.error('Failed to toggle like:', error);
     }
-    toggleLiked(playlistId);
   };
+
+  if (isLiked === null) return;
 
   return (
     <div>
@@ -75,9 +85,9 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
           <div css={dividerStyle} />
           <LikesButton
             playlistId={playlistId}
-            likeCount={likes[playlistId] || likeCount}
-            handleLikeClick={handleLikeClick}
-            isLiked={isLiked[playlistId] || false}
+            localLikeCount={localLikeCount}
+            isLiked={isLiked}
+            handleLikeToggle={handleLikeToggle}
           />
         </div>
       </div>
@@ -85,11 +95,10 @@ const ThumBoxDetail: React.FC<ThumBoxDetailProps> = ({ playlist, user, onClickPr
         <span css={statsStyle}>동영상 {videoCount}개</span>
         <span css={statsStyle}>포크 {forkCount}회</span>
 
-        {/* 여긴 뭘까??????????????///// */}
         {userId === userId ? (
           <span css={statsStyle}>{isPublic ? '' : '비공개'}</span>
         ) : (
-          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)} 업데이트</span>
+          <span css={statsStyle}>{formatTimeWithUpdated(updatedAt)}</span>
         )}
       </div>
       <p css={subtitleStyle}>{description}</p>
@@ -161,4 +170,4 @@ const subtitleStyle = css`
   margin: 1rem;
 `;
 
-export default ThumBoxDetail;
+export default ThumbNailBoxDetail;

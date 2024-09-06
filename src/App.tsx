@@ -7,7 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import SectionListPage from '@/components/home/SectionListPage';
+import DetailList from '@/components/page/home/DetailList';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
 import CommentAdd from '@/pages/CommentAdd';
@@ -83,7 +83,7 @@ const router = createBrowserRouter([
               { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
             ],
           },
-          { path: '/section-list', element: <SectionListPage /> },
+          { path: '/section-list', element: <DetailList /> },
           {
             path: PATH.COMMENT,
             children: [
