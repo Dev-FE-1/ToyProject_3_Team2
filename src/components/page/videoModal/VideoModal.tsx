@@ -529,8 +529,30 @@ const iconStyle = (isVisible: boolean) => css`
 `;
 const controlsContainerStyle = (isMinimized: boolean) => css`
   flex: 1;
-  transition: all 300ms ease-in-out;
-  height: ${isMinimized ? '0' : 'auto'};
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding-bottom: 2rem;
+  // max-height: calc(70vh - 300px); // 예시 값, 실제 비디오 플레이어와 헤더의 높이에 따라 조정 필요
+  // min-height: 1000px; // 최소 높이 설정
+  // background-color: gold;
+
+  ${isMinimized
+    ? css`
+        display: none;
+      `
+    : css`
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: ${theme.colors.darkGray};
+          border-radius: 3px;
+        }
+        &::-webkit-scrollbar-track {
+          background-color: ${theme.colors.black};
+        }
+      `}
 `;
 const iframeStyle = (loaded: boolean) => css`
   position: absolute;
