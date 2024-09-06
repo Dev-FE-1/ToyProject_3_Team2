@@ -307,6 +307,7 @@ const PlaylistPage: React.FC = () => {
     </div>
   );
 };
+
 const containerStyle = css`
   position: relative;
   padding-bottom: 160px;
