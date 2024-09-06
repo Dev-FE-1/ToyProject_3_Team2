@@ -7,6 +7,7 @@ import { MdDragHandle } from 'react-icons/md';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import { getInitialForkedState, toggleFork } from '@/api/endpoints/fork';
 import {
   getPlaylistWithUser,
   deletePlaylist,
@@ -20,8 +21,8 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/page/playlistdetail/nullBox';
-import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import NullBox from '@/components/page/playlistdetail/NullBox';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
@@ -53,6 +54,8 @@ const PlaylistPage: React.FC = () => {
     null
   );
 
+  const [isForked, setIsForked] = useState<boolean | null>(null);
+
   const isOpen = useMiniPlayerStore((state) => state.isOpen);
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);
@@ -61,6 +64,37 @@ const PlaylistPage: React.FC = () => {
   const navigate = useNavigate();
 
   const userId = getUserIdBySession();
+
+  useEffect(() => {
+    const fetchInitialForkedState = async () => {
+      try {
+        const initialForkedState = await getInitialForkedState(userId, playlistId as string);
+        setIsForked(initialForkedState);
+      } catch (error) {
+        console.error('Error fetching initial Forked state:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchInitialForkedState();
+  }, [userId, playlistId]);
+
+  const handleForkToggle = async () => {
+    if (isForked === null) return;
+
+    setIsLoading(true);
+    try {
+      const newForkState = await toggleFork(playlistId as string, userId, isForked);
+      setIsForked(newForkState);
+      showToast('내 재생목록에 저장되었습니다.');
+      toggle();
+    } catch (error) {
+      console.error('Failed to toggle Fork:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchPlaylistWithUser = async () => {
@@ -90,13 +124,7 @@ const PlaylistPage: React.FC = () => {
     fetchPlaylistWithUser();
   }, [playlistId, refreshTrigger]);
 
-  const handleIconButtonClick = () => {
-    showToast('내 재생목록에 저장되었습니다.');
-    toggle();
-  };
-
   const handlePlaylistEdit = () => {
-    // console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
     navigate('/playlist/' + playlist?.playlistId + '/edit');
   };
   const handleAddPlaylist = () => {
@@ -211,6 +239,8 @@ const PlaylistPage: React.FC = () => {
     return <div>{error}</div>;
   }
 
+  if (isForked === null) return <div>Loading...</div>;
+
   // 드래그앤드롭 이벤트 핸들러
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination || !playlist) return;
@@ -269,7 +299,7 @@ const PlaylistPage: React.FC = () => {
         {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
           <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
-          <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleIconButtonClick} />
+          <IconButton Icon={isForked ? GoStarFill : GoStar} onClick={handleForkToggle} />
         )}
       </div>
       {playlist.videos.length > 0 ? (

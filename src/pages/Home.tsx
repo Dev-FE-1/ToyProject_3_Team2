@@ -24,7 +24,7 @@ const Home = () => {
         </div>
       ) : (
         <>
-          {interestedPlaylists.allForkedPlaylists.length > 1 && (
+          {interestedPlaylists.allForkedPlaylists.length > 0 && (
             <CrossScrollingList
               title={INTERESTED_PLAYLIST}
               playlists={interestedPlaylists.allForkedPlaylists}
