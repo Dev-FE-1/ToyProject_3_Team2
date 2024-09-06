@@ -21,7 +21,7 @@ import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import NullBox from '@/components/page/playlistdetail/nullBox';
-import ThumBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
@@ -44,24 +44,23 @@ const PlaylistPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
-  const isOpen = useMiniPlayerStore((state) => state.isOpen);
-  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
+  const [videoData, setVideoData] = useState<Partial<Video>>();
   const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
-
-  const [videoData, setVideoData] = useState<Partial<Video>>(); // 추가추가
-  const isModalOpen = useModalStore((state) => state.isModalOpen); // 추가추가
-  const { openModal, closeModal } = useModalStore(); // 추가추가
-
-  const navigate = useNavigate();
-
-  const userId = getUserIdBySession();
-
   const [bottomSheetContentType, setBottomSheetContentType] = useState<
     'deleteFromPlaylist' | 'deleteVideo'
   >('deleteFromPlaylist');
   const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
     null
   );
+
+  const isOpen = useMiniPlayerStore((state) => state.isOpen);
+  const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
+  const isModalOpen = useModalStore((state) => state.isModalOpen);
+  const { openModal, closeModal } = useModalStore();
+
+  const navigate = useNavigate();
+
+  const userId = getUserIdBySession();
 
   useEffect(() => {
     const fetchPlaylistWithUser = async () => {
@@ -97,7 +96,7 @@ const PlaylistPage: React.FC = () => {
   };
 
   const handlePlaylistEdit = () => {
-    console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
+    // console.log('플레이리스트 수정페이지로 이동', playlist, playlist?.playlistId);
     navigate('/playlist/' + playlist?.playlistId + '/edit');
   };
   const handleAddPlaylist = () => {
@@ -250,12 +249,17 @@ const PlaylistPage: React.FC = () => {
   return (
     <div css={containerStyle}>
       {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
-        <Header Icon={GoKebabHorizontal} customStyle={kebabStyle} onIcon={onClickKebob} />
+        <Header
+          Icon={GoKebabHorizontal}
+          customStyle={kebabStyle}
+          onIcon={onClickKebob}
+          onBack={handleHeaderBack}
+        />
       ) : (
         <Header />
       )}
       {playlist && (
-        <ThumBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
+        <ThumbNailBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
       )}
       <div css={buttonBoxStyle}>
         <Button styleType='secondary' customStyle={buttonStyle} onClick={handlePlayAll}>

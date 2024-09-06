@@ -6,7 +6,7 @@ import { GoVideo } from 'react-icons/go';
 import Badge from '@/components/common/Badge';
 import theme from '@/styles/theme';
 
-interface ThumBoxProps {
+interface ThumbNailBoxProps {
   onClick?: () => void;
   thumURL?: string;
   title?: string;
@@ -22,7 +22,7 @@ interface ThumBoxProps {
 const LIKES = '좋아요';
 const COMMENTS = '댓글';
 
-const ThumBox: React.FC<ThumBoxProps> = ({
+const ThumbNailBox: React.FC<ThumbNailBoxProps> = ({
   onClick,
   thumURL,
   title,
@@ -139,7 +139,7 @@ const thumbnailBackdropStyle = css`
   width: 95%;
   height: 100%;
   border-radius: 6px;
-  background-color: ${theme.colors.ThumBox};
+  background-color: ${theme.colors.ThumbNailBox};
   z-index: 1;
 `;
 
@@ -268,4 +268,4 @@ const infoItemStyle = css`
   }
 `;
 
-export default ThumBox;
+export default ThumbNailBox;
