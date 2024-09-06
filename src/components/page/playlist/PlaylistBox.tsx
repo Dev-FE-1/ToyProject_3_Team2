@@ -1,15 +1,21 @@
+import { useEffect, useState } from 'react';
+
 import { css } from '@emotion/react';
-import { GoStar, GoStarFill } from 'react-icons/go';
 import { useNavigate } from 'react-router-dom';
 
-import IconTextButton from '@/components/common/buttons/IconTextButton';
+import { getInitialForkedState, toggleFork } from '@/api/endpoints/fork';
+import { getUserData } from '@/api/endpoints/user';
 import Profile from '@/components/page/profile/Profile';
+import SubsToggleButton from '@/components/page/subscriptions/SubsToggleButton';
+import { useToastStore } from '@/store/useToastStore';
+import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
+import { getUserIdBySession } from '@/utils/user';
 
 export interface PlaylistBoxProps {
-  isSubscribed: boolean;
-  onClick: () => void;
-  nickname: string;
+  userName: string;
+  userId: string;
+  playlistId: string;
   imageUrl: string;
   playlistTitle: string;
   category: string;
@@ -20,9 +26,9 @@ export interface PlaylistBoxProps {
 }
 
 const PlaylistBox: React.FC<PlaylistBoxProps> = ({
-  isSubscribed,
-  onClick,
-  nickname,
+  userId: playlistUserId,
+  userName,
+  playlistId,
   imageUrl,
   playlistTitle,
   category,
@@ -31,17 +37,67 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
   likeCount,
   commentCount,
 }: PlaylistBoxProps) => {
+  const [profileImg, setProfileImg] = useState<string | undefined>('');
+  const [isForked, setIsForked] = useState<boolean | null>(null);
+
+  const { isToggled, toggle } = useToggleStore();
+  const { showToast } = useToastStore();
+
   const navigate = useNavigate();
+
+  const userId = getUserIdBySession();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await getUserData(playlistUserId);
+      setProfileImg(userData?.profileImg);
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const fetchInitialForkedState = async () => {
+      try {
+        const initialForkedState = await getInitialForkedState(userId, playlistId as string);
+        setIsForked(initialForkedState);
+      } catch (error) {
+        console.error('Error fetching initial Forked state:', error);
+      }
+    };
+
+    fetchInitialForkedState();
+  }, [userId, playlistId]);
+
+  const handleForkToggle = async () => {
+    if (isForked === null) return;
+
+    try {
+      const newForkState = await toggleFork(playlistId as string, userId, isForked);
+      setIsForked(newForkState);
+      toggle();
+      isToggled
+        ? showToast(`구독 목록에서 해제되었습니다.`)
+        : showToast(`구독 목록에 추가되었습니다.`);
+    } catch (error) {
+      console.error('Failed to toggle Fork:', error);
+    }
+  };
 
   return (
     <div css={wrapper}>
       <div css={top}>
-        <Profile marginSide='0' nickname={nickname} onClick={() => navigate('/')} />
-        <IconTextButton Icon={isSubscribed ? GoStarFill : GoStar} variant='dark' onClick={onClick}>
+        <Profile
+          userName={userName}
+          profileImg={profileImg}
+          onClick={() => navigate(`/mypage/${playlistUserId}`)}
+        />
+        {/* <IconTextButton Icon={isSubscribed ? GoStarFill : GoStar} variant='dark' onClick={onClick}>
           {isSubscribed ? '플리 구독 중' : '플리 구독'}
-        </IconTextButton>
+        </IconTextButton> */}
+        <SubsToggleButton handleForkToggle={handleForkToggle} isForked={isForked} />
       </div>
-      <div css={clickEventStyle} onClick={() => navigate('/')}>
+      <div css={clickEventStyle} onClick={() => navigate(`/playlist/${playlistId}`)}>
         <div css={middle}>
           <img src={imageUrl} alt='썸네일' />
         </div>

@@ -38,7 +38,6 @@ const PlaylistPage: React.FC = () => {
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
   const [playlist, setPlaylist] = useState<PlaylistModel | null>();
   const [user, setUser] = useState<UserModel | null>(null);
-  const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
   const showToast = useToastStore((state) => state.showToast);
   const [isLoading, setIsLoading] = useState(true);
