@@ -1,46 +1,70 @@
 import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
-import { doc, deleteDoc } from 'firebase/firestore';
+import { doc, deleteDoc, updateDoc, increment } from 'firebase/firestore';
 import { RiCloseFill } from 'react-icons/ri';
+import { useParams } from 'react-router-dom';
 
 import { db } from '@/api';
+import { deleteComment } from '@/api/endpoints/comment';
+import { getPlaylistById } from '@/api/endpoints/playlist';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import Toast from '@/components/common/Toast';
+import { useCommentsList } from '@/hooks/query/useComments';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
-import { Comment } from '@/types/playlist';
+import { Comment, PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 import { getUserIdBySession } from '@/utils/user';
+
 interface CommentBoxProps extends Comment {
   comments: Comment;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
+  playlistData?: PlaylistModel | undefined;
+  setPlaylistData?: React.Dispatch<React.SetStateAction<PlaylistModel | undefined>>;
 }
-const CommentBox: React.FC<CommentBoxProps> = ({ comments, setComments }: CommentBoxProps) => {
+
+const CommentBox: React.FC<CommentBoxProps> = ({
+  comments,
+  setComments,
+  playlistData,
+  setPlaylistData,
+}: CommentBoxProps) => {
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
+  const { refetch } = useCommentsList(playlistData?.playlistId);
 
-  const handleDelBtnClick = async () => {
-    if (!comments.commentId) {
-      console.error('commentId가 없습니다.');
+  const handleDelBtnClick = async (commentData: {
+    playlistId: string | undefined;
+    commentId: string | undefined;
+  }) => {
+    if (!commentData.playlistId) {
+      console.error('playlistId가 없습니다.');
       return;
     }
-    try {
-      if (commentUserId === comments.userId) {
-        const commentRef = doc(db, 'comments', comments.commentId);
-        await deleteDoc(commentRef);
-
-        showToast('댓글이 삭제되었습니다');
-      } else {
-        console.log('삭제 권한이 없습니다.');
-      }
-    } catch (error) {
-      console.error('댓글 삭제 중 오류 발생:', error);
+    if (!commentData.commentId) {
+      console.error('commnetId가 없습니다.');
+      return;
     }
 
-    setComments((prevComments) =>
-      prevComments.filter((comment) => comment.commentId !== comments.commentId)
-    );
+    try {
+      await deleteComment(commentData.playlistId, commentData.commentId);
+      showToast('댓글이 삭제되었습니다');
+
+      const updatedPlaylistData = await getPlaylistById(commentData.playlistId);
+
+      if (setPlaylistData && updatedPlaylistData) {
+        setPlaylistData(updatedPlaylistData);
+      } // playlist의 commentCount 갱신
+
+      setComments((prevComments) =>
+        prevComments.filter((comment) => comment.commentId !== comments.commentId)
+      ); // 삭제된 comment 빼고 comments 갱신
+
+      await refetch();
+    } catch (error) {
+      console.error('댓글 삭제 중 오류 발생: ', error);
+    }
   };
 
   useEffect(() => {
@@ -60,7 +84,15 @@ const CommentBox: React.FC<CommentBoxProps> = ({ comments, setComments }: Commen
           </div>
         </div>
         {commentUserId === comments.userId && (
-          <RiCloseFill css={deleteIconStyle} onClick={handleDelBtnClick} />
+          <RiCloseFill
+            css={deleteIconStyle}
+            onClick={() =>
+              handleDelBtnClick({
+                playlistId: comments.playlistId,
+                commentId: comments.commentId,
+              })
+            }
+          />
         )}
       </div>
       <hr css={CommentHorizonSytle} />

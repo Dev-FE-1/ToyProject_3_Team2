@@ -115,6 +115,8 @@ const CommentList = () => {
             createdAt={formatTimeWithUpdated(comment.createdAt)}
             comments={comment}
             setComments={setComments}
+            playlistData={playlistData}
+            setPlaylistData={setPlaylistData}
           />
         ))}
       </div>
