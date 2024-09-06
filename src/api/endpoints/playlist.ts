@@ -15,6 +15,9 @@ import {
   increment,
   arrayRemove,
   updateDoc,
+  startAfter,
+  QueryDocumentSnapshot,
+  DocumentData,
 } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadString, deleteObject } from 'firebase/storage';
 
@@ -463,5 +466,51 @@ export const updatePlaylistVideoOrder = async (
   } catch (error) {
     console.error('Error updating playlist video order:', error);
     throw error;
+  }
+};
+
+// 전체 플레이리스트 가져온 후 무한스크롤 지원
+export const getPlaylistsWithPagination = async (
+  limitCount: number = 20,
+  lastVisible: QueryDocumentSnapshot<DocumentData> | null = null
+): Promise<{
+  nextPageToken: QueryDocumentSnapshot<DocumentData> | null;
+  playlists: PlaylistModel[];
+  lastVisible: QueryDocumentSnapshot<DocumentData> | null;
+}> => {
+  try {
+    const playlistsCol = collection(db, 'playlists');
+    let playlistQuery;
+
+    // 마지막 문서 이후의 데이터 가져오기 (페이지네이션)
+    if (lastVisible) {
+      playlistQuery = query(
+        playlistsCol,
+        orderBy('updatedAt', 'desc'),
+        startAfter(lastVisible),
+        limit(limitCount)
+      );
+    } else {
+      // 첫 페이지 데이터 가져오기
+      playlistQuery = query(playlistsCol, orderBy('updatedAt', 'desc'), limit(limitCount));
+    }
+
+    const playlistSnapshot = await getDocs(playlistQuery);
+    const playlists = playlistSnapshot.docs.map((doc) => ({
+      playlistId: doc.id,
+      ...doc.data(),
+    })) as PlaylistModel[];
+
+    const lastDoc = playlistSnapshot.docs[playlistSnapshot.docs.length - 1]; // 마지막 문서 스냅샷
+
+    // nextPageToken을 lastVisible로 반환
+    return {
+      playlists,
+      lastVisible: lastDoc || null, // 마지막 문서가 없을 경우 null
+      nextPageToken: lastDoc || null, // nextPageToken을 lastDoc으로 설정
+    };
+  } catch (error) {
+    console.error('Error fetching playlists with pagination:', error);
+    return { playlists: [], lastVisible: null, nextPageToken: null }; // 오류 발생 시 빈 값 반환
   }
 };

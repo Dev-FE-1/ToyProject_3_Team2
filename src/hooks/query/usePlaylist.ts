@@ -1,9 +1,11 @@
-import { useQueries, useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueries, useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 import {
   getAllPlaylists,
   getForkedPlaylists,
   getPlaylistsByCategory,
+  getPlaylistsWithPagination,
 } from '@/api/endpoints/playlist';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { PlaylistModel } from '@/types/playlist';
@@ -47,6 +49,19 @@ export const useForkedPlaylistsByUserIds = (userIds: string[]) =>
           queryFn: () => getForkedPlaylists(userId),
         }) as UseQueryOptions<PlaylistModel[], Error, PlaylistModel[], [string, string]>
     ),
+  });
+
+// 무한 스크롤 지원을 위한 플레이리스트 훅
+export const useInfinitePlaylists = () =>
+  useInfiniteQuery({
+    queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY],
+    queryFn: async ({ pageParam }: { pageParam?: QueryDocumentSnapshot<DocumentData> | null }) =>
+      getPlaylistsWithPagination(20, pageParam),
+    getNextPageParam: (lastPage) =>
+      // Return the next page parameter based on the last page and pages array
+      // For example:
+      lastPage.nextPageToken,
+    initialPageParam: null, // or some initial page parameter value
   });
 
 // 아래는 useQueries 이해를 위한 주석

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllPlaylists } from '@/api/endpoints/playlist';
+import { getPlaylistsWithPagination } from '@/api/endpoints/playlist';
 import Spinner from '@/components/common/Spinner';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
@@ -19,10 +19,11 @@ interface RecentUpdateListProps {
 const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   const navigate = useNavigate();
   const [visiblePlaylists, setVisiblePlaylists] = useState<PlaylistModel[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFirstLoadComplete, setIsFirstLoadComplete] = useState(false);
+  const [hasMore] = useState(true);
+  const pageSize = 5; // 한 번에 불러올 항목의 개수
+  const [lastVisible, setLastVisible] = useState<any>(null); // 페이지네이션을 위한 마지막 문서 스냅샷
+  const [initialLoaded, setInitialLoaded] = useState(false); // 초기 로딩 여부 확인
 
   const loadMoreItems = async () => {
     if (isLoading || !hasMore) return;
@@ -31,12 +32,26 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
     setTimeout(async () => {
       console.log('Load more items');
       try {
-        const newPlaylists = await getAllPlaylists(5 * page); // API 호출, 페이지당 5개 가져오기
-        if (newPlaylists.length === 0) {
-          setHasMore(false);
+        const { playlists, lastVisible: newLastVisible } = await getPlaylistsWithPagination(
+          pageSize,
+          lastVisible
+        ); // 페이지네이션 API 호출
+
+        if (playlists.length === 0 && visiblePlaylists.length > 0) {
+          // 데이터가 없으면 다시 처음부터 불러오기
+          const { playlists: firstPagePlaylists, lastVisible: firstLastVisible } =
+            await getPlaylistsWithPagination(pageSize, null);
+
+          // 중복 데이터 방지 (초기 1~5까지 중복 추가하지 않음)
+          if (initialLoaded && firstPagePlaylists.length > 0) {
+            setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists.slice(0)]); // 다시 처음부터 불러오기
+          } else {
+            setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists]);
+          }
+          setLastVisible(firstLastVisible);
         } else {
-          setVisiblePlaylists((prev) => [...prev, ...newPlaylists]); // 새로운 데이터를 기존 배열에 추가
-          setPage(page + 1);
+          setVisiblePlaylists((prev) => [...prev, ...playlists]); // 새로운 데이터를 기존 배열에 추가
+          setLastVisible(newLastVisible); // 마지막 문서 스냅샷 저장
         }
       } catch (error) {
         console.error('Error fetching playlists:', error);
@@ -46,21 +61,25 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
     }, 1000); // 데이터 불러오는 속도가 너무 빨라서 1초 딜레이
   };
 
-  const targetRef = useInfiniteScroll(() => {
-    if (isFirstLoadComplete) {
-      loadMoreItems();
-    }
-  }, hasMore);
+  const targetRef = useInfiniteScroll(loadMoreItems, hasMore);
 
   // 첫 로딩시 데이터 가져오기
   useEffect(() => {
     const fetchInitialData = async () => {
+      setIsLoading(true);
       try {
-        const initialPlaylists = await getAllPlaylists(5); // 처음 5개 데이터를 불러오기
-        setVisiblePlaylists(initialPlaylists);
-        setIsFirstLoadComplete(true);
+        const { playlists, lastVisible: initialLastVisible } = await getPlaylistsWithPagination(
+          pageSize,
+          null
+        ); // 첫 로딩 시 lastVisible 없이 호출
+
+        setVisiblePlaylists(playlists);
+        setLastVisible(initialLastVisible); // 첫 로딩 후 마지막 문서 스냅샷 저장
+        setInitialLoaded(true); // 초기 로딩 완료 플래그 설정
       } catch (error) {
         console.error('Error fetching initial playlists:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
