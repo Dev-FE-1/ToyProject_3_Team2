@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
+import { getAllPlaylists } from '@/api/endpoints/playlist';
 import Spinner from '@/components/common/Spinner';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
@@ -15,29 +16,32 @@ interface RecentUpdateListProps {
   playlists: PlaylistModel[];
 }
 
-const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title, playlists }) => {
+const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   const navigate = useNavigate();
-  const [visiblePlaylists, setVisiblePlaylists] = useState<PlaylistModel[]>([]); // 초기값을 빈 배열로 설정
+  const [visiblePlaylists, setVisiblePlaylists] = useState<PlaylistModel[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [isFirstLoadComplete, setIsFirstLoadComplete] = useState(false);
 
-  const loadMoreItems = () => {
+  const loadMoreItems = async () => {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       console.log('Load more items');
-      const nextPage = page + 1;
-      const newVisiblePlaylists = playlists.slice(0, nextPage * 5); // 다음 5개의 항목을 가져옴
-      setVisiblePlaylists(newVisiblePlaylists);
-      setPage(nextPage);
-      setIsLoading(false);
-
-      // 모든 데이터를 로드했으면 더 이상 불러오지 않도록 무한 호출 방지
-      if (newVisiblePlaylists.length >= playlists.length) {
-        setHasMore(false);
+      try {
+        const newPlaylists = await getAllPlaylists(5 * page); // API 호출, 페이지당 5개 가져오기
+        if (newPlaylists.length === 0) {
+          setHasMore(false);
+        } else {
+          setVisiblePlaylists((prev) => [...prev, ...newPlaylists]); // 새로운 데이터를 기존 배열에 추가
+          setPage(page + 1);
+        }
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      } finally {
+        setIsLoading(false);
       }
     }, 1000); // 데이터 불러오는 속도가 너무 빨라서 1초 딜레이
   };
@@ -50,15 +54,27 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title, playlists })
 
   // 첫 로딩시 데이터 가져오기
   useEffect(() => {
-    setVisiblePlaylists(playlists.slice(0, 5)); // 처음 5개 데이터를 불러오기
-    setIsFirstLoadComplete(true); // 첫 로드가 끝났음을 표시
-  }, [playlists]);
+    const fetchInitialData = async () => {
+      try {
+        const initialPlaylists = await getAllPlaylists(5); // 처음 5개 데이터를 불러오기
+        setVisiblePlaylists(initialPlaylists);
+        setIsFirstLoadComplete(true);
+      } catch (error) {
+        console.error('Error fetching initial playlists:', error);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
 
   return (
     <div>
       <h2 css={titleStyle}>{title}</h2>
-      {visiblePlaylists.map((playlist) => (
-        <div key={playlist.playlistId} onClick={() => navigate(`playlist/${playlist.playlistId}`)}>
+      {visiblePlaylists.map((playlist, index) => (
+        <div
+          key={`${playlist.playlistId}-${index}`}
+          onClick={() => navigate(`playlist/${playlist.playlistId}`)}
+        >
           <ThumbNailBox
             type='details'
             thumURL={playlist.thumbnailUrl}
