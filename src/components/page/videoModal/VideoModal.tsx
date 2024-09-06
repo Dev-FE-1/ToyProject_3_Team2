@@ -240,7 +240,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    css={playlistContainerStyle}
+                    css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
                   >
                     {currentPlaylist.videos.map((video, index) => (
                       <Draggable
@@ -256,9 +256,11 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                             css={videoBoxWrapperStyle(snapshot.isDragging)}
                           >
                             <div css={videoBoxInnerStyle}>
-                              <div {...provided.dragHandleProps} css={dragHandleStyle}>
-                                <MdDragHandle />
-                              </div>
+                              {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
+                                <div {...provided.dragHandleProps} css={[dragHandleStyle]}>
+                                  <MdDragHandle />
+                                </div>
+                              )}
                               <VideoBoxDetail
                                 video={video}
                                 type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
@@ -466,6 +468,9 @@ const dragHandleStyle = css`
     width: 20px;
     height: 20px;
   }
+`;
+const extraStyle = css`
+  padding-left: 1rem;
 `;
 const playlistContainerStyle = css`
   flex: 1;

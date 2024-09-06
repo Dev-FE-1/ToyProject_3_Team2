@@ -279,7 +279,7 @@ const PlaylistPage: React.FC = () => {
               <div
                 {...provided.droppableProps}
                 ref={provided.innerRef}
-                css={playlistContainerStyle}
+                css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
               >
                 {playlist.videos.map((video, index) => (
                   <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
@@ -292,9 +292,11 @@ const PlaylistPage: React.FC = () => {
                         css={videoBoxWrapperStyle(snapshot.isDragging)}
                       >
                         <div css={draggableListStyle}>
-                          <div {...provided.dragHandleProps} css={dragHandleStyle}>
-                            <MdDragHandle />
-                          </div>
+                          {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
+                            <div {...provided.dragHandleProps} css={dragHandleStyle}>
+                              <MdDragHandle />
+                            </div>
+                          )}
                           <VideoBoxDetail
                             video={video}
                             type={playlist.userId === userId ? 'host' : 'visitor'}
@@ -440,7 +442,9 @@ const dragHandleStyle = css`
     height: 20px;
   }
 `;
-
+const extraStyle = css`
+  padding-left: 1rem;
+`;
 const playlistContainerStyle = css`
   flex: 1;
   padding: 0 0.5rem;
