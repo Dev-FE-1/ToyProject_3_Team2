@@ -7,6 +7,7 @@ import ToggleSwitch from '@/components/common/ToggleSwitch';
 import FlipCard from '@/components/page/mypage/FlipCard';
 import { useToggleStore } from '@/store/useToggleStore';
 import { PlaylistModel } from '@/types/playlist';
+import { getUserIdBySession } from '@/utils/user';
 interface MyPlaylistsProps {
   playlists: PlaylistModel[];
 }
@@ -20,7 +21,8 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
   const handleFlip = (id: string) => {
     setActiveFlipCard((prevActive) => (prevActive === id ? null : id));
   };
-  const sessionUid = JSON.parse(sessionStorage.getItem('userSession') || '{}').uid;
+
+  const sessionUid = getUserIdBySession();
   const isAdmin = sessionUid === userId;
 
   const filteredPlaylists = useMemo(() => {
@@ -44,7 +46,7 @@ const MyPlaylists: React.FC<MyPlaylistsProps> = ({ playlists }) => {
       <header css={headerStyle}>
         <div css={titleStyle}>
           <h1>PlayLists</h1>
-          <strong>{playlists.length}</strong>
+          <strong>{filteredPlaylists.length}</strong>
         </div>
         {isAdmin && (
           <div css={flexStyle}>

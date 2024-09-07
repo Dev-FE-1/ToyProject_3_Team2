@@ -32,7 +32,7 @@ const MyPage = () => {
     isLoading: isPlaylistsLoading,
     error: playlistsError,
     refetch: refetchPlaylists,
-  } = useUserPlaylists();
+  } = useUserPlaylists(userId);
 
   useEffect(() => {
     refetchUserData();
@@ -41,8 +41,6 @@ const MyPage = () => {
 
   const sessionUserId = getUserIdBySession();
   const isAdmin = userData?.userId === sessionUserId;
-
-  console.log(playlists);
 
   const handleAddPlaylist = () => {
     navigate(PATH.MYPAGE_ADD_PLAYLIST);

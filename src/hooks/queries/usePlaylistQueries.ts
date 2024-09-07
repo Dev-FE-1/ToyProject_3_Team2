@@ -71,10 +71,10 @@ export const useInfinitePlaylists = () =>
   });
 
 // userId를 통해 해당 사용자의 모든 플레이리스트 정보 가져오기
-export const useUserPlaylists = (): UseQueryResult<PlaylistModel[], Error> => {
-  const userId = getUserIdBySession();
-
-  return useQuery<PlaylistModel[], Error>({
+export const useUserPlaylists = (
+  userId: string | undefined
+): UseQueryResult<PlaylistModel[], Error> =>
+  useQuery<PlaylistModel[], Error>({
     queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY, userId],
     queryFn: () => getUserPlaylists(userId!),
     ...defaultOptions,
@@ -82,7 +82,6 @@ export const useUserPlaylists = (): UseQueryResult<PlaylistModel[], Error> => {
     refetchOnMount: true, // 마운트 시 재요청
     refetchOnWindowFocus: true, // 윈도우 포커스 시 재요청
   });
-};
 // playlistId 의 플레이리스트 데이터 가져오기
 export const usePlaylistQuery = (playlistId: string | undefined) =>
   useQuery({
