@@ -2,22 +2,19 @@ import React from 'react';
 
 import { css } from '@emotion/react';
 
+import defaultAvatar from '@/assets/images/default-avatar-man.svg';
 import theme from '@/styles/theme';
 interface ProfileProps {
   onClick?: () => void;
   userName: string;
-  profileImageSrc?: string;
-  marginSide?: string; // props로 관리
+  profileImg: string | undefined;
 }
-//기본 프로필 이미지 주소값
-const DEFAULT_IMAGE =
-  'https://img.freepik.com/premium-vector/bald-empty-face-icon-avatar-vector-illustration_601298-13391.jpg?w=1480';
 
-const Profile: React.FC<ProfileProps> = ({ onClick, userName, profileImageSrc, marginSide }) => {
-  const imageSrc = profileImageSrc || DEFAULT_IMAGE;
+const Profile: React.FC<ProfileProps> = ({ onClick, userName, profileImg }) => {
+  const imageSrc = profileImg || defaultAvatar;
 
   return (
-    <div css={containerStyle(marginSide)} onClick={onClick}>
+    <div css={containerStyle} onClick={onClick}>
       <div css={imageContainerStyle}>
         <img src={imageSrc} alt={`${userName}의 프로필`} css={imageStyle} />
       </div>
@@ -28,8 +25,8 @@ const Profile: React.FC<ProfileProps> = ({ onClick, userName, profileImageSrc, m
 
 export default Profile;
 
-const containerStyle = (marginSide?: string) => css`
-  margin: 1rem ${marginSide || '1rem'};
+const containerStyle = css`
+  margin: 1rem;
   display: flex;
   align-items: center;
   min-width: 91px;

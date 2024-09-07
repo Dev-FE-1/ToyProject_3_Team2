@@ -1,53 +1,41 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { collection, getDocs } from 'firebase/firestore';
 
-import { db } from '@/api/index';
+import { getForkedPlaylists } from '@/api/endpoints/playlist';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/page/playlist/PlaylistBox';
-import { Playlist } from '@/mock/data';
-import { useToastStore } from '@/store/useToastStore';
-import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
+import { PlaylistModel } from '@/types/playlist';
+import { getUserIdBySession } from '@/utils/user';
 
 const Subscriptions: React.FC = () => {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const { isToggled, toggle } = useToggleStore();
-  const { showToast } = useToastStore();
+  const [forkedPlaylists, setForkedPlaylist] = useState<PlaylistModel[]>([]);
+  // const { isToggled, toggle } = useToggleStore();
+  // const { showToast } = useToastStore();
 
-  const fetchPlaylists = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'playlists'));
-      const playlistsData = querySnapshot.docs.map((doc) => doc.data() as Playlist);
-      setPlaylists(playlistsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const useId = getUserIdBySession();
 
   useEffect(() => {
-    fetchPlaylists();
-  }, []);
+    const fetchForkedPlaylists = async (useId: string) => {
+      const forkedPlaylists = await getForkedPlaylists(useId);
+      setForkedPlaylist(forkedPlaylists);
+    };
 
-  const handleSubBtnClick = (playlistId: Playlist) => {
-    toggle();
-    isToggled
-      ? showToast(`"${playlistId.title}" 이(가) 구독 목록에서 해제되었습니다.`)
-      : showToast(`"${playlistId.title}" 이(가) 구독 목록에 추가되었습니다.`);
-  };
+    fetchForkedPlaylists(useId);
+  }, [useId]);
 
   return (
-    <div>
+    <div css={containerStyle}>
       <header css={header}>
         <p>내가 구독중인 플레이리스트</p>
       </header>
-      {playlists.map((playlist) => (
+      {forkedPlaylists.map((playlist) => (
         <PlaylistBox
           key={playlist.playlistId}
-          isSubscribed={isToggled}
-          onClick={() => handleSubBtnClick(playlist)}
-          nickname={playlist.userId}
+          userId={playlist.userId}
+          playlistId={playlist.playlistId}
+          userName={playlist.userName}
           imageUrl={playlist.thumbnailUrl}
           playlistTitle={playlist.title}
           category={playlist.category}
@@ -61,6 +49,10 @@ const Subscriptions: React.FC = () => {
     </div>
   );
 };
+
+const containerStyle = css`
+  padding-bottom: 80px;
+`;
 
 const header = css`
   display: flex;

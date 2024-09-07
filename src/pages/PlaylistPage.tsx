@@ -28,8 +28,11 @@ import { Video } from '@/types/playlist';
 import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistPage: React.FC = () => {
-  const { playlistId } = useParams<{ playlistId: string }>();
   const navigate = useNavigate();
+  const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
+  const [playlist, setPlaylist] = useState<PlaylistModel | null>();
+  const [user, setUser] = useState<UserModel | null>(null);
+  const toggle = useToggleStore((state) => state.toggle);
   const showToast = useToastStore((state) => state.showToast);
   const userId = getUserIdBySession();
 
