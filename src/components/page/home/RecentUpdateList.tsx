@@ -66,7 +66,7 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
           onClick={() => navigate(`playlist/${playlist.playlistId}`)}
         >
           <ThumbNailBox
-            type='details'
+            type='recent'
             thumURL={playlist.thumbnailUrl}
             title={playlist.title}
             subtitle={playlist.description}
