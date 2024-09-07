@@ -16,7 +16,7 @@ interface ThumbNailBoxProps {
   likes?: number;
   comments?: number;
   listnum?: number;
-  type: 'main1' | 'main2' | 'details';
+  type: 'main1' | 'main2' | 'details' | 'recent';
 }
 
 const LIKES = '좋아요';
@@ -96,6 +96,30 @@ const ThumbNailBox: React.FC<ThumbNailBoxProps> = ({
                 </span>
                 <span css={infoItemStyle}>
                   {COMMENTS} {comments}
+                </span>
+              </div>
+              <div className='update'>{update}</div>
+            </div>
+          </div>
+        );
+      case 'recent':
+        return (
+          <div css={[mainStyle, detailsStyle]} onClick={onClick}>
+            <div css={thumbnailContainerStyle}>
+              <div className='thumbnail' css={thumbnailStyle(thumURL)}>
+                <Badge text='동영상' position='corner' suffix='개'>
+                  {listnum}
+                </Badge>
+              </div>
+              <div css={thumbnailBackdropStyle}></div>
+            </div>
+            <div className='content'>
+              <div className='title'>{title}</div>
+              <div className='subtitle'>{subtitle}</div>
+              <div className='info'>
+                <span css={infoItemStyle}>{uploader}</span>
+                <span css={infoItemStyle}>
+                  {LIKES} {likes}
                 </span>
               </div>
               <div className='update'>{update}</div>
@@ -262,9 +286,17 @@ const detailsStyle = css`
 
 const infoItemStyle = css`
   margin-top: 2px;
-  margin-right: 10px;
+  margin-right: 4px;
   &:last-child {
     margin-right: 0;
+  }
+  &:last-child::after {
+    content: '';
+    margin-right: 0;
+  }
+  &::after {
+    content: '·';
+    margin-left: 4px;
   }
 `;
 
