@@ -32,7 +32,6 @@ export const getUserData = async (userId: string): Promise<UserModel | null> => 
     const userDoc = await getDoc(userDocRef);
 
     if (!userDoc.exists()) {
-      console.log(`User with ID ${userId} not found`);
       return null;
     }
 
@@ -60,7 +59,6 @@ export const getUserPlaylists = async (userId: string): Promise<UserPlaylists | 
     const userPlaylistsDoc = await getDoc(userPlaylistsRef);
 
     if (!userPlaylistsDoc.exists()) {
-      console.log(`UserPlaylists for user ${userId} not found`);
       return null;
     }
 

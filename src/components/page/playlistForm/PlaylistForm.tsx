@@ -5,6 +5,7 @@ import { RiCloseLine } from 'react-icons/ri';
 
 import Button from '@/components/common/buttons/Button';
 import SelectBox from '@/components/common/SelectBox';
+import Spinner from '@/components/common/Spinner';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import { CATEGORY_OPTIONS, INITIAL_FORM_STATE } from '@/constants/playlist';
 import { usePlaylistForm } from '@/hooks/usePlaylistForm';
@@ -19,6 +20,7 @@ interface PlaylistFormProps {
 
 const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit, type }) => {
   const [description, setDescription] = useState(initialData.description || '');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     titleValue,
     categoryValue,
@@ -116,7 +118,7 @@ const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit,
         />
         <div css={buttonStyle}>
           <Button type='submit' styleType={`${!titleValue.trim() ? 'disabled' : 'primary'}`}>
-            {type === 'add' ? '만들기' : '수정하기'}
+            {isSubmitting ? <Spinner /> : type === 'add' ? '만들기' : '수정하기'}
           </Button>
         </div>
       </form>
@@ -215,6 +217,9 @@ const textareaStyle = css`
   resize: none;
 `;
 const buttonStyle = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   button {
     font-size: ${theme.fontSizes.large};
   }

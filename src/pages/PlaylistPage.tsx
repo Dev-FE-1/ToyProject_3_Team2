@@ -1,20 +1,13 @@
-import { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { getInitialForkedState, toggleFork } from '@/api/endpoints/fork';
-import {
-  getPlaylistWithUser,
-  deletePlaylist,
-  deleteVideoFromPlaylist,
-  addVideoToPlaylist,
-  updatePlaylistVideoOrder,
-} from '@/api/endpoints/playlist';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
@@ -22,47 +15,53 @@ import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import NullBox from '@/components/page/playlistdetail/NullBox';
-import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
+import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
-import { PlaylistModel, Video } from '@/types/playlist';
-import { UserModel } from '@/types/user';
+import { Video } from '@/types/playlist';
 import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistPage: React.FC = () => {
+  const navigate = useNavigate();
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
   const [playlist, setPlaylist] = useState<PlaylistModel | null>();
   const [user, setUser] = useState<UserModel | null>(null);
   const toggle = useToggleStore((state) => state.toggle);
   const showToast = useToastStore((state) => state.showToast);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const userId = getUserIdBySession();
+
+  const {
+    playlist,
+    user,
+    isLoading,
+    error,
+    handleDeleteVideo,
+    handleDeletePlaylist,
+    handleAddVideoToPlaylist,
+    handleUpdatePlaylistVideoOrder,
+  } = usePlaylistData(playlistId);
 
   const [videoData, setVideoData] = useState<Partial<Video>>();
-  const [refreshTrigger, setRefreshTrigger] = useState(Date()); // 요청할 때의 시간
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [bottomSheetContentType, setBottomSheetContentType] = useState<
     'deleteFromPlaylist' | 'deleteVideo'
   >('deleteFromPlaylist');
   const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
     null
   );
-
   const [isForked, setIsForked] = useState<boolean | null>(null);
-
+  const isToggled = useToggleStore((state) => state.isToggled);
+  const toggle = useToggleStore((state) => state.toggle);
   const isOpen = useMiniPlayerStore((state) => state.isOpen);
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);
   const { openModal, closeModal } = useModalStore();
-
-  const navigate = useNavigate();
-
-  const userId = getUserIdBySession();
 
   useEffect(() => {
     const fetchInitialForkedState = async () => {
@@ -72,7 +71,7 @@ const PlaylistPage: React.FC = () => {
       } catch (error) {
         console.error('Error fetching initial Forked state:', error);
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
       }
     };
 
@@ -82,7 +81,7 @@ const PlaylistPage: React.FC = () => {
   const handleForkToggle = async () => {
     if (isForked === null) return;
 
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const newForkState = await toggleFork(playlistId as string, userId, isForked);
       setIsForked(newForkState);
@@ -91,43 +90,76 @@ const PlaylistPage: React.FC = () => {
     } catch (error) {
       console.error('Failed to toggle Fork:', error);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    const fetchPlaylistWithUser = async () => {
-      if (!playlistId) {
-        setError('Playlist ID is missing');
-        setIsLoading(false);
-        return;
-      }
+  const handleDragEnd = async (result: DropResult) => {
+    if (!result.destination || !playlist) return;
 
-      try {
-        const result = await getPlaylistWithUser(playlistId);
+    const newVideos = Array.from(playlist.videos);
+    const [reorderedItem] = newVideos.splice(result.source.index, 1);
+    newVideos.splice(result.destination.index, 0, reorderedItem);
 
-        if (result) {
-          setPlaylist(result.playlist);
-          setUser(result.user);
-        } else {
-          setError('Playlist not found');
-        }
-      } catch (err) {
-        console.error('Error fetching playlist:', err); // 로그 추가
-        setError('Failed to fetch playlist');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    try {
+      await handleUpdatePlaylistVideoOrder(newVideos);
+      showToast('동영상 순서가 변경되었습니다.');
+    } catch (error) {
+      console.error('Error updating playlist video order:', error);
+      showToast('동영상 순서 변경 중 오류가 발생했습니다.');
+    }
+  };
+  const confirmAddVideo = async () => {
+    if (!videoData || !playlistId) {
+      console.error('Video data or playlist ID is missing');
+      return;
+    }
+    try {
+      await handleAddVideoToPlaylist(videoData as Video);
+      showToast('동영상이 성공적으로 추가되었습니다.');
+    } catch (error) {
+      console.error('Error adding video to playlist:', error);
+      showToast('동영상 추가 중 오류가 발생했습니다.');
+    }
+    closeModal();
+  };
 
-    fetchPlaylistWithUser();
-  }, [playlistId, refreshTrigger]);
+  const onPlaylistDelete = async () => {
+    if (!playlist) return;
+    try {
+      await handleDeletePlaylist(playlist.playlistId);
+      showToast('플레이리스트가 성공적으로 삭제되었습니다.');
+      navigate(-1);
+    } catch (error) {
+      console.error('Error deleting playlist:', error);
+      showToast('플레이리스트 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
+  const onVideoDelete = async () => {
+    if (!playlist || !selectedVideo) return;
+    try {
+      await handleDeleteVideo(playlist.playlistId, selectedVideo.videoId);
+      showToast('동영상이 성공적으로 삭제되었습니다.');
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      showToast('동영상 삭제 중 오류가 발생했습니다.');
+    }
+    setSelectedVideo(null);
+    setIsBottomSheetOpen(false);
+  };
 
   const handlePlaylistEdit = () => {
-    navigate('/playlist/' + playlist?.playlistId + '/edit');
+    navigate(`/playlist/${playlistId}/edit`);
   };
-  const handleAddPlaylist = () => {
-    openModal();
+
+  const handlePlayAll = () => {
+    if (playlist && playlist.videos.length > 0) {
+      const firstVideoId = playlist.videos[0].videoId;
+      if (firstVideoId) {
+        openMiniPlayer(firstVideoId, playlist, userId);
+      }
+    }
   };
 
   const handleVideoClick = (videoId: string) => {
@@ -139,257 +171,108 @@ const PlaylistPage: React.FC = () => {
       }
     }
   };
-  const confirmSignOut = () => {
-    addVideoToPlaylist(playlistId, videoData as Video);
-    setRefreshTrigger(Date());
-    closeModal();
-  };
+
   const handleProfileClick = () => {
-    if (playlist?.userId) {
-      navigate(`/mypage/${playlist.userId}`);
-    } else {
-      console.error('Unable to navigate: playlist or userId is undefined');
-    }
-  };
-  const onClickKebob = () => {
-    setBottomSheetContentType('deleteFromPlaylist');
-    setIsBottomSheetOpen(true);
-  };
-
-  const handleBottomSheetClose = () => {
-    setIsBottomSheetOpen(false);
-    setSelectedVideo(null);
-  };
-
-  const handlePlaylistDelete = async (playlistId: string) => {
-    try {
-      setIsLoading(true);
-      await deletePlaylist(playlistId);
-      showToast('플레이리스트가 성공적으로 삭제되었습니다.');
-      navigate(-1); // 이전 페이지로 이동
-    } catch (error) {
-      console.error('Error deleting playlist:', error);
-      showToast('플레이리스트 삭제 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
+    if (user) {
+      navigate(`/mypage/${user.userId}`);
     }
   };
 
-  const handleHeaderBack = () => {
-    navigate(`/mypage/${userId}`); // 이전 페이지로 이동
-  };
-  const handleVideoDelete = async () => {
-    if (!playlist || !selectedVideo) {
-      console.error('Playlist or selected video is null');
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      await deleteVideoFromPlaylist(playlist.playlistId, selectedVideo.videoId);
-
-      setPlaylist((prevPlaylist) => {
-        if (!prevPlaylist) {
-          console.error('Previous playlist is null');
-          return null;
-        }
-        const updatedVideos = prevPlaylist.videos.filter(
-          (video) => video.videoId !== selectedVideo.videoId
-        );
-        return {
-          ...prevPlaylist,
-          videos: updatedVideos,
-          videoCount: updatedVideos.length,
-        };
-      });
-
-      showToast('동영상이 성공적으로 삭제되었습니다.');
-    } catch (error) {
-      console.error('Error in handleVideoDelete:', error);
-      showToast('동영상 삭제 중 오류가 발생했습니다.');
-    } finally {
-      setIsLoading(false);
-      setSelectedVideo(null);
-      handleBottomSheetClose();
-    }
-  };
-  const onClickVideoKebob = (video: { videoId: string; title: string }) => {
-    setSelectedVideo(video);
-    setBottomSheetContentType('deleteVideo');
-    setIsBottomSheetOpen(true);
-  };
-
-  if (isLoading) {
+  if (isLoading)
     return (
       <div css={spinnerContainerStyle}>
         <Spinner />
       </div>
     );
-  }
-  if (!playlist || !user) {
-    return (
-      <div>
-        <Header customStyle={kebabStyle} />
-        <NullBox />
-      </div>
-    );
-  }
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  if (isForked === null) return <div>Loading...</div>;
-
-  // 드래그앤드롭 이벤트 핸들러
-  const handleDragEnd = async (result: DropResult) => {
-    if (!result.destination || !playlist) return;
-    const newVideos = Array.from(playlist.videos);
-    const [reorderedItem] = newVideos.splice(result.source.index, 1);
-    newVideos.splice(result.destination.index, 0, reorderedItem);
-    setPlaylist({
-      ...playlist,
-      videos: newVideos,
-    });
-
-    try {
-      // 그래그 드롭한 순서로 동영상 순서를 업데이트
-      await updatePlaylistVideoOrder(playlist.playlistId, newVideos);
-      showToast('동영상 순서가 변경되었습니다.');
-    } catch (error) {
-      console.error('Error updating playlist video order:', error);
-      showToast('동영상 순서 변경 중 오류가 발생했습니다.');
-    }
-  };
-  // 드래그 중 로깅
-  const onDragUpdate = (update: DragUpdate) => {
-    console.log('Drag update:', update);
-    // 여기서 스타일이나 위치 변화를 확인할 수 있습니다.
-  };
-  // 전체재생하는 미니플레이어(VideoModal) 열기
-  const handlePlayAll = () => {
-    if (playlist && playlist.videos.length > 0) {
-      const firstVideoId = playlist.videos[0].videoId;
-      if (firstVideoId) {
-        openMiniPlayer(firstVideoId, playlist, userId);
-      }
-    }
-  };
+  if (error) return <div css={errorStyle}>Error: {error.message}</div>;
+  if (!playlist || !user) return <NullBox />;
 
   return (
     <div css={containerStyle}>
-      {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
-        <Header
-          Icon={GoKebabHorizontal}
-          customStyle={kebabStyle}
-          onIcon={onClickKebob}
-          onBack={handleHeaderBack}
-        />
-      ) : (
-        <Header />
-      )}
-      {playlist && (
-        <ThumbNailBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
-      )}
+      <Header
+        Icon={playlist.userId === userId ? GoKebabHorizontal : undefined}
+        customStyle={kebabStyle}
+        onIcon={() => setIsBottomSheetOpen(true)}
+        onBack={() => navigate(-1)}
+      />
+      <ThumbNailBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
       <div css={buttonBoxStyle}>
         <Button styleType='secondary' customStyle={buttonStyle} onClick={handlePlayAll}>
           <RiPlayLargeFill css={iconStyle} />
           Play all
         </Button>
-        {playlist.userId === userId ? ( // 여기서 user는 로그인한 사용자
+        {playlist.userId === userId ? (
           <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
-          <IconButton Icon={isForked ? GoStarFill : GoStar} onClick={handleForkToggle} />
+          <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleForkToggle} />
         )}
       </div>
-      {playlist.videos.length > 0 ? (
-        <DragDropContext onDragEnd={handleDragEnd} onDragUpdate={onDragUpdate}>
-          <Droppable droppableId='playlistVideos' direction='vertical'>
-            {(provided) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                css={playlistContainerStyle}
-              >
-                {playlist.videos.map((video, index) => (
-                  <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
-                    {/* provided: Provided.innerRef를 참조, 동작을 실행하는 매개변수 */}
-                    {/* snapshot: 동작 시, dom 이벤트에 대하여 적용될 style 참조(옵셔널) */}
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        css={videoBoxWrapperStyle(snapshot.isDragging)}
-                      >
-                        <div css={draggableListStyle}>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId='playlistVideos' direction='vertical'>
+          {(provided) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
+            >
+              {playlist.videos.map((video: Video, index: number) => (
+                <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      css={videoBoxWrapperStyle(snapshot.isDragging)}
+                    >
+                      <div css={draggableListStyle}>
+                        {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
                           <div {...provided.dragHandleProps} css={dragHandleStyle}>
                             <MdDragHandle />
                           </div>
-                          <VideoBoxDetail
-                            video={video}
-                            type={playlist.userId === userId ? 'host' : 'visitor'}
-                            channelName={playlist.userName}
-                            uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-                            onClickVideo={() => handleVideoClick(video.videoId || '')}
-                            onClickKebob={() =>
-                              onClickVideoKebob({
-                                videoId: video.videoId || '',
-                                title: video.title,
-                              })
-                            }
-                          />
-                        </div>
+                        )}
+                        <VideoBoxDetail
+                          video={video}
+                          type={playlist.userId === userId ? 'host' : 'visitor'}
+                          channelName={playlist.userName}
+                          uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
+                          onClickVideo={() => handleVideoClick(video.videoId || '')}
+                          onClickKebob={() => {
+                            setSelectedVideo({ videoId: video.videoId || '', title: video.title });
+                            setBottomSheetContentType('deleteVideo');
+                            setIsBottomSheetOpen(true);
+                          }}
+                        />
                       </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      ) : (
-        <NullBox />
-      )}
-      {playlist.userId === userId ? (
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      {playlist.userId === userId && (
         <div css={addButtonContainerStyle}>
-          <IconButton
-            Icon={RiAddLargeLine}
-            customStyle={floatAddButtonStyle}
-            onClick={handleAddPlaylist}
-          />
+          <IconButton Icon={RiAddLargeLine} customStyle={floatAddButtonStyle} onClick={openModal} />
         </div>
-      ) : null}
-      <Toast />
+      )}
+      <CustomDialog
+        type='videoLink'
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onConfirm={confirmAddVideo}
+        setVideoData={setVideoData}
+      />
       <BottomSheet
         contentType={bottomSheetContentType}
         isOpen={isBottomSheetOpen}
-        onClose={handleBottomSheetClose}
-        playlists={
-          bottomSheetContentType === 'deleteFromPlaylist'
-            ? [
-                {
-                  id: playlist.playlistId,
-                  title: playlist.title,
-                  isPublic: playlist.isPublic,
-                  isBookmarked: false,
-                  thumURL: playlist.thumbnailUrl,
-                },
-              ]
-            : undefined
-        }
-        video={selectedVideo || undefined}
-        onPlaylistClick={handlePlaylistDelete}
-        onVideoDelete={handleVideoDelete}
+        onClose={() => setIsBottomSheetOpen(false)}
+        playlists={bottomSheetContentType === 'deleteFromPlaylist' ? [playlist] : undefined}
+        video={selectedVideo}
+        onPlaylistClick={onPlaylistDelete}
+        onVideoDelete={onVideoDelete}
       />
-      {isModalOpen && (
-        <CustomDialog
-          type='videoLink'
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onConfirm={confirmSignOut}
-          setVideoData={setVideoData}
-        />
-      )}
+      <Toast />
     </div>
   );
 };
@@ -398,9 +281,24 @@ const containerStyle = css`
   position: relative;
   padding-bottom: 160px;
 `;
+
+const spinnerContainerStyle = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
+
+const errorStyle = css`
+  color: red;
+  text-align: center;
+  padding: 20px;
+`;
+
 const kebabStyle = css`
   transform: rotate(90deg);
 `;
+
 const buttonBoxStyle = css`
   margin: 1rem;
   display: flex;
@@ -419,31 +317,10 @@ const iconStyle = css`
   margin-right: 6px;
 `;
 
-const spinnerContainerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
-
-const addButtonContainerStyle = css`
-  position: fixed;
-  left: 50%;
-  bottom: 96px;
-  width: 100vw;
-  max-width: 500px;
-  height: 1px;
-  transform: translateX(-50%);
-`;
-const floatAddButtonStyle = css`
-  position: absolute;
-  right: 1.5rem;
-  bottom: 0;
-  z-index: 100;
-  transition: all 0.3s ease;
-  &:hover {
-    transform: translateY(-2px);
-  }
+const playlistContainerStyle = css`
+  flex: 1;
+  padding: 0 0.5rem;
+  min-height: 100px;
 `;
 
 const videoBoxWrapperStyle = (isDragging: boolean) => css`
@@ -462,7 +339,6 @@ const draggableListStyle = css`
 `;
 
 const dragHandleStyle = css`
-  // cursor: move;
   color: ${theme.colors.darkGray};
   svg {
     width: 20px;
@@ -470,9 +346,28 @@ const dragHandleStyle = css`
   }
 `;
 
-const playlistContainerStyle = css`
-  flex: 1;
-  padding: 0 0.5rem;
-  min-height: 100px;
+const addButtonContainerStyle = css`
+  position: fixed;
+  left: 50%;
+  bottom: 96px;
+  width: 100vw;
+  max-width: 500px;
+  height: 1px;
+  transform: translateX(-50%);
 `;
+
+const floatAddButtonStyle = css`
+  position: absolute;
+  right: 1.5rem;
+  bottom: 0;
+  z-index: 100;
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-2px);
+  }
+`;
+const extraStyle = css`
+  padding-left: 1rem;
+`;
+
 export default PlaylistPage;

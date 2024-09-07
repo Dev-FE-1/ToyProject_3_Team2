@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 
 import { getInitialLikedState, togglePlaylistLike } from '@/api/endpoints/like';
+import defaultThumbnail from '@/assets/images/default-thumb.svg';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/page/profile/Profile';
@@ -11,7 +12,6 @@ import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 import { getUserIdBySession } from '@/utils/user';
-
 interface ThumbNailBoxDetailProps {
   playlist: PlaylistModel;
   user: UserModel;
@@ -76,7 +76,11 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
 
   return (
     <div>
-      <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
+      <img
+        src={thumbnailUrl ? thumbnailUrl : defaultThumbnail}
+        alt='Thumbnail'
+        css={thumbnailStyle}
+      />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
         <Profile profileImageSrc={profileImg} userName={userName} onClick={onClickProfile} />
