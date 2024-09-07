@@ -1,13 +1,24 @@
-import { useQueries, useQuery, UseQueryOptions } from '@tanstack/react-query';
+import {
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {
   getAllPlaylists,
   getForkedPlaylists,
   getPlaylistsByCategory,
+  deleteVideoFromPlaylist,
+  deletePlaylist,
+  updatePlaylist,
+  getPlaylistWithUser,
+  addVideoToPlaylist,
+  updatePlaylistVideoOrder,
 } from '@/api/endpoints/playlist';
 import { QUERY_KEYS } from '@/constants/queryKey';
-import { PlaylistModel } from '@/types/playlist';
-
+import { PlaylistModel, PlaylistFormDataModel, Video } from '@/types/playlist';
 // 기본 옵션
 const defaultOptions = {
   staleTime: 5 * 60 * 1000, // 기본 5분
@@ -48,6 +59,85 @@ export const useForkedPlaylistsByUserIds = (userIds: string[]) =>
         }) as UseQueryOptions<PlaylistModel[], Error, PlaylistModel[], [string, string]>
     ),
   });
+
+// playlistId 의 플레이리스트 데이터 가져오기
+export const usePlaylistQuery = (playlistId: string | undefined) =>
+  useQuery({
+    queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId],
+    queryFn: () => getPlaylistWithUser(playlistId || ''),
+    enabled: !!playlistId,
+  });
+
+// playlistId 의 영상 삭제하기
+export const useDeleteVideoMutation = (playlistId: string | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ playlistId, videoId }: { playlistId: string; videoId: string }) =>
+      deleteVideoFromPlaylist(playlistId, videoId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId] });
+    },
+  });
+};
+
+// playlistId 의 플레이리스트 삭제하기
+export const useDeletePlaylistMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (playlistId: string) => deletePlaylist(playlistId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY] });
+    },
+  });
+};
+
+// playlistId 의 데이터 업데이트하기
+export const useUpdatePlaylistMutation = (playlistId: string | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      playlistId,
+      formData,
+    }: {
+      playlistId: string;
+      formData: PlaylistFormDataModel;
+    }) => updatePlaylist(playlistId, formData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId] });
+    },
+  });
+};
+
+export const useAddVideoToPlaylistMutation = (playlistId: string | undefined) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (newVideo: Video) => addVideoToPlaylist(playlistId, newVideo),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId] });
+    },
+  });
+};
+
+export const useUpdatePlaylistVideoOrderMutation = (playlistId: string | undefined) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newVideoOrder: Video[]) => {
+      if (!playlistId) {
+        throw new Error('Playlist ID is undefined');
+      }
+      return updatePlaylistVideoOrder(playlistId, newVideoOrder);
+    },
+    onSuccess: () => {
+      if (playlistId) {
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId] });
+      }
+    },
+  });
+};
 
 // 아래는 useQueries 이해를 위한 주석
 // React Query v4부터 useQueries의 인터페이스 변경, 객체를 인자로 받아요~
