@@ -5,7 +5,6 @@ import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'r
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
 
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import Spinner from '@/components/common/Spinner';
@@ -26,12 +25,10 @@ interface VideoModalProps {
   userId: string;
 }
 const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalProps) => {
-  const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMaximizing, setIsMaximizing] = useState(false); // 모달이 최대화 중 인지 추적
   const [isPlaying, setIsPlaying] = useState(true);
-  const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [currentVideoId, setCurrentVideoId] = useState(videoId);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -43,7 +40,6 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     isLoading,
     error,
     handleDeleteVideo,
-    handleUpdatePlaylistVideoOrder,
     updatePlaylistVideoOrderAndGetIndex, // 새로운 함수 추가
     getCurrentVideoIndex, // 새로운 함수 추가
   } = usePlaylistData(playlist.playlistId);
@@ -83,9 +79,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     setSelectedVideo(null);
     setIsBottomSheetOpen(false);
   };
-  console.log(
-    'dighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdigh'
-  );
+
   // 드래그 앤 드롭 이벤트 핸들러
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination || !updatedPlaylist) {

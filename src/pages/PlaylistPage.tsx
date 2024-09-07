@@ -55,7 +55,6 @@ const PlaylistPage: React.FC = () => {
     null
   );
   const [isForked, setIsForked] = useState<boolean | null>(null);
-  const isToggled = useToggleStore((state) => state.isToggled);
   const isOpen = useMiniPlayerStore((state) => state.isOpen);
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);
