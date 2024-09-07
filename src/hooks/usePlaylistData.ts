@@ -1,20 +1,20 @@
 import {
-  useDeleteVideoMutation,
-  useDeletePlaylistMutation,
-  useUpdatePlaylistMutation,
-  useAddVideoToPlaylistMutation,
-  useUpdatePlaylistVideoOrderMutation,
+  useDeleteVideo,
+  useDeletePlaylist,
+  useUpdatePlaylist,
+  useAddVideoToPlaylist,
+  useUpdatePlaylistVideoOrder,
 } from '@/hooks/mutations/usePlaylistMutations';
 import { usePlaylistQuery } from '@/hooks/queries/usePlaylistQueries';
 import { PlaylistFormDataModel, Video } from '@/types/playlist';
 
 const usePlaylistData = (playlistId: string | undefined) => {
   const playlistQuery = usePlaylistQuery(playlistId);
-  const deleteVideoMutation = useDeleteVideoMutation(playlistId);
-  const deletePlaylistMutation = useDeletePlaylistMutation();
-  const updatePlaylistMutation = useUpdatePlaylistMutation(playlistId);
-  const addVideoMutation = useAddVideoToPlaylistMutation(playlistId);
-  const updateVideoOrderMutation = useUpdatePlaylistVideoOrderMutation(playlistId);
+  const deleteVideoMutation = useDeleteVideo(playlistId);
+  const deletePlaylistMutation = useDeletePlaylist();
+  const updatePlaylistMutation = useUpdatePlaylist(playlistId);
+  const addVideoMutation = useAddVideoToPlaylist(playlistId);
+  const updateVideoOrderMutation = useUpdatePlaylistVideoOrder(playlistId);
 
   const handleDeleteVideo = async (playlistId: string, videoId: string) => {
     await deleteVideoMutation.mutateAsync({ playlistId, videoId });
