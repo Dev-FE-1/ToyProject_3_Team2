@@ -83,7 +83,7 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
       />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
-        <Profile profileImageSrc={profileImg} userName={userName} onClick={onClickProfile} />
+        <Profile profileImg={profileImg} userName={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
           <CommentsButton playListId={playlistId} commentCount={commentCount} />
           <div css={dividerStyle} />

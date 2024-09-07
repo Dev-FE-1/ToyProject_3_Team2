@@ -27,31 +27,42 @@ export const toggleFork = async (
   try {
     const newForkState = await runTransaction(db, async (transaction) => {
       const userPlaylistRef = doc(db, 'userPlaylists', userId);
-      const userPlaylistDoc = await transaction.get(userPlaylistRef);
 
-      if (!userPlaylistDoc.exists()) {
+      const playlistRef = doc(db, 'playlists', playlistId);
+
+      const [playlistDoc, userPlaylistDoc] = await Promise.all([
+        transaction.get(playlistRef),
+        transaction.get(userPlaylistRef),
+      ]);
+
+      if (!playlistDoc.exists()) {
         throw new Error('User playlist document not found');
       }
 
-      const userData = userPlaylistDoc.data() || { forked: [] };
-      const forkedPlaylists = userData.forked || [];
+      const playlistData = playlistDoc.data();
+      const userPlaylistData = userPlaylistDoc.data() || { forked: [] };
+      const forkedPlaylists = userPlaylistData.forked || [];
 
       if (isCurrentlyForked) {
         // 구독 취소
         transaction.update(userPlaylistRef, {
           forked: forkedPlaylists.filter((id: string) => id !== playlistId),
         });
+        transaction.update(playlistRef, {
+          forkCount: (playlistData.forkCount || 0) - 1,
+        });
       } else {
         // 구독
         transaction.update(userPlaylistRef, {
           forked: [...forkedPlaylists, playlistId],
         });
+        transaction.update(playlistRef, {
+          forkCount: (playlistData.forkCount || 0) + 1,
+        });
       }
 
       return !isCurrentlyForked;
     });
-
-    console.log('Fork toggled successfully');
     return newForkState;
   } catch (error) {
     console.error('Error toggling fork:', error);

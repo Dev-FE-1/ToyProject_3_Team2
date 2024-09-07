@@ -42,6 +42,8 @@ const MyPage = () => {
   const sessionUserId = getUserIdBySession();
   const isAdmin = userData?.userId === sessionUserId;
 
+  console.log(playlists);
+
   const handleAddPlaylist = () => {
     navigate(PATH.MYPAGE_ADD_PLAYLIST);
   };
@@ -65,7 +67,7 @@ const MyPage = () => {
   return (
     <>
       <div css={containerStyle}>
-        <MyProfile userData={userData} />
+        <MyProfile userData={userData} playlists={playlists} />
         <MyPlaylists playlists={playlists || []} />
         {isAdmin && (
           <div css={addButtonContainerStyle}>

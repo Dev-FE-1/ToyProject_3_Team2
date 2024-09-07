@@ -24,8 +24,8 @@ export const togglePlaylistLike = async (
 ) => {
   try {
     const newLikeState = await runTransaction(db, async (transaction) => {
-      const playlistRef = doc(db, 'playlists', playlistId);
       const userPlaylistRef = doc(db, 'userPlaylists', userId);
+      const playlistRef = doc(db, 'playlists', playlistId);
 
       const [playlistDoc, userPlaylistDoc] = await Promise.all([
         transaction.get(playlistRef),

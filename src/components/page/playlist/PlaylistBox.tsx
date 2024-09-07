@@ -74,9 +74,10 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
 
     try {
       const newForkState = await toggleFork(playlistId as string, userId, isForked);
+      console.log(newForkState);
       setIsForked(newForkState);
       toggle();
-      isToggled
+      isForked
         ? showToast(`구독 목록에서 해제되었습니다.`)
         : showToast(`구독 목록에 추가되었습니다.`);
     } catch (error) {
@@ -92,9 +93,6 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
           profileImg={profileImg}
           onClick={() => navigate(`/mypage/${playlistUserId}`)}
         />
-        {/* <IconTextButton Icon={isSubscribed ? GoStarFill : GoStar} variant='dark' onClick={onClick}>
-          {isSubscribed ? '플리 구독 중' : '플리 구독'}
-        </IconTextButton> */}
         <SubsToggleButton handleForkToggle={handleForkToggle} isForked={isForked} />
       </div>
       <div css={clickEventStyle} onClick={() => navigate(`/playlist/${playlistId}`)}>

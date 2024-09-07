@@ -14,7 +14,7 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/page/playlistdetail/NullBox';
+import NullBox from '@/components/page/playlistdetail/nullBox';
 import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import usePlaylistData from '@/hooks/usePlaylistData';
@@ -30,9 +30,8 @@ import { getUserIdBySession } from '@/utils/user';
 const PlaylistPage: React.FC = () => {
   const navigate = useNavigate();
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>();
-  const [user, setUser] = useState<UserModel | null>(null);
-  const toggle = useToggleStore((state) => state.toggle);
+  // const [playlist, setPlaylist] = useState<PlaylistModel | null>();
+  // const [user, setUser] = useState<UserModel | null>(null);
   const showToast = useToastStore((state) => state.showToast);
   const userId = getUserIdBySession();
 
@@ -81,16 +80,15 @@ const PlaylistPage: React.FC = () => {
   const handleForkToggle = async () => {
     if (isForked === null) return;
 
-    // setIsLoading(true);
     try {
       const newForkState = await toggleFork(playlistId as string, userId, isForked);
       setIsForked(newForkState);
-      showToast('내 재생목록에 저장되었습니다.');
+      isForked
+        ? showToast('재생목록에서 삭제되었습니다.')
+        : showToast('재생목록에 저장되었습니다.');
       toggle();
     } catch (error) {
       console.error('Failed to toggle Fork:', error);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
@@ -204,7 +202,7 @@ const PlaylistPage: React.FC = () => {
         {playlist.userId === userId ? (
           <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
-          <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleForkToggle} />
+          <IconButton Icon={isForked ? GoStarFill : GoStar} onClick={handleForkToggle} />
         )}
       </div>
       <DragDropContext onDragEnd={handleDragEnd}>
