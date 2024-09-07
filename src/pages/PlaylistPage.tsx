@@ -90,11 +90,14 @@ const PlaylistPage: React.FC = () => {
       // setIsLoading(false);
     }
   };
+
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination || !playlist) return;
+
     const newVideos = Array.from(playlist.videos);
     const [reorderedItem] = newVideos.splice(result.source.index, 1);
     newVideos.splice(result.destination.index, 0, reorderedItem);
+
     try {
       await handleUpdatePlaylistVideoOrder(newVideos);
       showToast('동영상 순서가 변경되었습니다.');
@@ -103,7 +106,6 @@ const PlaylistPage: React.FC = () => {
       showToast('동영상 순서 변경 중 오류가 발생했습니다.');
     }
   };
-
   const confirmAddVideo = async () => {
     if (!videoData || !playlistId) {
       console.error('Video data or playlist ID is missing');

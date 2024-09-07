@@ -9,7 +9,8 @@ import {
 } from '@/api/endpoints/playlist';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { usePlaylistStore } from '@/store/usePlaylistStore';
-import { PlaylistFormDataModel, Video } from '@/types/playlist';
+import { PlaylistFormDataModel, Video, PlaylistModel } from '@/types/playlist';
+import { UserModel } from '@/types/user';
 interface AddPlaylistProps {
   formData: PlaylistFormDataModel;
   userId: string;
@@ -75,6 +76,7 @@ export const useUpdatePlaylistMutation = (playlistId: string | undefined) => {
   });
 };
 
+// 플레이리스트에 영상 추가
 export const useAddVideoToPlaylistMutation = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
 
@@ -86,16 +88,44 @@ export const useAddVideoToPlaylistMutation = (playlistId: string | undefined) =>
   });
 };
 
+// 드래그 앤 드랍
 export const useUpdatePlaylistVideoOrderMutation = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    mutationFn: (newVideoOrder: Video[]) => {
-      if (!playlistId) {
-        throw new Error('Playlist ID is undefined');
+    mutationFn: (newVideoOrder: Video[]) =>
+      updatePlaylistVideoOrder(playlistId || '', newVideoOrder),
+    onMutate: async (newVideoOrder) => {
+      if (!playlistId) return;
+
+      // 기존 쿼리 취소
+      await queryClient.cancelQueries({ queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId] });
+
+      // 이전 데이터 스냅샷
+      const previousData = queryClient.getQueryData<{ playlist: PlaylistModel; user: UserModel }>([
+        QUERY_KEYS.PLAYLIST_DETAIL_KEY,
+        playlistId,
+      ]);
+
+      // 낙관적 업데이트
+      if (previousData) {
+        queryClient.setQueryData([QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId], {
+          ...previousData,
+          playlist: { ...previousData.playlist, videos: newVideoOrder },
+        });
       }
-      return updatePlaylistVideoOrder(playlistId, newVideoOrder);
+
+      return { previousData };
     },
-    onSuccess: () => {
+    onError: (err, newVideoOrder, context) => {
+      if (playlistId && context?.previousData) {
+        queryClient.setQueryData(
+          [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId],
+          context.previousData
+        );
+      }
+    },
+    onSettled: () => {
       if (playlistId) {
         queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId] });
       }
