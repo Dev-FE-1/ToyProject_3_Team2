@@ -181,7 +181,7 @@ const PlaylistPage: React.FC = () => {
         <Droppable droppableId='playlistVideos' direction='vertical'>
           {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef} css={playlistContainerStyle}>
-              {playlist.videos.map((video, index) => (
+              {playlist.videos.map((video: Video, index: number) => (
                 <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
                   {(provided, snapshot) => (
                     <div
