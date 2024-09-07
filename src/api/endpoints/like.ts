@@ -41,7 +41,7 @@ export const togglePlaylistLike = async (
       const likedPlaylists = userPlaylistData.liked || [];
 
       if (isCurrentlyLiked) {
-        // Unlike
+        // 좋아요 취소
         transaction.update(userPlaylistRef, {
           liked: likedPlaylists.filter((id: string) => id !== playlistId),
         });
@@ -49,7 +49,7 @@ export const togglePlaylistLike = async (
           likeCount: (playlistData.likeCount || 0) - 1,
         });
       } else {
-        // Like
+        // 좋아요
         transaction.update(userPlaylistRef, {
           liked: [...likedPlaylists, playlistId],
         });
@@ -61,7 +61,6 @@ export const togglePlaylistLike = async (
       return !isCurrentlyLiked;
     });
 
-    console.log('Like toggled successfully');
     return newLikeState;
   } catch (error) {
     console.error('Error toggling like:', error);

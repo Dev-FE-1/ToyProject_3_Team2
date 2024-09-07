@@ -1,7 +1,7 @@
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import ThumBox from '@/components/common/ThumBox';
+import ThumbNailBox from '@/components/common/ThumbNailBox';
 import { PLAYLIST } from '@/constants/playlist';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
@@ -14,7 +14,6 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
   const navigate = useNavigate();
 
   const playlists = displayedPlaylists;
-  console.log(playlists);
   return (
     <div>
       {playlists && playlists.length > 0 ? (
@@ -23,7 +22,7 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
             key={playlist.playlistId}
             onClick={() => navigate(`/playlist/${playlist.playlistId}`)}
           >
-            <ThumBox
+            <ThumbNailBox
               type='details'
               thumURL={playlist.thumbnailUrl}
               title={playlist.title}

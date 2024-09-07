@@ -1,7 +1,11 @@
+import { useRef, useState } from 'react';
+
 import { css } from '@emotion/react';
 
 import { PLAYLIST } from '@/constants/playlist';
+import { useDragToScroll } from '@/hooks/useDragToScroll';
 import theme from '@/styles/theme';
+
 interface CategoryButtonsProps {
   selectedCategory: string;
   handleButtonClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -10,28 +14,40 @@ interface CategoryButtonsProps {
 const CategoryButtons: React.FC<CategoryButtonsProps> = ({
   selectedCategory,
   handleButtonClick,
-}) => (
-  <div css={buttonsStyle}>
-    {PLAYLIST.categories &&
-      PLAYLIST.categories.map((category) => (
-        <button
-          key={category}
-          css={[buttonStyle, category === selectedCategory && activeButtonStyle]}
-          onClick={handleButtonClick}
-        >
-          {category}
-        </button>
-      ))}
-  </div>
-);
+}) => {
+  const { dragDistance, handlers } = useDragToScroll();
 
-const buttonsStyle = css`
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // 드래그가 아니었을 때만 클릭 이벤트 발생
+    if (dragDistance < 5) {
+      handleButtonClick(e);
+    }
+  };
+
+  return (
+    <div css={buttonsWrapperStyle}>
+      <div css={scrollAreaStyle} {...handlers}>
+        {PLAYLIST.categories &&
+          PLAYLIST.categories.map((category) => (
+            <button
+              key={category}
+              css={[buttonStyle, category === selectedCategory && activeButtonStyle]}
+              onClick={handleClick}
+            >
+              {category}
+            </button>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+const buttonsWrapperStyle = css`
   margin: 1rem;
   display: flex;
   overflow-x: auto;
-  overflow-y: hidden;
   white-space: nowrap;
-  gap: 8px;
+  -webkit-overflow-scrolling: touch;
 
   // Webkit browsers (Chrome, Safari)
   &::-webkit-scrollbar {
@@ -39,8 +55,16 @@ const buttonsStyle = css`
   }
   scrollbar-width: none; // Firefox
   -ms-overflow-style: none; // IE and Edge
+`;
 
-  // (추가) 터치 기기에서의 스크롤 동작 개선, 네이티브와 같이 동작
+const scrollAreaStyle = css`
+  display: flex;
+  gap: 8px;
+  cursor: grab;
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  user-select: none; /* 텍스트 드래그 방지 */
   -webkit-overflow-scrolling: touch;
 `;
 

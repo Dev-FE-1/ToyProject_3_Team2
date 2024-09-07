@@ -3,7 +3,7 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
-import { useVideoData } from '@/hooks/query/useYoutube';
+import { useVideoData } from '@/hooks/queries/useYoutubeQueries';
 import theme from '@/styles/theme';
 import { Video } from '@/types/playlist';
 import { formatDurationISOToTime } from '@/utils/formatTime';

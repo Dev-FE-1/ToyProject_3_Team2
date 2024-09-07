@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { PLAYLIST } from '@/constants/playlist';
-import { useAllPlaylist } from '@/hooks/query/usePlaylist';
+import { useAllPlaylist } from '@/hooks/queries/usePlaylistQueries';
 import { PlaylistModel } from '@/types/playlist';
 
 const ALL_PLAYLISTS = PLAYLIST.categories[0]; // '전체'

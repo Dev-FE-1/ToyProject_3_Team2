@@ -1,12 +1,31 @@
 export const getVideoId = (url: string): string | null | undefined => {
-  // URL 객체를 생성
-  const parsedUrl = new URL(url);
-  // URLSearchParams 객체를 통해 쿼리 파라미터를 가져옴
-  const videoId = parsedUrl.searchParams.get('v');
+  try {
+    // URL 객체를 생성
+    const parsedUrl = new URL(url);
 
-  // videoId가 있으면 반환, 없으면 null 반환
-  // 이는 API 호출 단계에서 처리 예정
-  return videoId;
+    // 호스트명에 따라 분기 처리
+    switch (parsedUrl.hostname) {
+      case 'www.youtube.com':
+      case 'youtube.com':
+        // Shorts URL 처리
+        if (parsedUrl.pathname.startsWith('/shorts/')) {
+          return parsedUrl.pathname.split('/')[2]; // Shorts의 동영상 ID 추출
+        }
+        // 일반 유튜브 URL 처리
+        return parsedUrl.searchParams.get('v');
+
+      case 'youtu.be':
+        // 짧은 공유 URL 처리
+        return parsedUrl.pathname.substring(1);
+
+      default:
+        // 유효하지 않은 유튜브 URL일 경우
+        return null;
+    }
+  } catch (error) {
+    console.error('Invalid URL:', error);
+    return null;
+  }
 };
 
 // 사용 예시
