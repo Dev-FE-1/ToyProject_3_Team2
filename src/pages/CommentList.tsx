@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-// import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -115,6 +114,8 @@ const CommentList = () => {
             createdAt={formatTimeWithUpdated(comment.createdAt)}
             comments={comment}
             setComments={setComments}
+            playlistData={playlistData}
+            setPlaylistData={setPlaylistData}
           />
         ))}
       </div>
