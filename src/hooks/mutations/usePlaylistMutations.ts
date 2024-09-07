@@ -34,7 +34,7 @@ export const useAddPlaylist = () => {
 };
 
 // playlistId 의 영상 삭제하기
-export const useDeleteVideoMutation = (playlistId: string | undefined) => {
+export const useDeleteVideo = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -47,7 +47,7 @@ export const useDeleteVideoMutation = (playlistId: string | undefined) => {
 };
 
 // playlistId 의 플레이리스트 삭제하기
-export const useDeletePlaylistMutation = () => {
+export const useDeletePlaylist = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -59,7 +59,7 @@ export const useDeletePlaylistMutation = () => {
 };
 
 // playlistId 의 데이터 업데이트하기
-export const useUpdatePlaylistMutation = (playlistId: string | undefined) => {
+export const useUpdatePlaylist = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -77,7 +77,7 @@ export const useUpdatePlaylistMutation = (playlistId: string | undefined) => {
 };
 
 // 플레이리스트에 영상 추가
-export const useAddVideoToPlaylistMutation = (playlistId: string | undefined) => {
+export const useAddVideoToPlaylist = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -89,13 +89,25 @@ export const useAddVideoToPlaylistMutation = (playlistId: string | undefined) =>
 };
 
 // 드래그 앤 드랍
-export const useUpdatePlaylistVideoOrderMutation = (playlistId: string | undefined) => {
+export const useUpdatePlaylistVideoOrder = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newVideoOrder: Video[]) =>
-      updatePlaylistVideoOrder(playlistId || '', newVideoOrder),
-    onMutate: async (newVideoOrder) => {
+    mutationFn: async ({
+      newVideoOrder,
+      currentVideoId,
+    }: {
+      newVideoOrder: Video[];
+      currentVideoId?: string;
+    }) => {
+      await updatePlaylistVideoOrder(playlistId || '', newVideoOrder);
+      if (currentVideoId) {
+        const updatedIndex = newVideoOrder.findIndex((video) => video.videoId === currentVideoId);
+        return updatedIndex !== -1 ? updatedIndex : 0;
+      }
+      return -1; // currentVideoId가 제공되지 않았을 경우
+    },
+    onMutate: async ({ newVideoOrder }) => {
       if (!playlistId) return;
 
       // 기존 쿼리 취소
@@ -117,7 +129,7 @@ export const useUpdatePlaylistVideoOrderMutation = (playlistId: string | undefin
 
       return { previousData };
     },
-    onError: (err, newVideoOrder, context) => {
+    onError: (err, { newVideoOrder }, context) => {
       if (playlistId && context?.previousData) {
         queryClient.setQueryData(
           [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId],

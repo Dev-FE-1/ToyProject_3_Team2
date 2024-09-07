@@ -5,9 +5,13 @@ import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'r
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
-import { updatePlaylistVideoOrder } from '@/api/endpoints/playlistOperations';
+import BottomSheet from '@/components/common/modals/BottomSheet';
+import Spinner from '@/components/common/Spinner';
+import Toast from '@/components/common/Toast';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
+import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -22,78 +26,88 @@ interface VideoModalProps {
   userId: string;
 }
 const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalProps) => {
+  const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMaximizing, setIsMaximizing] = useState(false); // 모달이 최대화 중 인지 추적
   const [isPlaying, setIsPlaying] = useState(true);
+  const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [currentVideoId, setCurrentVideoId] = useState(videoId);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const showToast = useToastStore((state) => state.showToast);
 
+  const {
+    playlist: updatedPlaylist, // 업데이트된 플레이리스트
+    isLoading,
+    error,
+    handleDeleteVideo,
+    handleUpdatePlaylistVideoOrder,
+    updatePlaylistVideoOrderAndGetIndex, // 새로운 함수 추가
+    getCurrentVideoIndex, // 새로운 함수 추가
+  } = usePlaylistData(playlist.playlistId);
+
+  // 하단 시트 관련 상태
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [bottomSheetContentType, setBottomSheetContentType] = useState<
+    'deleteFromPlaylist' | 'deleteVideo'
+  >('deleteFromPlaylist');
+  const [selectedVideo, setSelectedVideo] = useState<{ videoId: string; title: string } | null>(
+    null
+  );
+
+  // 비디오 삭제 핸들러
+  const onVideoDelete = async () => {
+    if (!updatedPlaylist || !selectedVideo) return; // 업데이트된 플레이리스트가 없거나 선택된 비디오가 없다면 종료
+    try {
+      await handleDeleteVideo(updatedPlaylist.playlistId, selectedVideo.videoId);
+      showToast('동영상이 성공적으로 삭제되었습니다.');
+
+      // 삭제 후 플레이리스트 업데이트
+      if (currentVideoId === selectedVideo.videoId) {
+        const nextVideo = updatedPlaylist?.videos.find(
+          (video) => video.videoId !== selectedVideo.videoId
+        );
+        if (nextVideo) {
+          setCurrentVideoId(nextVideo.videoId || ''); // 다음 비디오로 전환: 다음 값이 있으면 다음 비디오로 전환
+        } else {
+          onClose(); // 마지막 비디오라면 모달을 닫음
+        }
+      }
+      setCurrentVideoIndex(getCurrentVideoIndex(currentVideoId)); // 현재 비디오 인덱스 업데이트
+    } catch (error) {
+      console.error('Error deleting video:', error);
+      showToast('동영상 삭제 중 오류가 발생했습니다.');
+    }
+    setSelectedVideo(null);
+    setIsBottomSheetOpen(false);
+  };
+
   // 드래그 앤 드롭 이벤트 핸들러
   const handleDragEnd = async (result: DropResult) => {
-    if (!result.destination) {
+    if (!result.destination || !updatedPlaylist) {
       return;
     }
-    const newVideos = Array.from(currentPlaylist.videos);
+    const newVideos = Array.from(updatedPlaylist.videos);
     const [reorderedItem] = newVideos.splice(result.source.index, 1);
     newVideos.splice(result.destination.index, 0, reorderedItem);
 
-    setCurrentPlaylist({
-      ...currentPlaylist,
-      videos: newVideos,
-    });
-
     try {
-      await updatePlaylistVideoOrder(currentPlaylist.playlistId, newVideos);
+      const newIndex = await updatePlaylistVideoOrderAndGetIndex(newVideos, currentVideoId);
+      setCurrentVideoIndex(newIndex);
       showToast('동영상 순서가 변경되었습니다.');
     } catch (error) {
       console.error('비디오 순서 업데이트 실패', error);
+      showToast('동영상 순서 변경 중 오류가 발생했습니다.');
     }
   };
 
-  const playNextVideo = useCallback(() => {
-    const currentIndex = currentPlaylist.videos.findIndex(
-      (video) => video.videoId === currentVideoId
-    );
-    // 다음 비디오가 있으면 다음 비디오로 전환
-    if (currentIndex < currentPlaylist.videos.length - 1) {
-      const nextVideo = currentPlaylist.videos[currentIndex + 1];
-      setCurrentVideoId(nextVideo.videoId || '');
-      setIsPlaying(true);
-    } else {
-      // 다음 비디오가 없으면 첫 번째 비디오로 전환
-      // setCurrentVideoId(currentPlaylist.videos[0].videoId || '');
-      // setIsPlaying(true);
-
-      // 또는, 마지막 비디오라면 재생을 멈춤
-      setIsPlaying(false); // 재생을 멈춤
-      // onClose(); // 모달을 닫음
-    }
-  }, [currentPlaylist.videos, currentVideoId, onClose]);
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.data.event === 'onStateChange' && event.data.info === 0) {
-        playNextVideo();
-      }
-    };
-    window.addEventListener('message', handleMessage);
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
-  }, [playNextVideo]);
-
   useEffect(() => {
     setCurrentVideoId(videoId); // 비디오 ID가 변경되면 현재 비디오 ID를 업데이트
-    setCurrentPlaylist(playlist); // 플레이리스트가 변경되면 현재 플레이리스트를 업데이트
     setIsPlaying(true); // 비디오 ID가 변경되면 비디오를 재생
-    const index = playlist.videos.findIndex((video) => video.videoId === videoId); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
-    setCurrentVideoIndex(index !== -1 ? index : 0); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
-  }, [videoId, playlist]); // 비디오 ID와 플레이리스트가 변경되면 실행
+    setCurrentVideoIndex(getCurrentVideoIndex(videoId)); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+  }, [videoId, getCurrentVideoIndex]); // 비디오 ID가 변경되면 실행
 
   useEffect(() => {
     if (isOpen && !iframeLoaded) {
@@ -102,9 +116,11 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   }, [isOpen, currentVideoId, iframeLoaded]);
 
   useEffect(() => {
-    const index = playlist.videos.findIndex((video) => video.videoId === currentVideoId);
-    setCurrentVideoIndex(index !== -1 ? index : 0);
-  }, [currentVideoId, playlist.videos]);
+    if (updatedPlaylist) {
+      const index = updatedPlaylist.videos.findIndex((video) => video.videoId === currentVideoId);
+      setCurrentVideoIndex(index !== -1 ? index : 0);
+    }
+  }, [currentVideoId, updatedPlaylist]); // 업데이트된 플레이리스트가 변경되면 실행
 
   const handleIframeLoad = () => {
     setIframeLoaded(true);
@@ -164,6 +180,15 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     console.log('Drag update:', update);
     // 여기서 스타일이나 위치 변화를 확인할 수 있습니다.
   };
+
+  if (isLoading)
+    return (
+      <div css={spinnerStyle}>
+        <Spinner />
+      </div>
+    );
+  if (error) return <div>Error: {error.message}</div>;
+  if (!updatedPlaylist) return null;
 
   return (
     <div css={modalOverlayStyle(isMinimized, isClosing)}>
@@ -242,40 +267,53 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                     ref={provided.innerRef}
                     css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
                   >
-                    {currentPlaylist.videos.map((video, index) => (
-                      <Draggable
-                        key={video.videoId}
-                        draggableId={video.videoId || ''}
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
-                            css={videoBoxWrapperStyle(snapshot.isDragging)}
-                          >
-                            <div css={videoBoxInnerStyle}>
-                              {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
-                                <div {...provided.dragHandleProps} css={[dragHandleStyle]}>
-                                  <MdDragHandle />
-                                </div>
+                    {(updatedPlaylist?.videos || []).map(
+                      (
+                        video,
+                        index // 업데이트된 플레이리스트의 비디오 목록을 보여주거라
+                      ) => (
+                        <Draggable
+                          key={video.videoId}
+                          draggableId={video.videoId || ''}
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              style={getItemStyle(
+                                snapshot.isDragging,
+                                provided.draggableProps.style
                               )}
-                              <VideoBoxDetail
-                                video={video}
-                                type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
-                                channelName={currentPlaylist.userName}
-                                uploadDate={formatTimeWithUpdated(currentPlaylist.createdAt)}
-                                onClickVideo={handleVideoClick(video.videoId || '')}
-                                onClickKebob={(e) =>
-                                  console.log('kebab 아이콘 클릭', video.videoId)
-                                }
-                              />
+                              css={videoBoxWrapperStyle(snapshot.isDragging)}
+                            >
+                              <div css={videoBoxInnerStyle}>
+                                {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
+                                  <div {...provided.dragHandleProps} css={[dragHandleStyle]}>
+                                    <MdDragHandle />
+                                  </div>
+                                )}
+                                <VideoBoxDetail
+                                  video={video}
+                                  type={updatedPlaylist.userId === userId ? 'host' : 'visitor'}
+                                  channelName={updatedPlaylist.userName}
+                                  uploadDate={formatTimeWithUpdated(updatedPlaylist.createdAt)}
+                                  onClickVideo={handleVideoClick(video.videoId || '')}
+                                  onClickKebob={() => {
+                                    setSelectedVideo({
+                                      videoId: video.videoId || '',
+                                      title: video.title,
+                                    });
+                                    setBottomSheetContentType('deleteVideo');
+                                    setIsBottomSheetOpen(true);
+                                  }}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
+                          )}
+                        </Draggable>
+                      )
+                    )}
                     {provided.placeholder}
                   </div>
                 )}
@@ -284,6 +322,15 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
           )}
         </div>
       </div>
+      <BottomSheet
+        contentType={bottomSheetContentType}
+        isOpen={isBottomSheetOpen}
+        onClose={() => setIsBottomSheetOpen(false)}
+        playlists={bottomSheetContentType === 'deleteFromPlaylist' ? [playlist] : undefined}
+        video={selectedVideo}
+        onVideoDelete={onVideoDelete}
+      />
+      <Toast />
     </div>
   );
 };
@@ -569,5 +616,10 @@ const iframeStyle = (loaded: boolean) => css`
   height: 100%;
   opacity: ${loaded ? 1 : 0};
   transition: opacity 300ms ease-in-out;
+`;
+const spinnerStyle = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 export default VideoModal;
