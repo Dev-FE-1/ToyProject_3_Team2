@@ -207,7 +207,11 @@ const PlaylistPage: React.FC = () => {
       <DragDropContext onDragEnd={handleDragEnd}>
         <Droppable droppableId='playlistVideos' direction='vertical'>
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef} css={playlistContainerStyle}>
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
+            >
               {playlist.videos.map((video: Video, index: number) => (
                 <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
                   {(provided, snapshot) => (
@@ -217,9 +221,11 @@ const PlaylistPage: React.FC = () => {
                       css={videoBoxWrapperStyle(snapshot.isDragging)}
                     >
                       <div css={draggableListStyle}>
-                        <div {...provided.dragHandleProps} css={dragHandleStyle}>
-                          <MdDragHandle />
-                        </div>
+                        {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
+                          <div {...provided.dragHandleProps} css={dragHandleStyle}>
+                            <MdDragHandle />
+                          </div>
+                        )}
                         <VideoBoxDetail
                           video={video}
                           type={playlist.userId === userId ? 'host' : 'visitor'}
@@ -356,6 +362,9 @@ const floatAddButtonStyle = css`
   &:hover {
     transform: translateY(-2px);
   }
+`;
+const extraStyle = css`
+  padding-left: 1rem;
 `;
 
 export default PlaylistPage;
