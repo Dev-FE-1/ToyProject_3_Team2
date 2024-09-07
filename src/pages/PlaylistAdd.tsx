@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import PlaylistForm from '@/components/page/playlistForm/PlaylistForm';
+import PlaylistForm from '@/components/page/playlistAdd/PlaylistForm';
 import { PATH } from '@/constants/path';
 import { useAddPlaylist } from '@/hooks/mutations/usePlaylistMutations';
 import { useUserData } from '@/hooks/queries/useUserQueries';

@@ -34,6 +34,7 @@ const PlaylistPage: React.FC = () => {
   // const [user, setUser] = useState<UserModel | null>(null);
   const showToast = useToastStore((state) => state.showToast);
   const userId = getUserIdBySession();
+  const [youtubeUrl, setYoutubeUrl] = useState('');
 
   const {
     playlist,
@@ -115,6 +116,7 @@ const PlaylistPage: React.FC = () => {
     try {
       await handleAddVideoToPlaylist(videoData as Video);
       showToast('동영상이 성공적으로 추가되었습니다.');
+      setYoutubeUrl('');
     } catch (error) {
       console.error('Error adding video to playlist:', error);
       showToast('동영상 추가 중 오류가 발생했습니다.');
@@ -260,6 +262,8 @@ const PlaylistPage: React.FC = () => {
         onClose={closeModal}
         onConfirm={confirmAddVideo}
         setVideoData={setVideoData}
+        youtubeUrl={youtubeUrl}
+        setYoutubeUrl={setYoutubeUrl}
       />
       <BottomSheet
         contentType={bottomSheetContentType}
