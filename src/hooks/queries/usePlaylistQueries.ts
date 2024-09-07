@@ -1,4 +1,10 @@
-import { useInfiniteQuery, useQueries, useQuery, UseQueryOptions } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 import {
@@ -6,9 +12,12 @@ import {
   getForkedPlaylists,
   getPlaylistsByCategory,
   getPlaylistsWithPagination,
+  getPlaylistWithUser,
+  getUserPlaylists,
 } from '@/api/endpoints/playlist';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { PlaylistModel } from '@/types/playlist';
+import { getUserIdBySession } from '@/utils/user';
 
 // 기본 옵션
 const defaultOptions = {
@@ -61,6 +70,26 @@ export const useInfinitePlaylists = () =>
     initialPageParam: null,
   });
 
+// userId를 통해 해당 사용자의 모든 플레이리스트 정보 가져오기
+export const useUserPlaylists = (): UseQueryResult<PlaylistModel[], Error> => {
+  const userId = getUserIdBySession();
+
+  return useQuery<PlaylistModel[], Error>({
+    queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY, userId],
+    queryFn: () => getUserPlaylists(userId!),
+    ...defaultOptions,
+    enabled: !!userId,
+    refetchOnMount: true, // 마운트 시 재요청
+    refetchOnWindowFocus: true, // 윈도우 포커스 시 재요청
+  });
+};
+// playlistId 의 플레이리스트 데이터 가져오기
+export const usePlaylistQuery = (playlistId: string | undefined) =>
+  useQuery({
+    queryKey: [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId],
+    queryFn: () => getPlaylistWithUser(playlistId || ''),
+    enabled: !!playlistId,
+  });
 // 아래는 useQueries 이해를 위한 주석
 // React Query v4부터 useQueries의 인터페이스 변경, 객체를 인자로 받아요~
 // const results = useQueries([

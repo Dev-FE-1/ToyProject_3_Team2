@@ -4,7 +4,7 @@ import {
   useAllPlaylist,
   useForkedPlaylists,
   useForkedPlaylistsByUserIds,
-} from '@/hooks/query/usePlaylist';
+} from '@/hooks/queries/usePlaylistQueries';
 import { PlaylistModel } from '@/types/playlist';
 import { sortPlaylistsByPopularity, sortRecentPlaylists } from '@/utils/sortPlaylists';
 import { getUserIdBySession } from '@/utils/user';

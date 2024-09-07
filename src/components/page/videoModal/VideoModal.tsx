@@ -240,7 +240,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                   <div
                     {...provided.droppableProps}
                     ref={provided.innerRef}
-                    css={playlistContainerStyle}
+                    css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
                   >
                     {currentPlaylist.videos.map((video, index) => (
                       <Draggable
@@ -256,9 +256,11 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                             css={videoBoxWrapperStyle(snapshot.isDragging)}
                           >
                             <div css={videoBoxInnerStyle}>
-                              <div {...provided.dragHandleProps} css={dragHandleStyle}>
-                                <MdDragHandle />
-                              </div>
+                              {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
+                                <div {...provided.dragHandleProps} css={[dragHandleStyle]}>
+                                  <MdDragHandle />
+                                </div>
+                              )}
                               <VideoBoxDetail
                                 video={video}
                                 type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
@@ -297,10 +299,10 @@ const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
   left: 0;
   right: 0;
   bottom: ${isMinimized ? '80px' : '0'};
-
   width: 498px;
   height: ${isMinimized ? '60px' : '100vh'};
   background-color: ${isMinimized ? 'transparent' : theme.colors.black};
+
   display: flex;
   justify-content: center;
   align-items: ${isMinimized ? 'flex-end' : 'flex-start'};
@@ -467,6 +469,9 @@ const dragHandleStyle = css`
     height: 20px;
   }
 `;
+const extraStyle = css`
+  padding-left: 1rem;
+`;
 const playlistContainerStyle = css`
   flex: 1;
   padding: 0 0.5rem;
@@ -483,12 +488,14 @@ const minimizedControlsStyle = css`
 `;
 
 const videoInfoStyle = css`
-  flex: 1;
-  margin-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 const videoTitleStyle = css`
-  font-size: ${theme.fontSizes.small};
+  font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.white};
   width: 280px;
   white-space: nowrap;
@@ -498,7 +505,7 @@ const videoTitleStyle = css`
 `;
 
 const uploaderNameStyle = css`
-  font-size: ${theme.fontSizes.xsmall};
+  font-size: ${theme.fontSizes.small};
   color: ${theme.colors.disabled};
 `;
 
@@ -529,8 +536,30 @@ const iconStyle = (isVisible: boolean) => css`
 `;
 const controlsContainerStyle = (isMinimized: boolean) => css`
   flex: 1;
-  transition: all 300ms ease-in-out;
-  height: ${isMinimized ? '0' : 'auto'};
+  display: flex;
+
+  flex-direction: column;
+  overflow-y: auto;
+  // max-height: calc(70vh - 300px); // 예시 값, 실제 비디오 플레이어와 헤더의 높이에 따라 조정 필요
+  // min-height: 1000px; // 최소 높이 설정
+
+  ${isMinimized
+    ? css`
+        display: block;
+        padding-bottom: 0;
+      `
+    : css`
+        &::-webkit-scrollbar {
+          width: 6px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background-color: ${theme.colors.darkGray};
+          border-radius: 3px;
+        }
+        &::-webkit-scrollbar-track {
+          background-color: ${theme.colors.black};
+        }
+      `}
 `;
 const iframeStyle = (loaded: boolean) => css`
   position: absolute;

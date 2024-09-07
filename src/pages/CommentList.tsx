@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-// import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -10,7 +9,7 @@ import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Toast from '@/components/common/Toast';
 import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
-import { useCommentsList } from '@/hooks/query/useComments';
+import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -115,6 +114,8 @@ const CommentList = () => {
             createdAt={formatTimeWithUpdated(comment.createdAt)}
             comments={comment}
             setComments={setComments}
+            playlistData={playlistData}
+            setPlaylistData={setPlaylistData}
           />
         ))}
       </div>

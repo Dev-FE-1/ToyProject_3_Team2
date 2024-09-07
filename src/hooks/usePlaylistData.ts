@@ -1,44 +1,52 @@
-import { useState, useEffect } from 'react';
-
-import { getPlaylistWithUser } from '@/api/endpoints/playlist';
-import { PlaylistModel } from '@/types/playlist';
-import { UserModel } from '@/types/user';
+import {
+  useDeleteVideoMutation,
+  useDeletePlaylistMutation,
+  useUpdatePlaylistMutation,
+  useAddVideoToPlaylistMutation,
+  useUpdatePlaylistVideoOrderMutation,
+} from '@/hooks/mutations/usePlaylistMutations';
+import { usePlaylistQuery } from '@/hooks/queries/usePlaylistQueries';
+import { PlaylistFormDataModel, Video } from '@/types/playlist';
 
 const usePlaylistData = (playlistId: string | undefined) => {
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>(null);
-  const [user, setUser] = useState<UserModel | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const playlistQuery = usePlaylistQuery(playlistId);
+  const deleteVideoMutation = useDeleteVideoMutation(playlistId);
+  const deletePlaylistMutation = useDeletePlaylistMutation();
+  const updatePlaylistMutation = useUpdatePlaylistMutation(playlistId);
+  const addVideoMutation = useAddVideoToPlaylistMutation(playlistId);
+  const updateVideoOrderMutation = useUpdatePlaylistVideoOrderMutation(playlistId);
 
-  useEffect(() => {
-    async function fetchPlaylistWithUser() {
-      if (!playlistId) {
-        setError('Playlist ID is missing');
-        setIsLoading(false);
-        return;
-      }
+  const handleDeleteVideo = async (playlistId: string, videoId: string) => {
+    await deleteVideoMutation.mutateAsync({ playlistId, videoId });
+  };
 
-      try {
-        const result = await getPlaylistWithUser(playlistId);
+  const handleDeletePlaylist = async (playlistId: string) => {
+    await deletePlaylistMutation.mutateAsync(playlistId);
+  };
 
-        if (result) {
-          setPlaylist(result.playlist);
-          setUser(result.user);
-        } else {
-          setError('Playlist not found');
-        }
-      } catch (err) {
-        console.error('Error fetching playlist:', err);
-        setError('Failed to fetch playlist');
-      } finally {
-        setIsLoading(false);
-      }
-    }
+  const handleUpdatePlaylist = async (playlistId: string, formData: PlaylistFormDataModel) => {
+    await updatePlaylistMutation.mutateAsync({ playlistId, formData });
+  };
 
-    fetchPlaylistWithUser();
-  }, [playlistId]);
+  const handleAddVideoToPlaylist = async (newVideo: Video) => {
+    await addVideoMutation.mutateAsync(newVideo);
+  };
 
-  return { playlist, user, isLoading, error };
+  const handleUpdatePlaylistVideoOrder = async (newVideoOrder: Video[]) => {
+    await updateVideoOrderMutation.mutateAsync(newVideoOrder);
+  };
+
+  return {
+    playlist: playlistQuery.data?.playlist,
+    user: playlistQuery.data?.user,
+    isLoading: playlistQuery.isLoading,
+    error: playlistQuery.error,
+    handleDeleteVideo,
+    handleDeletePlaylist,
+    handleUpdatePlaylist,
+    handleAddVideoToPlaylist,
+    handleUpdatePlaylistVideoOrder,
+  };
 };
 
 export default usePlaylistData;

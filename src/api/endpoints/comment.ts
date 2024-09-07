@@ -10,6 +10,7 @@ import {
   increment,
   updateDoc,
   doc,
+  deleteDoc,
 } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
@@ -86,5 +87,22 @@ export const addComment = async (
   } catch (error) {
     console.error('Error adding comment:', error);
     throw new Error('댓글 추가에 실패했습니다.');
+  }
+};
+
+export const deleteComment = async (playlistId: string, commentId: string): Promise<string> => {
+  try {
+    const commentsRef = doc(db, 'comments', commentId); //comments의 특정 commentId를 가진 문서를 저장
+    await deleteDoc(commentsRef); // 특정 commentId를 가진 문서(댓글) 삭제
+
+    const playlistRef = doc(db, 'playlists', playlistId); // playlists의 특정 playlistId를 가진 문서를 저장
+    await updateDoc(playlistRef, {
+      commentCount: increment(-1), //해당 문서(playlistRef)의 commentCount에 -1해서 문서 상태를 업데이트
+    });
+
+    return commentId;
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw new Error('댓글 삭제에 실패했습니다.');
   }
 };
