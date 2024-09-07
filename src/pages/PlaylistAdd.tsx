@@ -56,7 +56,7 @@ const PlaylistAdd = () => {
   return (
     <div>
       <Header />
-      <PlaylistForm type='add' onSubmit={handleSubmit} />
+      <PlaylistForm type='add' handleSubmit={handleSubmit} />
       <Toast />
     </div>
   );

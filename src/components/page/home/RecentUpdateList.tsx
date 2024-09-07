@@ -29,7 +29,6 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
 
     setIsLoading(true);
     setTimeout(async () => {
-      console.log('Load more items');
       try {
         const { playlists, lastVisible: newLastVisible } = await getPlaylistsWithPagination(
           pageSize,

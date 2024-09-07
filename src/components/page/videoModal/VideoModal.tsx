@@ -83,7 +83,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     setSelectedVideo(null);
     setIsBottomSheetOpen(false);
   };
-
+  console.log(
+    'dighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdighdigh'
+  );
   // 드래그 앤 드롭 이벤트 핸들러
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination || !updatedPlaylist) {
