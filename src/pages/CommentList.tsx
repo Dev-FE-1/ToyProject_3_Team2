@@ -10,7 +10,7 @@ import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Toast from '@/components/common/Toast';
 import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
-import { useCommentsList } from '@/hooks/query/useComments';
+import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';

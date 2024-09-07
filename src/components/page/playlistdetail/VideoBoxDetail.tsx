@@ -63,6 +63,7 @@ const containerStyle = css`
   position: relative;
   display: flex;
   align-items: flex-start;
+  width: 100%;
 `;
 
 const detailsStyle = css`

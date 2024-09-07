@@ -1,11 +1,11 @@
 import {
-  usePlaylistQuery,
   useDeleteVideoMutation,
   useDeletePlaylistMutation,
   useUpdatePlaylistMutation,
   useAddVideoToPlaylistMutation,
   useUpdatePlaylistVideoOrderMutation,
-} from '@/hooks/query/usePlaylist';
+} from '@/hooks/mutations/usePlaylistMutations';
+import { usePlaylistQuery } from '@/hooks/queries/usePlaylistQueries';
 import { PlaylistFormDataModel, Video } from '@/types/playlist';
 
 const usePlaylistData = (playlistId: string | undefined) => {
