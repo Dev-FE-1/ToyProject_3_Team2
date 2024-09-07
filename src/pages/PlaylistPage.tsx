@@ -346,7 +346,7 @@ const dragHandleStyle = css`
 const addButtonContainerStyle = css`
   position: fixed;
   left: 50%;
-  bottom: 96px;
+  bottom: 9rem;
   width: 100vw;
   max-width: 500px;
   height: 1px;
