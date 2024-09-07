@@ -6,22 +6,17 @@ import { RiBookmarkLine, RiBookmarkFill, RiDeleteBin6Line } from 'react-icons/ri
 import PlaylistItem from '../PlaylistItem';
 import Button from '@/components/common/buttons/Button';
 import theme from '@/styles/theme';
+import { PlaylistModel } from '@/types/playlist';
 
 interface BottomSheetProps {
   contentType: 'saveToPlaylist' | 'deleteFromPlaylist' | 'deleteVideo';
   isOpen: boolean;
   onClose: () => void;
-  playlists?: {
-    id: string;
-    title: string;
-    isPublic: boolean;
-    isBookmarked: boolean;
-    thumURL: string;
-  }[];
+  playlists?: PlaylistModel[];
   video?: {
     videoId: string;
     title: string;
-  };
+  } | null;
   onPlaylistClick?: (_playlistId: string) => void;
   onVideoDelete?: () => void;
 }
