@@ -14,11 +14,11 @@ import { PlaylistFormDataModel } from '@/types/playlist';
 
 interface PlaylistFormProps {
   initialData?: Partial<PlaylistFormDataModel>;
-  handleSubmit: (data: PlaylistFormDataModel) => void;
+  onSubmit: (data: PlaylistFormDataModel) => void;
   type?: 'add' | 'edit';
 }
 
-const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, handleSubmit, type }) => {
+const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit, type }) => {
   const [description, setDescription] = useState(initialData.description || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -52,7 +52,7 @@ const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, handleSub
 
   const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const data = handleSubmitForm(event);
-    handleSubmit(data);
+    onSubmit(data);
   };
   return (
     <div css={containerStyle}>

@@ -77,7 +77,7 @@ const CommentList = () => {
 
   return (
     <div>
-      <Header />
+      <Header onBack={() => navigate(`/playlist/${playlistId}`)} />
       <Toast />
       <div css={CommentTabStyle}>
         <div>

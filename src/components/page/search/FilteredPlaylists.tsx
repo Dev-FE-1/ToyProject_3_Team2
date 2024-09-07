@@ -13,7 +13,7 @@ interface FilteredPlaylistsProps {
 const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylists }) => {
   const navigate = useNavigate();
 
-  const playlists = displayedPlaylists;
+  const playlists = displayedPlaylists?.filter((playlist) => playlist.isPublic === true);
   return (
     <div>
       {playlists && playlists.length > 0 ? (

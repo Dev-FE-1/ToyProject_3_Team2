@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Button from '@/components/common/buttons/Button';
 import Header from '@/layouts/layout/Header';
