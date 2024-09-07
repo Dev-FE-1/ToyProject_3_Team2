@@ -6,7 +6,6 @@ import { GoKebabHorizontal } from 'react-icons/go';
 import VideoCard from '@/components/common/VideoCard';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
-import { formatDurationISOToTime, formatDurationSecondToTime } from '@/utils/formatTime';
 
 interface VideoBoxDetailProps {
   video: PlaylistModel['videos'][0];
@@ -77,13 +76,13 @@ const titleStyle = css`
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.white};
   margin-top: 2px;
-  height: 28px;
+
+  line-height: 1.4;
 
   /* 여러 줄 오버플로우 처리 */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  overflow: hidden;
   text-overflow: ellipsis;
 `;
 
