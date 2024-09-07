@@ -30,8 +30,6 @@ import { getUserIdBySession } from '@/utils/user';
 const PlaylistPage: React.FC = () => {
   const navigate = useNavigate();
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
-  const [playlist, setPlaylist] = useState<PlaylistModel | null>();
-  const [user, setUser] = useState<UserModel | null>(null);
   const toggle = useToggleStore((state) => state.toggle);
   const showToast = useToastStore((state) => state.showToast);
   const userId = getUserIdBySession();
@@ -57,7 +55,6 @@ const PlaylistPage: React.FC = () => {
   );
   const [isForked, setIsForked] = useState<boolean | null>(null);
   const isToggled = useToggleStore((state) => state.isToggled);
-  const toggle = useToggleStore((state) => state.toggle);
   const isOpen = useMiniPlayerStore((state) => state.isOpen);
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);
@@ -349,7 +346,7 @@ const dragHandleStyle = css`
 const addButtonContainerStyle = css`
   position: fixed;
   left: 50%;
-  bottom: 96px;
+  bottom: 9rem;
   width: 100vw;
   max-width: 500px;
   height: 1px;
