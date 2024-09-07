@@ -14,7 +14,7 @@ interface ToggleSwitchProps {
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onCheckedChange, customStyle }) => (
   <div css={flexStyle}>
-    <div css={[textStyle, customStyle]}>{checked ? IS_PUBLIC.true : IS_PUBLIC.all}</div>
+    <div css={[textStyle, customStyle]}>{IS_PUBLIC.true}</div>
     <Switch.Root
       defaultChecked
       checked={checked}

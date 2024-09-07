@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { css } from '@emotion/react';
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 import { getPlaylistsWithPagination } from '@/api/endpoints/playlistFetch';
@@ -22,7 +23,7 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore] = useState(true);
   const pageSize = 5; // 한 번에 불러올 항목의 개수
-  const [lastVisible, setLastVisible] = useState<any>(null); // 페이지네이션을 위한 마지막 문서 스냅샷
+  const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot<DocumentData> | null>(null); // 페이지네이션을 위한 마지막 문서 스냅샷
 
   const loadMoreItems = async () => {
     if (isLoading || !hasMore) return;
@@ -35,15 +36,21 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
           lastVisible
         ); // 페이지네이션 API 호출
 
-        if (playlists.length === 0 && visiblePlaylists.length > 0) {
+        const publicPlaylists = playlists.filter((playlist) => playlist.isPublic === true);
+
+        if (publicPlaylists.length === 0 && visiblePlaylists.length > 0) {
           // 데이터가 없으면 다시 처음부터 불러오기
-          const { playlists: firstPagePlaylists, lastVisible: firstLastVisible } =
-            await getPlaylistsWithPagination(pageSize, null);
+          const { playlists, lastVisible: firstLastVisible } = await getPlaylistsWithPagination(
+            pageSize,
+            null
+          );
+
+          const firstPagePlaylists = playlists.filter((playlist) => playlist.isPublic === true);
 
           setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists]);
           setLastVisible(firstLastVisible);
         } else {
-          setVisiblePlaylists((prev) => [...prev, ...playlists]); // 새로운 데이터를 기존 배열에 추가
+          setVisiblePlaylists((prev) => [...prev, ...publicPlaylists]); // 새로운 데이터를 기존 배열에 추가
           setLastVisible(newLastVisible); // 마지막 문서 스냅샷 저장
         }
       } catch (error) {
