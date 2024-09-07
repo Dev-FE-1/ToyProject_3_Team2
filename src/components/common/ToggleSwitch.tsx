@@ -3,12 +3,8 @@ import React from 'react';
 import { css, SerializedStyles } from '@emotion/react';
 import * as Switch from '@radix-ui/react-switch';
 
+import { IS_PUBLIC } from '@/constants/\bnormal';
 import theme from '@/styles/theme';
-
-const TOGGLE_TEXT = {
-  public: '공개',
-  all: '전체',
-};
 
 interface ToggleSwitchProps {
   checked: boolean;
@@ -18,7 +14,7 @@ interface ToggleSwitchProps {
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onCheckedChange, customStyle }) => (
   <div css={flexStyle}>
-    <div css={[textStyle, customStyle]}>{checked ? TOGGLE_TEXT.public : TOGGLE_TEXT.all}</div>
+    <div css={[textStyle, customStyle]}>{IS_PUBLIC.true}</div>
     <Switch.Root
       defaultChecked
       checked={checked}

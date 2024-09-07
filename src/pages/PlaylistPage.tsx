@@ -15,7 +15,7 @@ import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import NullBox from '@/components/page/playlistdetail/nullBox';
-import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
@@ -55,7 +55,6 @@ const PlaylistPage: React.FC = () => {
     null
   );
   const [isForked, setIsForked] = useState<boolean | null>(null);
-  const isToggled = useToggleStore((state) => state.isToggled);
   const isOpen = useMiniPlayerStore((state) => state.isOpen);
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);

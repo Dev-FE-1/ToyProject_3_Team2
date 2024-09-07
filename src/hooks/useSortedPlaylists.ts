@@ -29,17 +29,20 @@ export const usePopularPlaylists = () => {
 
   const isLoadingForAllForkedPlaylist = forkedPlaylistsQueries.some((query) => query.isLoading);
   const errorForAllForkedPlaylist = forkedPlaylistsQueries.find((query) => query.error);
-  const allForkedPlaylists = forkedPlaylistsQueries.flatMap((query) => query.data || []);
+  const allForkedPlaylists = forkedPlaylistsQueries
+    .flatMap((query) => query.data || [])
+    .filter((playlist) => playlist.isPublic === true);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
       const playlistsByPopularity = sortPlaylistsByPopularity(allPlaylists as PlaylistModel[]);
       const recentPlaylists = sortRecentPlaylists(allPlaylists as PlaylistModel[]);
 
-      setPlaylistsByPopularity(playlistsByPopularity);
-      setRecentPlaylists(recentPlaylists);
+      setPlaylistsByPopularity(
+        playlistsByPopularity.filter((playlist) => playlist.isPublic === true)
+      );
+      setRecentPlaylists(recentPlaylists.filter((playlist) => playlist.isPublic === true));
     };
-
     fetchPlaylists();
   }, [allPlaylists]);
 

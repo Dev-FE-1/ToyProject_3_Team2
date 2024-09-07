@@ -1,15 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 
+import defaultPlaylistCover from '@/assets/default-playlist-cover.webp';
 import { INITIAL_FORM_STATE } from '@/constants/playlist';
 import { useToggleStore } from '@/store/useToggleStore';
 import { PlaylistFormDataModel } from '@/types/playlist';
 
 export const usePlaylistForm = (initialData = INITIAL_FORM_STATE) => {
-  const isToggled = useToggleStore((state) => state.isToggled); // isPublic
+  const isToggled = useToggleStore((state) => state.isToggled);
   const toggle = useToggleStore((state) => state.toggle);
   const [titleValue, setTitleValue] = useState(initialData.title);
   const [categoryValue, setCategoryValue] = useState<string | undefined>(initialData.category);
-  const [previewImage, setPreviewImage] = useState<string | null>(initialData.thumbnailUrl);
+  const [previewImage, setPreviewImage] = useState<string | null>('');
   const titleInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -71,7 +72,7 @@ export const usePlaylistForm = (initialData = INITIAL_FORM_STATE) => {
       forkCount: initialData.forkCount,
       commentCount: initialData.commentCount,
       videoCount: initialData.videoCount,
-      thumbnailUrl: previewImage ?? '',
+      thumbnailUrl: previewImage || defaultPlaylistCover,
       isPublic: isToggled,
       videos: initialData.videos,
     };

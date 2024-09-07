@@ -14,7 +14,7 @@ import {
 } from 'firebase/firestore';
 
 import { app } from '@/api'; // Firebase 앱 초기화 파일
-import { PlaylistFormDataModel, PlaylistModel, Video } from '@/types/playlist';
+import { PlaylistModel, Video } from '@/types/playlist';
 import { UserModel } from '@/types/user';
 
 const db = getFirestore(app);
