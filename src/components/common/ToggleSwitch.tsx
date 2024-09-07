@@ -5,6 +5,11 @@ import * as Switch from '@radix-ui/react-switch';
 
 import theme from '@/styles/theme';
 
+const TOGGLE_TEXT = {
+  public: '공개',
+  all: '전체',
+};
+
 interface ToggleSwitchProps {
   checked: boolean;
   onCheckedChange: () => void;
@@ -13,7 +18,7 @@ interface ToggleSwitchProps {
 
 const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onCheckedChange, customStyle }) => (
   <div css={flexStyle}>
-    <div css={[textStyle, customStyle]}>공개</div>
+    <div css={[textStyle, customStyle]}>{checked ? TOGGLE_TEXT.public : TOGGLE_TEXT.all}</div>
     <Switch.Root
       defaultChecked
       checked={checked}

@@ -6,13 +6,16 @@ import { useNavigate } from 'react-router-dom';
 import Badge from '@/components/common/Badge';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
+import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
+import { getUserIdBySession } from '@/utils/user';
 
 interface MyProfileProps {
   userData: UserModel | null;
+  playlists: PlaylistModel[] | undefined;
 }
 
-const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
+const MyProfile: React.FC<MyProfileProps> = ({ userData, playlists }) => {
   const navigate = useNavigate();
   const handleNavigate = () => {
     navigate(`${PATH.SETTINGS}/`); // 설정 페이지로 이동
@@ -20,7 +23,13 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
   const handleNavigateBack = () => {
     navigate(-1);
   };
-  const sessionUid = JSON.parse(sessionStorage.getItem('userSession') || '{}').uid;
+
+  const sessionUid = getUserIdBySession();
+
+  const myPlaylistsCount = playlists?.length;
+  const totalLikesCount = playlists?.reduce((acc, playlist) => acc + playlist.likeCount, 0);
+  const totalForkedCount = playlists?.reduce((acc, playlist) => acc + playlist.forkCount, 0);
+
   // userData가 없으면 아무것도 렌더링하지 않음
   if (!userData) {
     return null;
@@ -59,15 +68,15 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData }) => {
 
             <ul css={ulStyle}>
               <li>
-                <strong>{userData.playlistCount}</strong> {/* my playlist */}
+                <strong>{myPlaylistsCount}</strong> {/* my playlist */}
                 <span>내 플리</span>
               </li>
               <li>
-                <strong>{userData.totalLikes}</strong> {/* likes */}
+                <strong>{totalLikesCount}</strong> {/* likes */}
                 <span>좋아요</span>
               </li>
               <li>
-                <strong>{userData.totalForks}</strong> {/* forked */}
+                <strong>{totalForkedCount}</strong> {/* forked */}
                 <span>포크</span>
               </li>
             </ul>

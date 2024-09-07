@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { getPlaylistById } from '@/api/endpoints/playlist';
+import { getPlaylistById } from '@/api/endpoints/playlistFetch';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import Toast from '@/components/common/Toast';
 import CommentBox from '@/components/page/comment/CommentBox';

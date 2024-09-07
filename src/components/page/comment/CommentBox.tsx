@@ -4,7 +4,7 @@ import { css } from '@emotion/react';
 import { RiCloseFill } from 'react-icons/ri';
 
 import { deleteComment } from '@/api/endpoints/comment';
-import { getPlaylistById } from '@/api/endpoints/playlist';
+import { getPlaylistById } from '@/api/endpoints/playlistFetch';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import Toast from '@/components/common/Toast';
 import { useCommentsList } from '@/hooks/queries/useCommentsQueries';

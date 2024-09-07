@@ -32,7 +32,7 @@ const MyPage = () => {
     isLoading: isPlaylistsLoading,
     error: playlistsError,
     refetch: refetchPlaylists,
-  } = useUserPlaylists();
+  } = useUserPlaylists(userId);
 
   useEffect(() => {
     refetchUserData();
@@ -65,7 +65,7 @@ const MyPage = () => {
   return (
     <>
       <div css={containerStyle}>
-        <MyProfile userData={userData} />
+        <MyProfile userData={userData} playlists={playlists} />
         <MyPlaylists playlists={playlists || []} />
         {isAdmin && (
           <div css={addButtonContainerStyle}>

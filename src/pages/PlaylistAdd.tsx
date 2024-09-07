@@ -1,24 +1,25 @@
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { addPlaylist } from '@/api/endpoints/playlist';
-import { getUserData } from '@/api/endpoints/user';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import PlaylistForm from '@/components/page/playlistForm/PlaylistForm';
+import PlaylistForm from '@/components/page/playlistAdd/PlaylistForm';
 import { PATH } from '@/constants/path';
 import { useAddPlaylist } from '@/hooks/mutations/usePlaylistMutations';
 import { useUserData } from '@/hooks/queries/useUserQueries';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import { PlaylistFormDataModel } from '@/types/playlist';
+import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistAdd = () => {
   const navigate = useNavigate();
   const showToast = useToastStore((state) => state.showToast);
   const addPlaylistMutation = useAddPlaylist();
 
-  const { data: userData, isLoading, error } = useUserData();
+  const userId = getUserIdBySession();
+
+  const { data: userData, isLoading, error } = useUserData(userId);
 
   if (isLoading) {
     return (

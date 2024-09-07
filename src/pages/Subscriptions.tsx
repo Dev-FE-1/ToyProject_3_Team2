@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
-import { getForkedPlaylists } from '@/api/endpoints/playlist';
+import { getForkedPlaylists } from '@/api/endpoints/playlistFetch';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/page/playlist/PlaylistBox';
 import theme from '@/styles/theme';

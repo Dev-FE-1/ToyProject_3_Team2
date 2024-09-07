@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { addPlaylist } from '@/api/endpoints/playlist';
+import { addPlaylist } from '@/api/endpoints/playlistOperations';
 import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 
 interface PlaylistStore {
