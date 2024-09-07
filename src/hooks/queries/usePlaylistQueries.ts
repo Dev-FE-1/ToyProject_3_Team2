@@ -1,9 +1,17 @@
-import { useQueries, useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 import {
   getAllPlaylists,
   getForkedPlaylists,
   getPlaylistsByCategory,
+  getPlaylistsWithPagination,
   getPlaylistWithUser,
   getUserPlaylists,
 } from '@/api/endpoints/playlist';
@@ -50,6 +58,16 @@ export const useForkedPlaylistsByUserIds = (userIds: string[]) =>
           queryFn: () => getForkedPlaylists(userId),
         }) as UseQueryOptions<PlaylistModel[], Error, PlaylistModel[], [string, string]>
     ),
+  });
+
+// 무한 스크롤 지원을 위한 플레이리스트 훅
+export const useInfinitePlaylists = () =>
+  useInfiniteQuery({
+    queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY],
+    queryFn: async ({ pageParam }: { pageParam?: QueryDocumentSnapshot<DocumentData> | null }) =>
+      getPlaylistsWithPagination(20, pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextPageToken,
+    initialPageParam: null,
   });
 
 // userId를 통해 해당 사용자의 모든 플레이리스트 정보 가져오기
