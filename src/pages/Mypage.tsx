@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { css } from '@emotion/react';
 import { RiAddLargeLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getUserPlaylists } from '@/api/endpoints/playlist';
-import { getUserData } from '@/api/endpoints/user';
 import IconButton from '@/components/common/buttons/IconButton';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
@@ -14,18 +12,21 @@ import MyProfile from '@/components/page/mypage/MyProfile';
 import { PATH } from '@/constants/path';
 import { useUserPlaylists } from '@/hooks/queries/usePlaylistQueries';
 import { useUserData } from '@/hooks/queries/useUserQueries';
-import { PlaylistModel } from '@/types/playlist';
-import { UserModel } from '@/types/user';
 import { getUserIdBySession } from '@/utils/user';
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const { userId } = useParams<{ userId: string }>();
+
+  // 유저 데이터 가져오기
   const {
     data: userData,
     isLoading: isUserLoading,
     error: userError,
     refetch: refetchUserData,
-  } = useUserData();
+  } = useUserData(userId || getUserIdBySession()); // userId가 없으면 세션의 userId로 대체
+
+  // 유저의 플레이리스트 가져오기
   const {
     data: playlists,
     isLoading: isPlaylistsLoading,
