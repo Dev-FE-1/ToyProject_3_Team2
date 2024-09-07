@@ -14,10 +14,9 @@ import {
   getPlaylistsWithPagination,
   getPlaylistWithUser,
   getUserPlaylists,
-} from '@/api/endpoints/playlist';
+} from '@/api/endpoints/playlistFetch';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { PlaylistModel } from '@/types/playlist';
-import { getUserIdBySession } from '@/utils/user';
 
 // 기본 옵션
 const defaultOptions = {

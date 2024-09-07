@@ -6,7 +6,7 @@ import { GoX, GoChevronDown } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
 
-import { updatePlaylistVideoOrder } from '@/api/endpoints/playlist';
+import { updatePlaylistVideoOrder } from '@/api/endpoints/playlistOperations';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';

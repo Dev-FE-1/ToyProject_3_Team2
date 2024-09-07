@@ -6,7 +6,7 @@ import {
   updatePlaylist,
   addVideoToPlaylist,
   updatePlaylistVideoOrder,
-} from '@/api/endpoints/playlist';
+} from '@/api/endpoints/playlistOperations';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { usePlaylistStore } from '@/store/usePlaylistStore';
 import { PlaylistFormDataModel, Video, PlaylistModel } from '@/types/playlist';

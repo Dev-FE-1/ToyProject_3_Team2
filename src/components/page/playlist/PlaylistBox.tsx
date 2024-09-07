@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { getInitialForkedState, toggleFork } from '@/api/endpoints/fork';
+import { getIsForkedState, toggleForkPlaylist } from '@/api/endpoints/fork';
 import { getUserData } from '@/api/endpoints/user';
 import Profile from '@/components/page/profile/Profile';
 import SubsToggleButton from '@/components/page/subscriptions/SubsToggleButton';
@@ -59,7 +59,7 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
   useEffect(() => {
     const fetchInitialForkedState = async () => {
       try {
-        const initialForkedState = await getInitialForkedState(userId, playlistId as string);
+        const initialForkedState = await getIsForkedState(userId, playlistId as string);
         setIsForked(initialForkedState);
       } catch (error) {
         console.error('Error fetching initial Forked state:', error);
@@ -73,8 +73,7 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
     if (isForked === null) return;
 
     try {
-      const newForkState = await toggleFork(playlistId as string, userId, isForked);
-      console.log(newForkState);
+      const newForkState = await toggleForkPlaylist(playlistId as string, userId, isForked);
       setIsForked(newForkState);
       toggle();
       isForked

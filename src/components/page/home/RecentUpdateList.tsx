@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { getPlaylistsWithPagination } from '@/api/endpoints/playlist';
+import { getPlaylistsWithPagination } from '@/api/endpoints/playlistFetch';
 import Spinner from '@/components/common/Spinner';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';

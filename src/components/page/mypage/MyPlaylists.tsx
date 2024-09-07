@@ -94,7 +94,7 @@ const titleStyle = css`
   align-items: center;
 `;
 const flipContainerStyle = css`
-  posiwion: relative;
+  position: relative;
   max-width: 498px;
   height: auto;
   display: flex;

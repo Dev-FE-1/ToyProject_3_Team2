@@ -1,8 +1,6 @@
 import { css } from '@emotion/react';
 import { useNavigate } from 'react-router-dom';
 
-import { addPlaylist } from '@/api/endpoints/playlist';
-import { getUserData } from '@/api/endpoints/user';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
 import PlaylistForm from '@/components/page/playlistForm/PlaylistForm';

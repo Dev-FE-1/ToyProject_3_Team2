@@ -7,7 +7,7 @@ import { MdDragHandle } from 'react-icons/md';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getInitialForkedState, toggleFork } from '@/api/endpoints/fork';
+import { getIsForkedState, toggleForkPlaylist } from '@/api/endpoints/fork';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
@@ -65,7 +65,7 @@ const PlaylistPage: React.FC = () => {
   useEffect(() => {
     const fetchInitialForkedState = async () => {
       try {
-        const initialForkedState = await getInitialForkedState(userId, playlistId as string);
+        const initialForkedState = await getIsForkedState(userId, playlistId as string);
         setIsForked(initialForkedState);
       } catch (error) {
         console.error('Error fetching initial Forked state:', error);
@@ -81,7 +81,7 @@ const PlaylistPage: React.FC = () => {
     if (isForked === null) return;
 
     try {
-      const newForkState = await toggleFork(playlistId as string, userId, isForked);
+      const newForkState = await toggleForkPlaylist(playlistId as string, userId, isForked);
       setIsForked(newForkState);
       isForked
         ? showToast('재생목록에서 삭제되었습니다.')
