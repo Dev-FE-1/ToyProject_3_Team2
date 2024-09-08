@@ -86,17 +86,21 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     if (!result.destination || !updatedPlaylist) {
       return;
     }
-    const newVideos = Array.from(updatedPlaylist.videos);
-    const [reorderedItem] = newVideos.splice(result.source.index, 1);
-    newVideos.splice(result.destination.index, 0, reorderedItem);
+    const newVideos = Array.from(updatedPlaylist.videos); // 업데이트된 플레이리스트의 비디오 목록을 복사
+    const [reorderedItem] = newVideos.splice(result.source.index, 1); // 드래그한 아이템을 임시로 저장
+    newVideos.splice(result.destination.index, 0, reorderedItem); // 드롭한 위치로 아이템을 이동
 
     setCurrentPlaylist({
       ...currentPlaylist,
       videos: newVideos,
     });
 
+    // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+    const newIndex = newVideos.findIndex((video) => video.videoId === currentVideoId);
+    setCurrentVideoIndex(newIndex !== -1 ? newIndex : 0); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+
     try {
-      await handleUpdatePlaylistVideoOrder(newVideos);
+      await handleUpdatePlaylistVideoOrder(newVideos); // 비디오 순서 업데이트
       showToast('동영상 순서가 변경되었습니다.');
     } catch (error) {
       console.error('비디오 순서 업데이트 실패', error);
