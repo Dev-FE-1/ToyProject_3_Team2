@@ -17,15 +17,15 @@ export const formatTimeWithUpdated = (dateString: string): string => {
 
   if (diffInHours < 1) {
     return `방금`;
-  } else if (diffInHours > 1 && diffInHours < 24) {
+  } else if (diffInHours >= 1 && diffInHours < 24) {
     return `${diffInHours}시간 전`;
-  } else if (diffInDays < 7) {
+  } else if (diffInDays >= 1 && diffInDays < 7) {
     return `${diffInDays}일 전`;
-  } else if (diffInWeeks > 0 && diffInMonths < 1) {
+  } else if (diffInWeeks >= 1 && diffInMonths < 1) {
     return `${diffInWeeks}주 전`;
-  } else if (diffInMonths > 0 && diffInYears < 1) {
+  } else if (diffInMonths >= 1 && diffInYears < 1) {
     return `${diffInMonths}개월 전`;
-  } else if (diffInYears > 0) {
+  } else if (diffInYears >= 1) {
     return `${diffInYears}년 전`;
   } else {
     return `잘못된 날짜 형식입니다.`;
