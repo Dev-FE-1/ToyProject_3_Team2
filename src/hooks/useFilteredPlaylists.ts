@@ -18,7 +18,7 @@ export const useFilteredPlaylists = () => {
     setDisplayedPlaylists(playlists);
     setSelectedCategory(ALL_PLAYLISTS);
   }, [playlists]);
-
+  console.log(playlists);
   // 카테고리 필터링
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const category = e.currentTarget.textContent;
