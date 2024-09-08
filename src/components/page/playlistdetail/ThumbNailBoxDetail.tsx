@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 
-import { getInitialLikedState, togglePlaylistLike } from '@/api/endpoints/like';
+import { getIsLikedState, toggleLikePlaylist } from '@/api/endpoints/like';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/page/profile/Profile';
@@ -45,7 +45,7 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
   useEffect(() => {
     const fetchInitialLikedState = async () => {
       try {
-        const initialLikedState = await getInitialLikedState(userId, playlistId);
+        const initialLikedState = await getIsLikedState(userId, playlistId);
         setIsLiked(initialLikedState);
       } catch (error) {
         console.error('Error fetching initial liked state:', error);
@@ -63,7 +63,7 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
     if (isLiked === null) return;
 
     try {
-      const newLikeState = await togglePlaylistLike(playlistId, userId, isLiked);
+      const newLikeState = await toggleLikePlaylist(playlistId, userId, isLiked);
       const newLikeCount = newLikeState ? localLikeCount + 1 : localLikeCount - 1;
       setIsLiked(newLikeState);
       setLocalLikeCount(newLikeCount);
@@ -79,7 +79,7 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
       <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
       <h2 css={titleStyle}>{title}</h2>
       <div css={profileRowStyle}>
-        <Profile profileImageSrc={profileImg} userName={userName} onClick={onClickProfile} />
+        <Profile profileImg={profileImg} userName={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
           <CommentsButton playListId={playlistId} commentCount={commentCount} />
           <div css={dividerStyle} />

@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { GoBookmark, GoBookmarkFill } from 'react-icons/go';
 
+import { IS_PUBLIC } from '@/constants/normal';
 import theme from '@/styles/theme';
 
 interface PlaylistItemProps {
@@ -24,7 +25,7 @@ const PlaylistItem: React.FC<PlaylistItemProps> = ({
     <div css={thumbnailStyle(thumURL)}></div>
     <div css={textContainerStyle}>
       <p css={titleStyle}>{title}</p>
-      <p css={subtitleStyle}>{isPublic ? '공개' : '비공개'}</p>
+      <p css={subtitleStyle}>{isPublic ? IS_PUBLIC.true : IS_PUBLIC.false}</p>
     </div>
     {isBookmarked ? <GoBookmarkFill css={iconStyle} /> : <GoBookmark css={iconStyle} />}
   </div>

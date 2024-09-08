@@ -3,7 +3,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Toast from '@/components/common/Toast';
-import PlaylistForm from '@/components/page/playlistForm/PlaylistForm';
+import PlaylistForm from '@/components/page/playlistAdd/PlaylistForm';
 import { CATEGORY_OPTIONS } from '@/constants/playlist';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';

@@ -6,7 +6,7 @@ import {
   updatePlaylist,
   addVideoToPlaylist,
   updatePlaylistVideoOrder,
-} from '@/api/endpoints/playlist';
+} from '@/api/endpoints/playlistOperations';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { usePlaylistStore } from '@/store/usePlaylistStore';
 import { PlaylistFormDataModel, Video, PlaylistModel } from '@/types/playlist';
@@ -93,9 +93,21 @@ export const useUpdatePlaylistVideoOrder = (playlistId: string | undefined) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newVideoOrder: Video[]) =>
-      updatePlaylistVideoOrder(playlistId || '', newVideoOrder),
-    onMutate: async (newVideoOrder) => {
+    mutationFn: async ({
+      newVideoOrder,
+      currentVideoId,
+    }: {
+      newVideoOrder: Video[];
+      currentVideoId?: string;
+    }) => {
+      await updatePlaylistVideoOrder(playlistId || '', newVideoOrder);
+      if (currentVideoId) {
+        const updatedIndex = newVideoOrder.findIndex((video) => video.videoId === currentVideoId);
+        return updatedIndex !== -1 ? updatedIndex : 0;
+      }
+      return -1; // currentVideoId가 제공되지 않았을 경우
+    },
+    onMutate: async ({ newVideoOrder }) => {
       if (!playlistId) return;
 
       // 기존 쿼리 취소
@@ -117,7 +129,7 @@ export const useUpdatePlaylistVideoOrder = (playlistId: string | undefined) => {
 
       return { previousData };
     },
-    onError: (err, newVideoOrder, context) => {
+    onError: (err, { newVideoOrder }, context) => {
       if (playlistId && context?.previousData) {
         queryClient.setQueryData(
           [QUERY_KEYS.PLAYLIST_DETAIL_KEY, playlistId],

@@ -6,6 +6,7 @@ import { PlaylistModel } from '@/types/playlist';
 
 const ALL_PLAYLISTS = PLAYLIST.categories[0]; // '전체'
 
+// 검색어, 카테고리로 플레이리스트 필터링
 export const useFilteredPlaylists = () => {
   const [displayedPlaylists, setDisplayedPlaylists] = useState<PlaylistModel[]>();
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -17,7 +18,8 @@ export const useFilteredPlaylists = () => {
     setDisplayedPlaylists(playlists);
     setSelectedCategory(ALL_PLAYLISTS);
   }, [playlists]);
-
+  console.log(playlists);
+  // 카테고리 필터링
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const category = e.currentTarget.textContent;
 
@@ -30,6 +32,7 @@ export const useFilteredPlaylists = () => {
     }
   };
 
+  // 검색어 필터링
   const filterBySearchTerm = () => {
     const filteredPlaylistsBySearchTerm = playlists?.filter((playlist) =>
       playlist.title.includes(searchTerm)

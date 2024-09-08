@@ -1,15 +1,22 @@
-import { useQueries, useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQueries,
+  useQuery,
+  UseQueryOptions,
+  UseQueryResult,
+} from '@tanstack/react-query';
+import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 
 import {
   getAllPlaylists,
   getForkedPlaylists,
   getPlaylistsByCategory,
+  getPlaylistsWithPagination,
   getPlaylistWithUser,
   getUserPlaylists,
-} from '@/api/endpoints/playlist';
+} from '@/api/endpoints/playlistFetch';
 import { QUERY_KEYS } from '@/constants/queryKey';
 import { PlaylistModel } from '@/types/playlist';
-import { getUserIdBySession } from '@/utils/user';
 
 // 기본 옵션
 const defaultOptions = {
@@ -52,11 +59,21 @@ export const useForkedPlaylistsByUserIds = (userIds: string[]) =>
     ),
   });
 
-// userId를 통해 해당 사용자의 모든 플레이리스트 정보 가져오기
-export const useUserPlaylists = (): UseQueryResult<PlaylistModel[], Error> => {
-  const userId = getUserIdBySession();
+// 무한 스크롤 지원을 위한 플레이리스트 훅
+export const useInfinitePlaylists = () =>
+  useInfiniteQuery({
+    queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY],
+    queryFn: async ({ pageParam }: { pageParam?: QueryDocumentSnapshot<DocumentData> | null }) =>
+      getPlaylistsWithPagination(20, pageParam),
+    getNextPageParam: (lastPage) => lastPage.nextPageToken,
+    initialPageParam: null,
+  });
 
-  return useQuery<PlaylistModel[], Error>({
+// userId를 통해 해당 사용자의 모든 플레이리스트 정보 가져오기
+export const useUserPlaylists = (
+  userId: string | undefined
+): UseQueryResult<PlaylistModel[], Error> =>
+  useQuery<PlaylistModel[], Error>({
     queryKey: [QUERY_KEYS.PLAYLIST_ALL_KEY, userId],
     queryFn: () => getUserPlaylists(userId!),
     ...defaultOptions,
@@ -64,7 +81,6 @@ export const useUserPlaylists = (): UseQueryResult<PlaylistModel[], Error> => {
     refetchOnMount: true, // 마운트 시 재요청
     refetchOnWindowFocus: true, // 윈도우 포커스 시 재요청
   });
-};
 // playlistId 의 플레이리스트 데이터 가져오기
 export const usePlaylistQuery = (playlistId: string | undefined) =>
   useQuery({

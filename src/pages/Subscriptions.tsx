@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
 
-import { getForkedPlaylists } from '@/api/endpoints/playlist';
+import { getForkedPlaylists } from '@/api/endpoints/playlistFetch';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/page/playlist/PlaylistBox';
+import { PLAYLIST } from '@/constants/playlist';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { getUserIdBySession } from '@/utils/user';
@@ -30,21 +31,26 @@ const Subscriptions: React.FC = () => {
       <header css={header}>
         <p>내가 구독중인 플레이리스트</p>
       </header>
-      {forkedPlaylists.map((playlist) => (
-        <PlaylistBox
-          key={playlist.playlistId}
-          userId={playlist.userId}
-          playlistId={playlist.playlistId}
-          userName={playlist.userName}
-          imageUrl={playlist.thumbnailUrl}
-          playlistTitle={playlist.title}
-          category={playlist.category}
-          videoCount={playlist.videoCount}
-          forkCount={playlist.forkCount}
-          likeCount={playlist.likeCount}
-          commentCount={playlist.commentCount}
-        />
-      ))}
+
+      {forkedPlaylists && forkedPlaylists.length > 0 ? (
+        forkedPlaylists.map((playlist) => (
+          <PlaylistBox
+            key={playlist.playlistId}
+            userId={playlist.userId}
+            playlistId={playlist.playlistId}
+            userName={playlist.userName}
+            imageUrl={playlist.thumbnailUrl}
+            playlistTitle={playlist.title}
+            category={playlist.category}
+            videoCount={playlist.videoCount}
+            forkCount={playlist.forkCount}
+            likeCount={playlist.likeCount}
+            commentCount={playlist.commentCount}
+          />
+        ))
+      ) : (
+        <div css={noResultStyle}>{PLAYLIST.fork.no_result}</div>
+      )}
       <Toast />
     </div>
   );
@@ -68,6 +74,12 @@ const header = css`
     font-size: ${theme.fontSizes.large};
     font-weight: 700;
   }
+`;
+
+const noResultStyle = css`
+  font-size: ${theme.fontSizes.normal};
+  padding-top: 3rem;
+  text-align: center;
 `;
 
 export default Subscriptions;

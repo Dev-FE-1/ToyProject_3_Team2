@@ -1,14 +1,3 @@
-// export const CATEGORY_OPTIONS = [
-//   { value: 'lecture', label: '강의' },
-//   { value: 'animal', label: '동물' },
-//   { value: 'life', label: '라이프' },
-//   { value: 'travel', label: '여행' },
-//   { value: 'movie', label: '영화' },
-//   { value: 'entertainment', label: '엔터테인먼트' },
-//   { value: 'music', label: '음악' },
-//   { value: 'kids', label: '키즈' },
-// ];
-
 export const CATEGORY_OPTIONS = [
   { value: '키즈', label: '키즈' },
   { value: '음악', label: '음악' },
@@ -40,5 +29,8 @@ export const PLAYLIST = {
   search: {
     placeholder: '검색어를 입력해주세요',
     no_result: '검색 결과가 없습니다.',
+  },
+  fork: {
+    no_result: '구독한 플레이리스트가 없습니다.',
   },
 };

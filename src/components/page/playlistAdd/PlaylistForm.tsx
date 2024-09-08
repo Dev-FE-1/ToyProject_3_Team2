@@ -54,7 +54,6 @@ const PlaylistForm: React.FC<PlaylistFormProps> = ({ initialData = {}, onSubmit,
     const data = handleSubmitForm(event);
     onSubmit(data);
   };
-
   return (
     <div css={containerStyle}>
       <form onSubmit={onFormSubmit}>

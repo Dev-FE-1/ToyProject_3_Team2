@@ -9,6 +9,7 @@ import { PlaylistModel } from '@/types/playlist';
 import { sortPlaylistsByPopularity, sortRecentPlaylists } from '@/utils/sortPlaylists';
 import { getUserIdBySession } from '@/utils/user';
 
+// 인기순, 최신순으로 플레이리스트 정렬
 export const usePopularPlaylists = () => {
   const [playlistsByPopularity, setPlaylistsByPopularity] = useState<PlaylistModel[]>([]);
   const [recentPlaylists, setRecentPlaylists] = useState<PlaylistModel[]>([]);
@@ -20,6 +21,7 @@ export const usePopularPlaylists = () => {
   } = useAllPlaylist(); // 모든 플레이리스트 가져오기
 
   const userId = getUserIdBySession();
+
   const { data: forkedPlaylists } = useForkedPlaylists(userId); // 사용자가 포크한 플레이리스트 가져오기
   const userIds = forkedPlaylists?.map((playlist: PlaylistModel) => playlist.userId);
   const uniqueUserIds = [...new Set(userIds)]; // 중복 userId 제거 후, 다시 배열로
@@ -27,17 +29,22 @@ export const usePopularPlaylists = () => {
 
   const isLoadingForAllForkedPlaylist = forkedPlaylistsQueries.some((query) => query.isLoading);
   const errorForAllForkedPlaylist = forkedPlaylistsQueries.find((query) => query.error);
-  const allForkedPlaylists = forkedPlaylistsQueries.flatMap((query) => query.data || []);
+  const allForkedPlaylists = forkedPlaylistsQueries
+    .flatMap((query) => query.data || [])
+    .filter((playlist) => playlist.isPublic === true);
 
   useEffect(() => {
     const fetchPlaylists = async () => {
       const playlistsByPopularity = sortPlaylistsByPopularity(allPlaylists as PlaylistModel[]);
       const recentPlaylists = sortRecentPlaylists(allPlaylists as PlaylistModel[]);
 
-      setPlaylistsByPopularity(playlistsByPopularity);
-      setRecentPlaylists(recentPlaylists);
+      setPlaylistsByPopularity(
+        playlistsByPopularity
+          .filter((playlist) => playlist.isPublic === true)
+          .filter((playlist) => playlist.likeCount !== 0)
+      );
+      setRecentPlaylists(recentPlaylists.filter((playlist) => playlist.isPublic === true));
     };
-
     fetchPlaylists();
   }, [allPlaylists]);
 

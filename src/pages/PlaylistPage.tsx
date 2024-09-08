@@ -7,15 +7,15 @@ import { MdDragHandle } from 'react-icons/md';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
 import { useParams, useNavigate } from 'react-router-dom';
 
-import { getInitialForkedState, toggleFork } from '@/api/endpoints/fork';
+import { getIsForkedState, toggleForkPlaylist } from '@/api/endpoints/fork';
 import Button from '@/components/common/buttons/Button';
 import IconButton from '@/components/common/buttons/IconButton';
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/page/playlistdetail/NullBox';
-import ThumbNailBoxDetail from '@/components/page/playlistdetail/thumBoxDetail';
+import NullBox from '@/components/page/playlistdetail/nullBox';
+import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
@@ -33,6 +33,7 @@ const PlaylistPage: React.FC = () => {
   const toggle = useToggleStore((state) => state.toggle);
   const showToast = useToastStore((state) => state.showToast);
   const userId = getUserIdBySession();
+  const [youtubeUrl, setYoutubeUrl] = useState('');
 
   const {
     playlist,
@@ -54,7 +55,6 @@ const PlaylistPage: React.FC = () => {
     null
   );
   const [isForked, setIsForked] = useState<boolean | null>(null);
-  const isToggled = useToggleStore((state) => state.isToggled);
   const isOpen = useMiniPlayerStore((state) => state.isOpen);
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);
@@ -63,7 +63,7 @@ const PlaylistPage: React.FC = () => {
   useEffect(() => {
     const fetchInitialForkedState = async () => {
       try {
-        const initialForkedState = await getInitialForkedState(userId, playlistId as string);
+        const initialForkedState = await getIsForkedState(userId, playlistId as string);
         setIsForked(initialForkedState);
       } catch (error) {
         console.error('Error fetching initial Forked state:', error);
@@ -78,16 +78,15 @@ const PlaylistPage: React.FC = () => {
   const handleForkToggle = async () => {
     if (isForked === null) return;
 
-    // setIsLoading(true);
     try {
-      const newForkState = await toggleFork(playlistId as string, userId, isForked);
+      const newForkState = await toggleForkPlaylist(playlistId as string, userId, isForked);
       setIsForked(newForkState);
-      showToast('내 재생목록에 저장되었습니다.');
+      isForked
+        ? showToast('재생목록에서 삭제되었습니다.')
+        : showToast('재생목록에 저장되었습니다.');
       toggle();
     } catch (error) {
       console.error('Failed to toggle Fork:', error);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
@@ -114,6 +113,7 @@ const PlaylistPage: React.FC = () => {
     try {
       await handleAddVideoToPlaylist(videoData as Video);
       showToast('동영상이 성공적으로 추가되었습니다.');
+      setYoutubeUrl('');
     } catch (error) {
       console.error('Error adding video to playlist:', error);
       showToast('동영상 추가 중 오류가 발생했습니다.');
@@ -201,7 +201,7 @@ const PlaylistPage: React.FC = () => {
         {playlist.userId === userId ? (
           <IconButton Icon={RiPencilLine} onClick={handlePlaylistEdit} />
         ) : (
-          <IconButton Icon={isToggled ? GoStarFill : GoStar} onClick={handleForkToggle} />
+          <IconButton Icon={isForked ? GoStarFill : GoStar} onClick={handleForkToggle} />
         )}
       </div>
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -259,6 +259,8 @@ const PlaylistPage: React.FC = () => {
         onClose={closeModal}
         onConfirm={confirmAddVideo}
         setVideoData={setVideoData}
+        youtubeUrl={youtubeUrl}
+        setYoutubeUrl={setYoutubeUrl}
       />
       <BottomSheet
         contentType={bottomSheetContentType}
@@ -346,7 +348,7 @@ const dragHandleStyle = css`
 const addButtonContainerStyle = css`
   position: fixed;
   left: 50%;
-  bottom: 96px;
+  bottom: 9rem;
   width: 100vw;
   max-width: 500px;
   height: 1px;
