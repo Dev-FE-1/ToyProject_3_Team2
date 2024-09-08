@@ -116,7 +116,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
       setIsPlaying(true);
     } else {
       // 마지막 비디오라면 재생을 멈춤
-      // setIsPlaying(false); // 재생을 멈춤
+      // setIsPlaying(false);
       onClose(); // 모달을 닫음
     }
   }, [currentPlaylist.videos, currentVideoId, onClose]);
