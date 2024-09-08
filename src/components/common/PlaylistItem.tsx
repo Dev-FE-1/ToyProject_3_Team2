@@ -3,7 +3,7 @@ import React from 'react';
 import { css } from '@emotion/react';
 import { GoBookmark, GoBookmarkFill } from 'react-icons/go';
 
-import { IS_PUBLIC } from '@/constants/\bnormal';
+import { IS_PUBLIC } from '@/constants/normal';
 import theme from '@/styles/theme';
 
 interface PlaylistItemProps {

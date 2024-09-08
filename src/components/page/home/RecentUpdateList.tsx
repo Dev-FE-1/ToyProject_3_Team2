@@ -21,12 +21,12 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   const navigate = useNavigate();
   const [visiblePlaylists, setVisiblePlaylists] = useState<PlaylistModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
   const pageSize = 5; // 한 번에 불러올 항목의 개수
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot<DocumentData> | null>(null); // 페이지네이션을 위한 마지막 문서 스냅샷
 
   const loadMoreItems = async () => {
-    if (isLoading || !hasMore) return;
+    if (isLoading) return;
 
     setIsLoading(true);
     setTimeout(async () => {
@@ -34,24 +34,22 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
         const { playlists, lastVisible: newLastVisible } = await getPlaylistsWithPagination(
           pageSize,
           lastVisible
-        ); // 페이지네이션 API 호출
+        );
 
         const publicPlaylists = playlists.filter((playlist) => playlist.isPublic === true);
 
-        if (publicPlaylists.length === 0 && visiblePlaylists.length > 0) {
-          // 데이터가 없으면 다시 처음부터 불러오기
-          const { playlists, lastVisible: firstLastVisible } = await getPlaylistsWithPagination(
-            pageSize,
-            null
-          );
+        // 불러온 데이터가 있으면 상태 업데이트
+        if (publicPlaylists.length > 0) {
+          setVisiblePlaylists((prev) => [...prev, ...publicPlaylists]);
+        }
 
-          const firstPagePlaylists = playlists.filter((playlist) => playlist.isPublic === true);
-
-          setVisiblePlaylists((prev) => [...prev, ...firstPagePlaylists]);
-          setLastVisible(firstLastVisible);
+        // 데이터를 다 가져왔을 경우 처음부터 다시 시작
+        if (!newLastVisible) {
+          setLastVisible(null); // lastVisible을 초기화하여 처음부터 다시 가져오도록 설정
+          setHasMore(true); // 다시 처음부터 가져오기 위해 hasMore를 true로 설정
         } else {
-          setVisiblePlaylists((prev) => [...prev, ...publicPlaylists]); // 새로운 데이터를 기존 배열에 추가
-          setLastVisible(newLastVisible); // 마지막 문서 스냅샷 저장
+          // 마지막 문서가 존재하면 업데이트
+          setLastVisible(newLastVisible);
         }
       } catch (error) {
         console.error('Error fetching playlists:', error);
@@ -66,11 +64,8 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   return (
     <div>
       <h2 css={titleStyle}>{title}</h2>
-      {visiblePlaylists.map((playlist, index) => (
-        <div
-          key={`${playlist.playlistId}-${index}`}
-          onClick={() => navigate(`playlist/${playlist.playlistId}`)}
-        >
+      {visiblePlaylists.map((playlist) => (
+        <div key={playlist.playlistId} onClick={() => navigate(`playlist/${playlist.playlistId}`)}>
           <ThumbNailBox
             type='recent'
             thumURL={playlist.thumbnailUrl}
