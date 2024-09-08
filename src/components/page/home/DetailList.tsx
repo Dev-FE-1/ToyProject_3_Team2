@@ -20,8 +20,8 @@ const DetailList: React.FC = () => {
   const { title, playlists } = location.state as LocationState;
 
   const handleThumbNailBoxClick = (playlist: PlaylistModel) => {
-    navigate(`/Playlist/${playlist.playlistId}`, {
-      state: { playlist },
+    navigate(`/playlist/${playlist.playlistId}`, {
+      state: { playlist, previousPath: location.pathname },
     });
   };
 

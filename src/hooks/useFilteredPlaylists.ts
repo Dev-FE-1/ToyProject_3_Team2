@@ -34,13 +34,11 @@ export const useFilteredPlaylists = () => {
   // 검색어 필터링
   const filterBySearchTerm = () => {
     const filteredPlaylistsBySearchTerm = playlists?.filter((playlist) =>
-      playlist.title.includes(searchTerm)
+      playlist.title.replace(/\s+/g, '').includes(searchTerm)
     );
-
     filteredPlaylistsBySearchTerm
       ? setDisplayedPlaylists(filteredPlaylistsBySearchTerm)
       : setDisplayedPlaylists(playlists);
-
     setSearchTerm('');
 
     searchTerm ? setSelectedCategory('') : setSelectedCategory(ALL_PLAYLISTS);

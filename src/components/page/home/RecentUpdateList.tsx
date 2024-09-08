@@ -65,7 +65,14 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
     <div>
       <h2 css={titleStyle}>{title}</h2>
       {visiblePlaylists.map((playlist) => (
-        <div key={playlist.playlistId} onClick={() => navigate(`playlist/${playlist.playlistId}`)}>
+        <div
+          key={playlist.playlistId}
+          onClick={() =>
+            navigate(`/playlist/${playlist.playlistId}`, {
+              state: { previousPath: location.pathname },
+            })
+          }
+        >
           <ThumbNailBox
             type='recent'
             thumURL={playlist.thumbnailUrl}

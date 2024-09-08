@@ -5,7 +5,7 @@ import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautif
 import { GoKebabHorizontal, GoStar, GoStarFill } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPlayLargeFill, RiAddLargeLine, RiPencilLine } from 'react-icons/ri';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import { getIsForkedState, toggleForkPlaylist } from '@/api/endpoints/fork';
 import Button from '@/components/common/buttons/Button';
@@ -14,7 +14,7 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/page/playlistdetail/NullBox';
+import NullBox from '@/components/page/playlistdetail/nullBox';
 import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import usePlaylistData from '@/hooks/usePlaylistData';
@@ -22,6 +22,7 @@ import Header from '@/layouts/layout/Header';
 import NotFoundPage from '@/pages/NotFound';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
+import { usePrevUrlStore } from '@/store/usePrevUrlStore';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
@@ -30,11 +31,14 @@ import { getUserIdBySession } from '@/utils/user';
 
 const PlaylistPage: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { playlistId } = useParams<{ playlistId: string }>(); // URL 파라미터에서 playlistId 추출
   const toggle = useToggleStore((state) => state.toggle);
   const showToast = useToastStore((state) => state.showToast);
   const userId = getUserIdBySession();
   const [youtubeUrl, setYoutubeUrl] = useState('');
+  const { prevUrl, setPrevUrl } = usePrevUrlStore();
+  const { detailPagePlaylist, setDetailPagePlaylist } = usePrevUrlStore();
 
   const {
     playlist,
@@ -60,6 +64,14 @@ const PlaylistPage: React.FC = () => {
   const { openMiniPlayer, updateMiniPlayer } = useMiniPlayerStore();
   const isModalOpen = useModalStore((state) => state.isModalOpen);
   const { openModal, closeModal } = useModalStore();
+
+  useEffect(() => {
+    if (location.state && !location.state.previousPath.includes('comment'))
+      setPrevUrl(location.state.previousPath);
+
+    if (!location.state.playlist) return;
+    setDetailPagePlaylist(location.state.playlist);
+  }, []);
 
   useEffect(() => {
     const fetchInitialForkedState = async () => {
@@ -182,14 +194,17 @@ const PlaylistPage: React.FC = () => {
     );
   if (error) return <div css={errorStyle}>Error: {error.message}</div>;
   if (!playlist || !user) return <NotFoundPage />;
-
   return (
     <div css={containerStyle}>
       <Header
         Icon={playlist.userId === userId ? GoKebabHorizontal : undefined}
         customStyle={kebabStyle}
         onIcon={() => setIsBottomSheetOpen(true)}
-        onBack={() => navigate(-1)}
+        onBack={() =>
+          prevUrl === '/section-list'
+            ? navigate(prevUrl, { state: { detailPagePlaylist } })
+            : navigate(prevUrl)
+        }
       />
       <ThumbNailBoxDetail playlist={playlist} user={user} onClickProfile={handleProfileClick} />
       <div css={buttonBoxStyle}>

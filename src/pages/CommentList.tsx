@@ -28,7 +28,6 @@ const CommentList = () => {
   const location = useLocation();
 
   const { toastMessage, refetchComments } = location.state || {};
-
   const filterOptions = [
     { value: 'latest', label: '최신순' },
     { value: 'oldest', label: '오래된순' },
@@ -106,8 +105,14 @@ const CommentList = () => {
   }, [refetchComments, refetch, navigate, location.pathname]);
 
   return (
-    <div>
-      <Header onBack={() => navigate(`/playlist/${playlistId}`)} />
+    <div css={containerStyle}>
+      <Header
+        onBack={() =>
+          navigate(`/playlist/${playlistId}`, {
+            state: { previousPath: location.pathname },
+          })
+        }
+      />
       <Toast />
       <div css={CommentTabStyle}>
         <div>
@@ -182,6 +187,10 @@ export const CommentTabStyle = css`
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+`;
+
+const containerStyle = css`
+  padding-bottom: 80px;
 `;
 
 const CommentListDivStyle = css`

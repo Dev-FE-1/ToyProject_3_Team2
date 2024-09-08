@@ -30,7 +30,6 @@ const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlist
   const handleMoreClick = () => {
     navigate('/section-list', { state: { title, playlists } });
   };
-
   return (
     <div css={sectionStyle}>
       <div css={headerStyle}>
@@ -49,7 +48,11 @@ const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlist
           <div
             key={playlist.playlistId}
             css={playlistItemStyle}
-            onClick={() => navigate(`playlist/${playlist.playlistId}`)}
+            onClick={() =>
+              navigate(`/playlist/${playlist.playlistId}`, {
+                state: { previousPath: location.pathname },
+              })
+            }
           >
             <ThumbNailBox
               type='main1'

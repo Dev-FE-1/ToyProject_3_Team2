@@ -40,7 +40,7 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
   const [profileImg, setProfileImg] = useState<string | undefined>('');
   const [isForked, setIsForked] = useState<boolean | null>(null);
 
-  const { isToggled, toggle } = useToggleStore();
+  const { toggle } = useToggleStore();
   const { showToast } = useToastStore();
 
   const navigate = useNavigate();
@@ -94,7 +94,14 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
         />
         <SubsToggleButton handleForkToggle={handleForkToggle} isForked={isForked} />
       </div>
-      <div css={clickEventStyle} onClick={() => navigate(`/playlist/${playlistId}`)}>
+      <div
+        css={clickEventStyle}
+        onClick={() =>
+          navigate(`/playlist/${playlistId}`, {
+            state: { previousPath: location.pathname },
+          })
+        }
+      >
         <div css={middle}>
           <img src={imageUrl} alt='썸네일' />
         </div>
