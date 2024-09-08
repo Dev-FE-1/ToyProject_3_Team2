@@ -6,7 +6,7 @@ import { UserModel } from '@/types/user';
 
 // 기본 옵션
 const defaultOptions = {
-  staleTime: 5 * 60 * 1000, // 기본 5분
+  staleTime: 2000, // 기본 20초
 };
 
 // userId를 파라미터로 받도록 변경

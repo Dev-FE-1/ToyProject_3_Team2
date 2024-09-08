@@ -20,7 +20,7 @@ import { PlaylistModel } from '@/types/playlist';
 
 // 기본 옵션
 const defaultOptions = {
-  staleTime: 5 * 60 * 1000, // 기본 5분
+  staleTime: 2000, // 기본 20초
 };
 
 // DB의 모든 플레이리스트 가져오기
