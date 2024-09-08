@@ -10,7 +10,7 @@ export const usePlaylistForm = (initialData = INITIAL_FORM_STATE) => {
   const toggle = useToggleStore((state) => state.toggle);
   const [titleValue, setTitleValue] = useState(initialData.title);
   const [categoryValue, setCategoryValue] = useState<string | undefined>(initialData.category);
-  const [previewImage, setPreviewImage] = useState<string | null>('');
+  const [previewImage, setPreviewImage] = useState<string | null>(initialData.thumbnailUrl || null);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
