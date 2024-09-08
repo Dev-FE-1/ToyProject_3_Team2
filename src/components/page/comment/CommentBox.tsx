@@ -7,7 +7,7 @@ import { deleteComment } from '@/api/endpoints/comment';
 import { getPlaylistById } from '@/api/endpoints/playlist';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import Toast from '@/components/common/Toast';
-import { useCommentsList } from '@/hooks/query/useComments';
+import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { Comment, PlaylistModel } from '@/types/playlist';

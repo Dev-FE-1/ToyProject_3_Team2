@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import { getPlaylistById } from '@/api/endpoints/playlist';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import SelectBox from '@/components/common/SelectBox';
 import Toast from '@/components/common/Toast';
 import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
@@ -20,12 +21,17 @@ const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
   const [comments, setComments] = useState<Comment[]>([]);
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
-
+  const [selectedFilter, setSelectedFilter] = useState<string>('latest');
   const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
   const location = useLocation();
 
   const { toastMessage, refetchComments } = location.state || {};
+
+  const filterOptions = [
+    { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된순' },
+  ];
 
   const goToCommentForm = () => {
     navigate(`${PATH.COMMENT_ADD.replace(':playlistId', playlistId ?? '')}`, {
@@ -37,6 +43,24 @@ const CommentList = () => {
       },
     });
   };
+
+  const handleFilterChange = (value: string) => {
+    setSelectedFilter(value);
+    switch (value) {
+      case 'latest':
+        setComments(comments);
+        break;
+      case 'oldest':
+        setComments(
+          [...comments].sort(
+            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          )
+        );
+        break;
+      default:
+        break;
+    }
+  }; // 댓글 필터링
 
   const { data: commentsData, error, refetch } = useCommentsList(playlistId);
 
@@ -100,7 +124,7 @@ const CommentList = () => {
         <div css={CommentListTopStyle}>
           {/* 댓글 수 / 필터 div */}
           <p>댓글 수 {playlistData?.commentCount}</p>
-          <p>필터</p>
+          <SelectBox items={filterOptions} value={selectedFilter} onChange={handleFilterChange} />
         </div>
         {comments.map((comment) => (
           <CommentBox
@@ -164,6 +188,11 @@ const CommentListTopStyle = css`
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
+
+  p {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 export default CommentList;
