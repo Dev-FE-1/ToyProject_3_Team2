@@ -19,9 +19,10 @@ import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]); // 직접 comments 조작
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
   const [selectedFilter, setSelectedFilter] = useState<string>('latest');
+  const [originalComments, setOriginalComments] = useState<Comment[]>([]); // sort 전 마지막 comments를 저장하는 용도
   const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
   const location = useLocation();
@@ -48,7 +49,11 @@ const CommentList = () => {
     setSelectedFilter(value);
     switch (value) {
       case 'latest':
-        setComments(comments);
+        setComments(
+          [...originalComments].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+        );
         break;
       case 'oldest':
         setComments(
@@ -67,6 +72,7 @@ const CommentList = () => {
   useEffect(() => {
     if (commentsData) {
       setComments(commentsData);
+      setOriginalComments(commentsData);
     }
 
     async function fetchPlaylistData() {
