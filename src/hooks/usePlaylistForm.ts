@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import defaultPlaylistCover from '@/assets/default-playlist-cover.webp';
+import defaultImage from '@/assets/images/default-thumb.svg';
 import { INITIAL_FORM_STATE } from '@/constants/playlist';
 import { useToggleStore } from '@/store/useToggleStore';
 import { PlaylistFormDataModel } from '@/types/playlist';
@@ -72,7 +72,7 @@ export const usePlaylistForm = (initialData = INITIAL_FORM_STATE) => {
       forkCount: initialData.forkCount,
       commentCount: initialData.commentCount,
       videoCount: initialData.videoCount,
-      thumbnailUrl: previewImage || defaultPlaylistCover,
+      thumbnailUrl: previewImage || defaultImage,
       isPublic: isToggled,
       videos: initialData.videos,
     };
