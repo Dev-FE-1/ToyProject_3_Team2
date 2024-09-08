@@ -32,5 +32,6 @@ export const PLAYLIST = {
   },
   fork: {
     no_result: '구독한 플레이리스트가 없습니다.',
+    description: '구독 버튼을 눌러서 원하는 플리를 즐겨보세요.',
   },
 };

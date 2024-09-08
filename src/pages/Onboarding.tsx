@@ -17,8 +17,8 @@ const Onboarding = () => {
     <div css={container}>
       <img src='/logo.svg' alt='Logo' css={logoStyle} />
       <p css={textStyle}>봄의 설렘을 담고,</p>
-      <p css={textStyle}>비디오 속 감동을 나누다 - 봄비, 당신</p>
-      <p css={textStyle}>만의 영상 플레이리스트.</p>
+      <p css={textStyle}>비디오 속 감동을 나누다</p>
+      <p css={textStyle}>- 봄비, 당신만의 영상 플레이리스트.</p>
       <Button styleType='ghost' customStyle={buttonStyle} onClick={handleSignIn}>
         시작하기
       </Button>
