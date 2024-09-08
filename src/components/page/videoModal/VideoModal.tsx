@@ -5,6 +5,7 @@ import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'r
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import Spinner from '@/components/common/Spinner';
@@ -25,10 +26,12 @@ interface VideoModalProps {
   userId: string;
 }
 const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalProps) => {
+  const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMaximizing, setIsMaximizing] = useState(false); // 모달이 최대화 중 인지 추적
   const [isPlaying, setIsPlaying] = useState(true);
+  const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [currentVideoId, setCurrentVideoId] = useState(videoId);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -40,8 +43,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     isLoading,
     error,
     handleDeleteVideo,
-    updatePlaylistVideoOrderAndGetIndex, // 새로운 함수 추가
-    getCurrentVideoIndex, // 새로운 함수 추가
+    handleUpdatePlaylistVideoOrder,
   } = usePlaylistData(playlist.playlistId);
 
   // 하단 시트 관련 상태
@@ -71,7 +73,6 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
           onClose(); // 마지막 비디오라면 모달을 닫음
         }
       }
-      setCurrentVideoIndex(getCurrentVideoIndex(currentVideoId)); // 현재 비디오 인덱스 업데이트
     } catch (error) {
       console.error('Error deleting video:', error);
       showToast('동영상 삭제 중 오류가 발생했습니다.');
@@ -89,9 +90,13 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     const [reorderedItem] = newVideos.splice(result.source.index, 1);
     newVideos.splice(result.destination.index, 0, reorderedItem);
 
+    setCurrentPlaylist({
+      ...currentPlaylist,
+      videos: newVideos,
+    });
+
     try {
-      const newIndex = await updatePlaylistVideoOrderAndGetIndex(newVideos, currentVideoId);
-      setCurrentVideoIndex(newIndex);
+      await handleUpdatePlaylistVideoOrder(newVideos);
       showToast('동영상 순서가 변경되었습니다.');
     } catch (error) {
       console.error('비디오 순서 업데이트 실패', error);
@@ -101,9 +106,11 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
 
   useEffect(() => {
     setCurrentVideoId(videoId); // 비디오 ID가 변경되면 현재 비디오 ID를 업데이트
+    setCurrentPlaylist(playlist); // 플레이리스트가 변경되면 현재 플레이리스트를 업데이트
     setIsPlaying(true); // 비디오 ID가 변경되면 비디오를 재생
-    setCurrentVideoIndex(getCurrentVideoIndex(videoId)); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
-  }, [videoId, getCurrentVideoIndex]); // 비디오 ID가 변경되면 실행
+    const index = playlist.videos.findIndex((video) => video.videoId === videoId); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+    setCurrentVideoIndex(index !== -1 ? index : 0); // 비디오 ID가 변경되면 해당 비디오의 인덱스를 찾아서 업데이트
+  }, [videoId, playlist]); // 비디오 ID와 플레이리스트가 변경되면 실행
 
   useEffect(() => {
     if (isOpen && !iframeLoaded) {
@@ -112,11 +119,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   }, [isOpen, currentVideoId, iframeLoaded]);
 
   useEffect(() => {
-    if (updatedPlaylist) {
-      const index = updatedPlaylist.videos.findIndex((video) => video.videoId === currentVideoId);
-      setCurrentVideoIndex(index !== -1 ? index : 0);
-    }
-  }, [currentVideoId, updatedPlaylist]); // 업데이트된 플레이리스트가 변경되면 실행
+    const index = playlist.videos.findIndex((video) => video.videoId === currentVideoId);
+    setCurrentVideoIndex(index !== -1 ? index : 0);
+  }, [currentVideoId, playlist.videos]);
 
   const handleIframeLoad = () => {
     setIframeLoaded(true);
@@ -291,9 +296,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                                 )}
                                 <VideoBoxDetail
                                   video={video}
-                                  type={updatedPlaylist.userId === userId ? 'host' : 'visitor'}
-                                  channelName={updatedPlaylist.userName}
-                                  uploadDate={formatTimeWithUpdated(updatedPlaylist.createdAt)}
+                                  type={currentPlaylist.userId === userId ? 'host' : 'visitor'}
+                                  channelName={currentPlaylist.userName}
+                                  uploadDate={formatTimeWithUpdated(currentPlaylist.createdAt)}
                                   onClickVideo={handleVideoClick(video.videoId || '')}
                                   onClickKebob={() => {
                                     setSelectedVideo({
