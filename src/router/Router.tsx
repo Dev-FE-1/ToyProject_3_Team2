@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import { auth } from '@/api/index';
+import Spinner from '@/components/common/Spinner';
 import DetailList from '@/components/page/home/DetailList';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
@@ -20,7 +21,6 @@ import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
-
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
   const { pathname, search } = useLocation();
@@ -41,8 +41,7 @@ const AuthProtectedRoute = () => {
   }, []);
 
   if (isLoading) {
-    // You might want to show a loading spinner here
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (!isOnboarding) {

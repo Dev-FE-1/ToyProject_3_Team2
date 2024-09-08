@@ -7,6 +7,7 @@ import PlaylistForm from '@/components/page/playlistAdd/PlaylistForm';
 import { CATEGORY_OPTIONS } from '@/constants/playlist';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
+import NotFoundPage from '@/pages/NotFound';
 import { useToastStore } from '@/store/useToastStore';
 import { PlaylistFormDataModel } from '@/types/playlist';
 
@@ -31,7 +32,7 @@ const PlaylistEdit: React.FC = () => {
   }
 
   if (!playlist) {
-    return <div>Playlist not found</div>;
+    return <NotFoundPage />;
   }
 
   const initialData = {
