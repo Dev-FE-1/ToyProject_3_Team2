@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
+import { GoStarFill } from 'react-icons/go';
 
 import { getForkedPlaylists } from '@/api/endpoints/playlistFetch';
+import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/page/playlist/PlaylistBox';
 import { PLAYLIST } from '@/constants/playlist';
@@ -49,7 +51,15 @@ const Subscriptions: React.FC = () => {
           />
         ))
       ) : (
-        <div css={noResultStyle}>{PLAYLIST.fork.no_result}</div>
+        <div css={noResultContainerStyle}>
+          {/* 아이콘 표시 */}
+          <IconButton Icon={GoStarFill} />
+          {/* 메시지 표시 */}
+          <div css={noResultStyle}>
+            {PLAYLIST.fork.no_result}
+            <div css={descriptionStyle}>{PLAYLIST.fork.description}</div>
+          </div>
+        </div>
       )}
       <Toast />
     </div>
@@ -76,10 +86,29 @@ const header = css`
   }
 `;
 
+const noResultContainerStyle = css`
+  padding-top: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
 const noResultStyle = css`
-  font-size: ${theme.fontSizes.normal};
-  padding-top: 3rem;
+  font-size: ${theme.fontSizes.xlarge};
+  font-weight: 600;
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  flex-direction: column;
+`;
+
+const descriptionStyle = css`
+  font-size: ${theme.fontSizes.normal};
+  font-weight: 400;
+  padding-top: 1.5rem;
 `;
 
 export default Subscriptions;
