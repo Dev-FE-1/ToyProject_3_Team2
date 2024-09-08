@@ -24,9 +24,9 @@ interface CommentBoxProps extends Comment {
 
 const CommentBox: React.FC<CommentBoxProps> = ({
   comments,
-  playlistId,
   setComments,
   setPlaylistData,
+  playlistId,
 }: CommentBoxProps) => {
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
