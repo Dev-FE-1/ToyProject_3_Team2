@@ -3,7 +3,7 @@ import React from 'react';
 import { css, SerializedStyles } from '@emotion/react';
 import * as Switch from '@radix-ui/react-switch';
 
-import { IS_PUBLIC } from '@/constants/\bnormal';
+import { IS_PUBLIC } from '@/constants/normal';
 import theme from '@/styles/theme';
 
 interface ToggleSwitchProps {
