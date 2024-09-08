@@ -37,7 +37,6 @@ const CommentList = () => {
       },
     });
   };
-
   const { data: commentsData, error, refetch } = useCommentsList(playlistId);
 
   useEffect(() => {

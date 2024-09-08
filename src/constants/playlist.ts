@@ -30,4 +30,7 @@ export const PLAYLIST = {
     placeholder: '검색어를 입력해주세요',
     no_result: '검색 결과가 없습니다.',
   },
+  fork: {
+    no_result: '구독한 플레이리스트가 없습니다.',
+  },
 };

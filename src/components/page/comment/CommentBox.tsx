@@ -16,6 +16,7 @@ import { getUserIdBySession } from '@/utils/user';
 
 interface CommentBoxProps extends Comment {
   comments: Comment;
+  playlistId: string | undefined;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   playlistData?: PlaylistModel | undefined;
   setPlaylistData?: React.Dispatch<React.SetStateAction<PlaylistModel | undefined>>;
@@ -23,13 +24,13 @@ interface CommentBoxProps extends Comment {
 
 const CommentBox: React.FC<CommentBoxProps> = ({
   comments,
+  playlistId,
   setComments,
-  playlistData,
   setPlaylistData,
 }: CommentBoxProps) => {
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
-  const { refetch } = useCommentsList(playlistData?.playlistId);
+  const { refetch } = useCommentsList(playlistId);
 
   const handleDelBtnClick = async (commentData: {
     playlistId: string | undefined;
