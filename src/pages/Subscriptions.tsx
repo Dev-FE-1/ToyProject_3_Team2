@@ -67,7 +67,7 @@ const Subscriptions: React.FC = () => {
 };
 
 const containerStyle = css`
-  padding-bottom: 80px;
+  padding-bottom: 160px;
 `;
 
 const header = css`

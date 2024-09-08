@@ -73,16 +73,15 @@ const detailsStyle = css`
 
 const titleStyle = css`
   width: 90%;
-  font-size: ${theme.fontSizes.normal};
-  color: ${theme.colors.white};
+  font-size: 14px;
+  color: #f1f1f1;
   margin-top: 2px;
-
   line-height: 1.4;
-
-  /* 여러 줄 오버플로우 처리 */
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  overflow: hidden;
   text-overflow: ellipsis;
 `;
 
