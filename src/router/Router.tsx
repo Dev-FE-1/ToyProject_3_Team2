@@ -1,5 +1,9 @@
+import { useState, useEffect } from 'react';
+
+import { onAuthStateChanged } from 'firebase/auth';
 import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router-dom';
 
+import { auth } from '@/api/index';
 import DetailList from '@/components/page/home/DetailList';
 import { PATH } from '@/constants/path';
 import RootLayout from '@/layouts/RootLayout';
@@ -20,14 +24,25 @@ import Subscriptions from '@/pages/Subscriptions';
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
   const { pathname, search } = useLocation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const setOnboarding = sessionStorage.getItem('onboarding') === 'true';
-  const userSession = sessionStorage.getItem('userSession');
-  const isLoggedIn = !!userSession;
-  // // 로그인 통과? 그럼 Outlet을 렌더링
-  // // 로그인 실패? 로그인 페이지로 Redirect
-  // // <Outlet/>: 자식 라우트를 렌더링
-  // // replace: 현재 페이지를 브라우저 히스토리에서 교체
-  // // state={..} :현재 URL 정보를 로그인 페이지로 전달
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+      setIsLoading(false);
+    });
+
+    // Clean up the listener on unmount
+    return () => unsubscribe();
+  }, []);
+
+  if (isLoading) {
+    // You might want to show a loading spinner here
+    return <div>Loading...</div>;
+  }
+
   if (!setOnboarding) {
     // 온보딩을 완료하지 않았다면 온보딩 페이지로 이동
     return <Navigate to={PATH.ONBOARDING} replace state={pathname + search} />;
@@ -36,6 +51,7 @@ const AuthProtectedRoute = () => {
     // 로그인하지 않았다면 로그인 페이지로 이동
     return <Navigate to={PATH.SIGNIN} replace state={pathname + search} />;
   }
+
   return <Outlet />;
 };
 

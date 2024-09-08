@@ -1,7 +1,9 @@
 import { css } from '@emotion/react';
+import { signOut } from 'firebase/auth';
 import { GoPerson, GoSignOut, GoChevronRight } from 'react-icons/go';
 import { useNavigate } from 'react-router-dom';
 
+import { auth } from '@/api/index';
 import CustomDialog from '@/components/common/modals/Dialog';
 import { PATH } from '@/constants/path';
 import Header from '@/layouts/layout/Header';
@@ -18,13 +20,17 @@ const Settings = () => {
   const handleSignOut = () => {
     openModal();
   };
-  const confirmSignOut = () => {
-    //로그인 상태를 로그아웃으로 변경하는 코드
-    // 토스트는 없어도 됨
-    sessionStorage.removeItem('userSession');
-    resetMiniPlayer(); // 미니 플레이어 상태 초기화
-    closeModal();
-    navigate(PATH.SIGNIN);
+  const confirmSignOut = async () => {
+    try {
+      // auth로 로그아웃
+      await signOut(auth);
+      sessionStorage.removeItem('userSession');
+      resetMiniPlayer(); // 미니 플레이어 상태 초기화
+      closeModal();
+      navigate(PATH.SIGNIN);
+    } catch (error) {
+      console.error('로그아웃 중 오류 발생:', error);
+    }
   };
   return (
     <div css={containerStyle}>
