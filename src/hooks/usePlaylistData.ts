@@ -33,24 +33,7 @@ const usePlaylistData = (playlistId: string | undefined) => {
   };
 
   const handleUpdatePlaylistVideoOrder = async (newVideoOrder: Video[]) => {
-    await updateVideoOrderMutation.mutateAsync({ newVideoOrder });
-  };
-
-  // 비디오 순서를 업데이트하고 해당 비디오의 인덱스를 반환함
-  const updatePlaylistVideoOrderAndGetIndex = async (
-    newVideoOrder: Video[],
-    currentVideoId: string
-  ) => {
-    const newIndex = await updateVideoOrderMutation.mutateAsync({ newVideoOrder, currentVideoId });
-    return newIndex;
-  };
-
-  // 현재 재생 중인 비디오의 인덱스를 찾는 함수
-  const getCurrentVideoIndex = (videoId: string) => {
-    const videos = playlistQuery.data?.playlist.videos;
-    if (!videos) return 0;
-    const index = videos.findIndex((video) => video.videoId === videoId);
-    return index !== -1 ? index : 0;
+    await updateVideoOrderMutation.mutateAsync(newVideoOrder);
   };
 
   return {
@@ -63,8 +46,6 @@ const usePlaylistData = (playlistId: string | undefined) => {
     handleUpdatePlaylist,
     handleAddVideoToPlaylist,
     handleUpdatePlaylistVideoOrder,
-    updatePlaylistVideoOrderAndGetIndex,
-    getCurrentVideoIndex, // 추가
   };
 };
 
