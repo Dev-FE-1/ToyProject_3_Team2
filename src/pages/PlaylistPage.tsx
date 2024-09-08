@@ -14,11 +14,12 @@ import BottomSheet from '@/components/common/modals/BottomSheet';
 import CustomDialog from '@/components/common/modals/Dialog';
 import Spinner from '@/components/common/Spinner';
 import Toast from '@/components/common/Toast';
-import NullBox from '@/components/page/playlistdetail/nullBox';
+import NullBox from '@/components/page/playlistdetail/NullBox';
 import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
+import NotFoundPage from '@/pages/NotFound';
 import { useMiniPlayerStore } from '@/store/useMiniPlayerStore';
 import { useModalStore } from '@/store/useModalStore';
 import { useToastStore } from '@/store/useToastStore';
@@ -67,8 +68,6 @@ const PlaylistPage: React.FC = () => {
         setIsForked(initialForkedState);
       } catch (error) {
         console.error('Error fetching initial Forked state:', error);
-      } finally {
-        // setIsLoading(false);
       }
     };
 
@@ -182,7 +181,7 @@ const PlaylistPage: React.FC = () => {
       </div>
     );
   if (error) return <div css={errorStyle}>Error: {error.message}</div>;
-  if (!playlist || !user) return <NullBox />;
+  if (!playlist || !user) return <NotFoundPage />;
 
   return (
     <div css={containerStyle}>
@@ -212,38 +211,47 @@ const PlaylistPage: React.FC = () => {
               ref={provided.innerRef}
               css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
             >
-              {playlist.videos.map((video: Video, index: number) => (
-                <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
-                  {(provided, snapshot) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      css={videoBoxWrapperStyle(snapshot.isDragging)}
-                    >
-                      <div css={draggableListStyle}>
-                        {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
-                          <div {...provided.dragHandleProps} css={dragHandleStyle}>
-                            <MdDragHandle />
+              {playlist.videos.length === 0 ? (
+                <NullBox />
+              ) : (
+                <>
+                  {playlist.videos.map((video: Video, index: number) => (
+                    <Draggable key={video.videoId} draggableId={video.videoId || ''} index={index}>
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          css={videoBoxWrapperStyle(snapshot.isDragging)}
+                        >
+                          <div css={draggableListStyle}>
+                            {userId === playlist.userId && ( // 여기서 userId는 로그인한 사용자
+                              <div {...provided.dragHandleProps} css={dragHandleStyle}>
+                                <MdDragHandle />
+                              </div>
+                            )}
+                            <VideoBoxDetail
+                              video={video}
+                              type={playlist.userId === userId ? 'host' : 'visitor'}
+                              channelName={playlist.userName}
+                              uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
+                              onClickVideo={() => handleVideoClick(video.videoId || '')}
+                              onClickKebob={() => {
+                                setSelectedVideo({
+                                  videoId: video.videoId || '',
+                                  title: video.title,
+                                });
+                                setBottomSheetContentType('deleteVideo');
+                                setIsBottomSheetOpen(true);
+                              }}
+                            />
                           </div>
-                        )}
-                        <VideoBoxDetail
-                          video={video}
-                          type={playlist.userId === userId ? 'host' : 'visitor'}
-                          channelName={playlist.userName}
-                          uploadDate={new Date(playlist.createdAt).toLocaleDateString()}
-                          onClickVideo={() => handleVideoClick(video.videoId || '')}
-                          onClickKebob={() => {
-                            setSelectedVideo({ videoId: video.videoId || '', title: video.title });
-                            setBottomSheetContentType('deleteVideo');
-                            setIsBottomSheetOpen(true);
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </>
+              )}
             </div>
           )}
         </Droppable>

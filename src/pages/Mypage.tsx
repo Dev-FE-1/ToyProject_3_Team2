@@ -12,6 +12,7 @@ import MyProfile from '@/components/page/mypage/MyProfile';
 import { PATH } from '@/constants/path';
 import { useUserPlaylists } from '@/hooks/queries/usePlaylistQueries';
 import { useUserData } from '@/hooks/queries/useUserQueries';
+import NotFoundPage from '@/pages/NotFound';
 import { getUserIdBySession } from '@/utils/user';
 
 const MyPage = () => {
@@ -59,7 +60,7 @@ const MyPage = () => {
   }
 
   if (!userData) {
-    return <div>사용자 데이터를 찾을 수 없습니다.</div>;
+    return <NotFoundPage />;
   }
 
   return (
