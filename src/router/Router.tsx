@@ -26,7 +26,7 @@ const AuthProtectedRoute = () => {
   const { pathname, search } = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
+  const [isOnboarding, setIsOnboarding] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -35,7 +35,7 @@ const AuthProtectedRoute = () => {
     });
 
     const onboardingStatus = sessionStorage.getItem('onboarding') === 'true';
-    setHasCompletedOnboarding(onboardingStatus);
+    setIsOnboarding(onboardingStatus);
 
     return () => unsubscribe();
   }, []);
@@ -45,7 +45,7 @@ const AuthProtectedRoute = () => {
     return <div>Loading...</div>;
   }
 
-  if (!hasCompletedOnboarding) {
+  if (!isOnboarding) {
     // 온보딩을 완료하지 않았다면 온보딩 페이지로 이동
     return <Navigate to={PATH.ONBOARDING} replace state={pathname + search} />;
   }
