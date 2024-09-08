@@ -16,10 +16,10 @@ import { getUserIdBySession } from '@/utils/user';
 
 interface CommentBoxProps extends Comment {
   comments: Comment;
+  playlistId: string | undefined;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   playlistData?: PlaylistModel | undefined;
   setPlaylistData?: React.Dispatch<React.SetStateAction<PlaylistModel | undefined>>;
-  playlistId: string | undefined;
 }
 
 const CommentBox: React.FC<CommentBoxProps> = ({
