@@ -1,8 +1,8 @@
-# 🦖 나만의 취향을 담은 플레이리스트 공유 웹앱 서비스
+# 나만의 취향을 담은 플레이리스트 영상 공유 웹앱 서비스
 
-<!-- <image alt="studio-t" width="800" src="https://github.com/user-attachments/assets/780fdc29-ee4b-4f92-a5a0-f0ade55a600c" style="border-radius: 20px" /> 대문이미지 넣으면 됨-->
+## <image alt="bomvi" width="800" src="https://private-user-images.githubusercontent.com/27764950/365446910-13b1742a-f558-4f72-a8dd-c8f77d178ea7.jpg?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjU4MDc2NjIsIm5iZiI6MTcyNTgwNzM2MiwicGF0aCI6Ii8yNzc2NDk1MC8zNjU0NDY5MTAtMTNiMTc0MmEtZjU1OC00ZjcyLWE4ZGQtYzhmNzdkMTc4ZWE3LmpwZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA5MDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwOTA4VDE0NTYwMlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWFkOGU1NTJlNmYyNDIzNjYyZGJiN2ZiYTY4MzY1YmUwM2EyYWIwNDYyMmM2ZGI1MDZlN2YxZjlhOTNjMzNhN2YmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.rZtJFdqK3fn3-AEMdEDfgxWwJdELiD2TYVkJmE6bEpM" style="border-radius: 20px" />
 
-봄비(Bomvi)는 나만의 플레이리스트를 꾸미고 공유하는 모바일 SNS 웹앱 서비스를 제공합니다.
+### 봄비(Bomvi)는 나만의 플레이리스트를 꾸미고 공유하는 모바일 SNS 웹앱 서비스를 제공합니다.
 
 이 서비스는,
 
