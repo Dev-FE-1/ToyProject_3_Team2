@@ -7,6 +7,7 @@ import ThumbNailBox from '@/components/common/ThumbNailBox';
 import Header from '@/layouts/layout/Header';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
+import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface LocationState {
   title: string;
@@ -38,8 +39,8 @@ const DetailList: React.FC = () => {
             subtitle={playlist.description}
             likes={playlist.likeCount}
             comments={playlist.commentCount}
-            uploader={playlist.userId}
-            update={playlist.updatedAt}
+            uploader={playlist.userName}
+            update={formatTimeWithUpdated(playlist.updatedAt)}
             listnum={playlist.videoCount}
             onClick={() => handleThumbNailBoxClick(playlist)}
           />

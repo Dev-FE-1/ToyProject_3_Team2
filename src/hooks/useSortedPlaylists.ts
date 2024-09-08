@@ -39,7 +39,9 @@ export const usePopularPlaylists = () => {
       const recentPlaylists = sortRecentPlaylists(allPlaylists as PlaylistModel[]);
 
       setPlaylistsByPopularity(
-        playlistsByPopularity.filter((playlist) => playlist.isPublic === true)
+        playlistsByPopularity
+          .filter((playlist) => playlist.isPublic === true)
+          .filter((playlist) => playlist.likeCount !== 0)
       );
       setRecentPlaylists(recentPlaylists.filter((playlist) => playlist.isPublic === true));
     };

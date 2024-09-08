@@ -1,10 +1,4 @@
-import {
-  createBrowserRouter,
-  Navigate,
-  Outlet,
-  RouterProvider,
-  useLocation,
-} from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router-dom';
 
 import DetailList from '@/components/page/home/DetailList';
 import { PATH } from '@/constants/path';
