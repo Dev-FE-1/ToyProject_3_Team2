@@ -26,7 +26,7 @@ const AuthProtectedRoute = () => {
   const { pathname, search } = useLocation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const setOnboarding = sessionStorage.getItem('onboarding') === 'true';
+  const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -34,7 +34,9 @@ const AuthProtectedRoute = () => {
       setIsLoading(false);
     });
 
-    // Clean up the listener on unmount
+    const onboardingStatus = sessionStorage.getItem('onboarding') === 'true';
+    setHasCompletedOnboarding(onboardingStatus);
+
     return () => unsubscribe();
   }, []);
 
@@ -43,7 +45,7 @@ const AuthProtectedRoute = () => {
     return <div>Loading...</div>;
   }
 
-  if (!setOnboarding) {
+  if (!hasCompletedOnboarding) {
     // 온보딩을 완료하지 않았다면 온보딩 페이지로 이동
     return <Navigate to={PATH.ONBOARDING} replace state={pathname + search} />;
   }
@@ -99,8 +101,12 @@ export const router = createBrowserRouter([
               { path: PATH.COMMENT_ADD, element: <CommentAdd /> },
             ],
           },
+          // Catch-all route for authenticated users
+          { path: '*', element: <NotFoundPage /> },
         ],
       },
+      // Catch-all route for unauthenticated users
+      { path: '*', element: <Navigate to={PATH.SIGNIN} replace /> },
     ],
   },
 ]);
