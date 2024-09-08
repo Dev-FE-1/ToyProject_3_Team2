@@ -2,7 +2,7 @@ import React from 'react';
 
 import { css } from '@emotion/react';
 
-import defaultAvatar from '@/assets/images/default-avatar-man.svg';
+import defaultAvatar from '@/assets/images/default-avatar.svg';
 import theme from '@/styles/theme';
 interface ProfileProps {
   onClick?: () => void;
@@ -26,7 +26,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, userName, profileImg }) => {
 export default Profile;
 
 const containerStyle = css`
-  margin: 1rem;
+  margin: 1rem 0;
   display: flex;
   align-items: center;
   min-width: 91px;
