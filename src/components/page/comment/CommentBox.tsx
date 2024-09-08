@@ -19,17 +19,18 @@ interface CommentBoxProps extends Comment {
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   playlistData?: PlaylistModel | undefined;
   setPlaylistData?: React.Dispatch<React.SetStateAction<PlaylistModel | undefined>>;
+  playlistId: string | undefined;
 }
 
 const CommentBox: React.FC<CommentBoxProps> = ({
   comments,
   setComments,
-  playlistData,
   setPlaylistData,
+  playlistId,
 }: CommentBoxProps) => {
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
-  const { refetch } = useCommentsList(playlistData?.playlistId);
+  const { refetch } = useCommentsList(playlistId);
 
   const handleDelBtnClick = async (commentData: {
     playlistId: string | undefined;
