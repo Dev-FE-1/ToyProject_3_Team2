@@ -49,7 +49,9 @@ const FlipCard: React.FC<FlipCardProps> = ({
   }, []);
 
   const handleClick = () => {
-    navigate('/playlist/' + id);
+    navigate('/playlist/' + id, {
+      state: { previousPath: location.pathname },
+    });
   };
 
   const imageUrl = image && image.trim() !== '' ? image : defaultImage;

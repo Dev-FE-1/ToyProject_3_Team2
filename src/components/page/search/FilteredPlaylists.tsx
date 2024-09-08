@@ -20,7 +20,11 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
         playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
-            onClick={() => navigate(`/playlist/${playlist.playlistId}`)}
+            onClick={() =>
+              navigate(`/playlist/${playlist.playlistId}`, {
+                state: { previousPath: location.pathname },
+              })
+            }
           >
             <ThumbNailBox
               type='details'

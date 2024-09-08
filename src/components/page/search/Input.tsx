@@ -15,6 +15,7 @@ interface InputProps {
 const Input: React.FC<InputProps> = ({ searchTerm, setSearchTerm, filterBySearchTerm }) => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
+      event.preventDefault();
       filterBySearchTerm();
     }
   };
@@ -24,7 +25,7 @@ const Input: React.FC<InputProps> = ({ searchTerm, setSearchTerm, filterBySearch
         type='text'
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyDown={handleKeyDown}
+        // onKeyDown={handleKeyDown}
         placeholder={PLAYLIST.search.placeholder}
         css={inputStyle}
       />
