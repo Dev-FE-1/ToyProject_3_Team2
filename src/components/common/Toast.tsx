@@ -5,7 +5,7 @@ import { css } from '@emotion/react';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 
-const TOAST_VISIBLE_DURATION = 2000; // 토스트가 보이는 시간 (ms)
+const TOAST_VISIBLE_DURATION = 1500; // 토스트가 보이는 시간 (ms)
 const TOAST_FADE_DURATION = 200; // 토스트가 사라지는 애니메이션 시간 (ms)
 
 const Toast: React.FC = () => {
