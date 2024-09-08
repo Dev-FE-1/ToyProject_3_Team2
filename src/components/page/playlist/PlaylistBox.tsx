@@ -10,6 +10,7 @@ import SubsToggleButton from '@/components/page/subscriptions/SubsToggleButton';
 import { useToastStore } from '@/store/useToastStore';
 import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
+import { shortenString } from '@/utils/string';
 import { getUserIdBySession } from '@/utils/user';
 
 export interface PlaylistBoxProps {
@@ -106,11 +107,11 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
           <img src={imageUrl} alt='썸네일' />
         </div>
         <div css={bottom}>
-          <h1>{playlistTitle}</h1>
+          <h1>{shortenString(playlistTitle, 20)}</h1>
           <h2>동영상 {videoCount}개</h2>
           <h2>포크 {forkCount}회</h2>
           <div>
-            <h3>#{category}</h3>
+            <h3 css={categoryStyle}>#{category}</h3>
             <div css={sumInfo}>
               <h3>좋아요 {likeCount}</h3>
               <h3>댓글 {commentCount}</h3>
@@ -187,18 +188,17 @@ const bottom = css`
 
   h3 {
     height: 14px;
-    color: ${theme.colors.blue};
-    font-size: ${theme.fontSizes.small};
+    font-size: ${theme.fontSizes.normal};
     margin-top: 18px;
   }
 `;
-
+const categoryStyle = css`
+  color: ${theme.colors.blue};
+`;
 const sumInfo = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100px;
-  height: 14px;
 
   h3 {
     color: ${theme.colors.disabled};

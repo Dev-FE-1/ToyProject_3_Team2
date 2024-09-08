@@ -3,6 +3,7 @@ import { GoChevronLeft } from 'react-icons/go';
 import { RiSettings5Line } from 'react-icons/ri'; // setting 아이콘
 import { useNavigate } from 'react-router-dom';
 
+import defaultImage from '@/assets/images/default-avatar.svg';
 import Badge from '@/components/common/Badge';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
@@ -48,7 +49,11 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData, playlists }) => {
       <section css={sectionStyle}>
         <div css={bgStyle(hasBadge)}>
           <div css={contentStyle}>
-            <img src={userData.profileImg} alt='profile image' css={photoStyle} />
+            <img
+              src={userData.profileImg ? userData.profileImg : defaultImage}
+              alt='profile'
+              css={photoStyle}
+            />
             {/* profile image */}
             <div css={profileStyle}>
               <h2>{userData.userName}</h2>

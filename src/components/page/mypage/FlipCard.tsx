@@ -66,7 +66,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
         <div css={backStyle}>
           {back || (
             <>
-              <h1 css={titleStyle}>{title ? shortenString(title) : 'No Title'}</h1>
+              <h1 css={titleStyle}>{title ? shortenString(title, 18) : 'No Title'}</h1>
               {category && <span css={tagStyle}>{`#${category}`}</span>}
               <IconTextButton Icon={RiArrowRightSLine} variant='transparent' onClick={handleClick}>
                 자세히 보기

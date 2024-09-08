@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 
 import { getIsLikedState, toggleLikePlaylist } from '@/api/endpoints/like';
+import defaultImage from '@/assets/images/default-thumb.svg';
 import CommentsButton from '@/components/common/buttons/CommentsButton';
 import LikesButton from '@/components/common/buttons/LikesButton';
 import Profile from '@/components/page/profile/Profile';
@@ -10,8 +11,8 @@ import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { UserModel } from '@/types/user';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
+import { shortenString } from '@/utils/string';
 import { getUserIdBySession } from '@/utils/user';
-
 interface ThumbNailBoxDetailProps {
   playlist: PlaylistModel;
   user: UserModel;
@@ -76,8 +77,8 @@ const ThumbNailBoxDetail: React.FC<ThumbNailBoxDetailProps> = ({
 
   return (
     <div>
-      <img src={thumbnailUrl} alt='Thumbnail' css={thumbnailStyle} />
-      <h2 css={titleStyle}>{title}</h2>
+      <img src={thumbnailUrl ? thumbnailUrl : defaultImage} alt='Thumbnail' css={thumbnailStyle} />
+      <h2 css={titleStyle}>{shortenString(title, 18)}</h2>
       <div css={profileRowStyle}>
         <Profile profileImg={profileImg} userName={userName} onClick={onClickProfile} />
         <div css={actionButtonsStyle}>
@@ -129,6 +130,7 @@ const profileRowStyle = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-left: 16px;
 `;
 
 const actionButtonsStyle = css`
@@ -167,6 +169,7 @@ const statsStyle = css`
 const subtitleStyle = css`
   font-size: ${theme.fontSizes.normal};
   color: ${theme.colors.white};
+  line-height: 1.4;
   margin: 1rem;
 `;
 
