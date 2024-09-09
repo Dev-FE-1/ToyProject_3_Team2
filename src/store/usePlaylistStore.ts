@@ -1,15 +1,26 @@
 import { create } from 'zustand';
 
-import { PlaylistModel } from '@/types/playlist';
+import { addPlaylist } from '@/api/endpoints/playlistOperations';
+import { PlaylistFormDataModel, PlaylistModel } from '@/types/playlist';
 
 interface PlaylistStore {
   playlists: PlaylistModel[];
   setPlaylists: (playlists: PlaylistModel[]) => void;
-  addPlaylist: (playlist: PlaylistModel) => void;
+  addNewPlaylist: (
+    formData: PlaylistFormDataModel,
+    userId: string,
+    userName: string
+  ) => Promise<string>;
 }
 
 export const usePlaylistStore = create<PlaylistStore>((set) => ({
   playlists: [],
   setPlaylists: (playlists) => set({ playlists }),
-  addPlaylist: (playlist) => set((state) => ({ playlists: [...state.playlists, playlist] })),
+  addNewPlaylist: async (formData, userId, userName) => {
+    const newPlaylistId = await addPlaylist(formData, userId, userName);
+    set((state) => ({
+      playlists: [...state.playlists, { ...formData, playlistId: newPlaylistId, userId, userName }],
+    }));
+    return newPlaylistId;
+  },
 }));

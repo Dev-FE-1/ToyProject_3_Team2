@@ -47,8 +47,8 @@ const badgeStyle = css`
 const positionStyle = {
   corner: css`
     position: absolute;
-    bottom: 6px;
-    right: 6px;
+    bottom: 8px;
+    right: 8px;
     color: ${theme.colors.white};
     font-size: ${theme.fontSizes.xsmall};
     background-color: ${theme.colors.black + '5a'};

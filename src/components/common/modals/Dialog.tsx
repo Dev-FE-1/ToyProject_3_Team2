@@ -3,7 +3,7 @@ import React, { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { css } from '@emotion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 
-import { useVideoData } from '@/hooks/query/useYoutube';
+import { useVideoData } from '@/hooks/queries/useYoutubeQueries';
 import theme from '@/styles/theme';
 import { Video } from '@/types/playlist';
 import { formatDurationISOToTime } from '@/utils/formatTime';
@@ -22,6 +22,8 @@ interface DialogProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   setVideoData?: Dispatch<SetStateAction<Partial<Video> | undefined>>;
+  youtubeUrl: string;
+  setYoutubeUrl: Dispatch<SetStateAction<string>>;
 }
 
 const CustomDialog: React.FC<DialogProps> = ({
@@ -32,8 +34,9 @@ const CustomDialog: React.FC<DialogProps> = ({
   onConfirm,
   onCancel,
   setVideoData,
+  youtubeUrl,
+  setYoutubeUrl,
 }) => {
-  const [youtubeUrl, setYoutubeUrl] = useState('');
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
   // videoData를 상위 컴포넌트(Playlist)로 넘기기 위한 커스텀훅 사용

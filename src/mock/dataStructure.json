@@ -41,13 +41,6 @@
       "liked": ["<playlistId3>", "<playlistId4>"]
     }
   },
-  "userPlaylists": {
-    "<userId>": {
-      "created": [{ "<useId>": "<playlistId1>" }, { "<useId>": "<playlistId3>" }],
-      "forked": [{ "<useId>": "<playlistId9>" }, { "<useId>": "<playlistId4>" }],
-      "liked": [{ "<useId>": "<playlistId4>" }, { "<useId>": "<playlistId8>" }]
-    }
-  },
   "comments": {
     "<playlistId>": {
       "<commentId>": {

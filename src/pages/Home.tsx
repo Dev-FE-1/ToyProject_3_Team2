@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 
 import Spinner from '@/components/common/Spinner';
-import CrossScrolling from '@/components/home/CrossScrolling';
-import RecentUpdateSection from '@/components/home/RecentUpdateSection';
+import CrossScrollingList from '@/components/page/home/CrossScrollingList';
+import RecentUpdateList from '@/components/page/home/RecentUpdateList';
 import { usePopularPlaylists } from '@/hooks/useSortedPlaylists';
 
 const POPULAR_PLAYLIST = '인기 플레이리스트';
@@ -13,6 +13,7 @@ const LOGO = 'BOMVI';
 const Home = () => {
   const { popularAndRecentPlaylists, interestedPlaylists } = usePopularPlaylists();
   const isLoading = popularAndRecentPlaylists.isLoadingForAllPlaylist;
+
   return (
     <div css={containerStyle}>
       <img src='/logo.svg' alt={LOGO} css={logoStyle} />
@@ -23,15 +24,17 @@ const Home = () => {
         </div>
       ) : (
         <>
-          <CrossScrolling
-            title={INTERESTED_PLAYLIST}
-            playlists={interestedPlaylists.allForkedPlaylists}
-          />
-          <CrossScrolling
+          {interestedPlaylists.allForkedPlaylists.length > 0 && (
+            <CrossScrollingList
+              title={INTERESTED_PLAYLIST}
+              playlists={interestedPlaylists.allForkedPlaylists}
+            />
+          )}
+          <CrossScrollingList
             title={POPULAR_PLAYLIST}
             playlists={popularAndRecentPlaylists.playlistsByPopularity}
           />
-          <RecentUpdateSection
+          <RecentUpdateList
             title={RECENTUPDATE_PLAYLIST}
             playlists={popularAndRecentPlaylists.recentPlaylists}
           />

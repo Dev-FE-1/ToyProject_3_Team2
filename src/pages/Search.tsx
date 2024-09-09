@@ -1,9 +1,9 @@
 import { css } from '@emotion/react';
 
 import Spinner from '@/components/common/Spinner';
-import CategoryButtons from '@/components/search/CategoryButtons';
-import FilteredPlaylists from '@/components/search/FilteredPlaylists';
-import Input from '@/components/search/Input';
+import CategoryButtons from '@/components/page/search/CategoryButtons';
+import FilteredPlaylists from '@/components/page/search/FilteredPlaylists';
+import Input from '@/components/page/search/Input';
 import { useFilteredPlaylists } from '@/hooks/useFilteredPlaylists';
 import theme from '@/styles/theme';
 
@@ -16,10 +16,7 @@ const Search = () => {
     handleButtonClick,
     displayedPlaylists,
     isLoading,
-    error,
   } = useFilteredPlaylists();
-
-  if (error) return <div>Error!!!!!!</div>;
 
   return (
     <div css={containerStyle}>
@@ -35,13 +32,7 @@ const Search = () => {
         />
       </header>
       <main css={mainStyle}>
-        {isLoading ? (
-          <div css={spinnerStyle}>
-            <Spinner />
-          </div>
-        ) : (
-          <FilteredPlaylists displayedPlaylists={displayedPlaylists} />
-        )}
+        {isLoading ? <Spinner /> : <FilteredPlaylists displayedPlaylists={displayedPlaylists} />}
       </main>
     </div>
   );
@@ -62,12 +53,6 @@ const headerStyle = css`
 
 const mainStyle = css`
   padding-top: 128px;
-`;
-
-const spinnerStyle = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
 `;
 
 export default Search;

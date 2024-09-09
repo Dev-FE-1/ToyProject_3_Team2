@@ -8,16 +8,16 @@ import { formatNumberToK } from '@/utils/formatNumber';
 
 interface LikesProps {
   playlistId: string;
-  likeCount?: number;
-  handleLikeClick: (playListId: string) => void;
+  localLikeCount?: number;
   isLiked: boolean;
+  handleLikeToggle: () => void;
 }
 
-const Likes: React.FC<LikesProps> = ({ playlistId, likeCount = 0, handleLikeClick, isLiked }) => {
-  const formattedLikeCount = formatNumberToK(likeCount as number);
-  // console.log(isLiked);
+const Likes: React.FC<LikesProps> = ({ localLikeCount = 0, isLiked, handleLikeToggle }) => {
+  const formattedLikeCount = formatNumberToK(localLikeCount as number);
+
   return (
-    <button css={buttonStyle} onClick={() => handleLikeClick(playlistId)} aria-label='Likes'>
+    <button css={buttonStyle} onClick={handleLikeToggle} aria-label='Likes'>
       {isLiked ? <GoHeartFill /> : <GoHeart />}
       <span>{formattedLikeCount}</span>
     </button>

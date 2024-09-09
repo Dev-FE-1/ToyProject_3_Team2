@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-// import { collection, query, where, getDocs } from 'firebase/firestore';
 import { RiPencilLine } from 'react-icons/ri';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { getPlaylistById } from '@/api/endpoints/playlist';
-import CommentBox from '@/components/comment/CommentBox';
+import { getPlaylistById } from '@/api/endpoints/playlistFetch';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
+import SelectBox from '@/components/common/SelectBox';
 import Toast from '@/components/common/Toast';
+import CommentBox from '@/components/page/comment/CommentBox';
 import { PATH } from '@/constants/path';
-import { useCommentsList } from '@/hooks/query/useComments';
+import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -19,14 +19,19 @@ import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
-  const [comments, setComments] = useState<Comment[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]); // 직접 comments 조작
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
-
+  const [selectedFilter, setSelectedFilter] = useState<string>('latest');
+  const [originalComments, setOriginalComments] = useState<Comment[]>([]); // sort 전 마지막 comments를 저장하는 용도
   const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
   const location = useLocation();
 
   const { toastMessage, refetchComments } = location.state || {};
+  const filterOptions = [
+    { value: 'latest', label: '최신순' },
+    { value: 'oldest', label: '오래된순' },
+  ];
 
   const goToCommentForm = () => {
     navigate(`${PATH.COMMENT_ADD.replace(':playlistId', playlistId ?? '')}`, {
@@ -39,15 +44,34 @@ const CommentList = () => {
     });
   };
 
+  const handleFilterChange = (value: string) => {
+    setSelectedFilter(value);
+    switch (value) {
+      case 'latest':
+        setComments(
+          [...originalComments].sort(
+            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+        );
+        break;
+      case 'oldest':
+        setComments(
+          [...comments].sort(
+            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          )
+        );
+        break;
+      default:
+        break;
+    }
+  }; // 댓글 필터링
+
   const { data: commentsData, error, refetch } = useCommentsList(playlistId);
 
   useEffect(() => {
     if (commentsData) {
       setComments(commentsData);
-    }
-
-    if (error) {
-      console.error('Failed to fetch comments:', error);
+      setOriginalComments(commentsData);
     }
 
     async function fetchPlaylistData() {
@@ -69,20 +93,26 @@ const CommentList = () => {
   useEffect(() => {
     if (toastMessage) {
       showToast(toastMessage);
-      navigate(location.pathname, { replace: true }); // URL을 변경하지 않고 state만 제거
+      navigate(location.pathname, { replace: true });
     }
   }, [toastMessage, showToast, navigate, location.pathname]);
 
   useEffect(() => {
     if (refetchComments) {
       refetch(); // 댓글을 새로 불러옴
-      navigate(location.pathname, { replace: true }); // state를 초기화
+      navigate(location.pathname, { replace: true });
     }
   }, [refetchComments, refetch, navigate, location.pathname]);
 
   return (
-    <div>
-      <Header />
+    <div css={containerStyle}>
+      <Header
+        onBack={() =>
+          navigate(`/playlist/${playlistId}`, {
+            state: { previousPath: location.pathname },
+          })
+        }
+      />
       <Toast />
       <div css={CommentTabStyle}>
         <div>
@@ -105,7 +135,7 @@ const CommentList = () => {
         <div css={CommentListTopStyle}>
           {/* 댓글 수 / 필터 div */}
           <p>댓글 수 {playlistData?.commentCount}</p>
-          <p>필터</p>
+          <SelectBox items={filterOptions} value={selectedFilter} onChange={handleFilterChange} />
         </div>
         {comments.map((comment) => (
           <CommentBox
@@ -119,6 +149,8 @@ const CommentList = () => {
             createdAt={formatTimeWithUpdated(comment.createdAt)}
             comments={comment}
             setComments={setComments}
+            playlistData={playlistData}
+            setPlaylistData={setPlaylistData}
           />
         ))}
       </div>
@@ -157,6 +189,10 @@ export const CommentTabStyle = css`
   }
 `;
 
+const containerStyle = css`
+  padding-bottom: 80px;
+`;
+
 const CommentListDivStyle = css`
   display: flex;
   flex-direction: column;
@@ -167,6 +203,11 @@ const CommentListTopStyle = css`
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
+
+  p {
+    display: flex;
+    align-items: center;
+  }
 `;
 
 export default CommentList;

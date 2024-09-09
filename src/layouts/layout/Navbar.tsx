@@ -16,6 +16,11 @@ import theme from '@/styles/theme';
 import { getUserIdBySession } from '@/utils/user';
 
 const Navbar = () => {
+  const userSession = sessionStorage.getItem('userSession');
+  if (!userSession) {
+    return null;
+  }
+
   const userId = getUserIdBySession();
   const menus = [
     { path: PATH.HOME, title: PATH_TITLE.HOME, Icon: RiHome5Line, ActiveIcon: RiHome5Fill },

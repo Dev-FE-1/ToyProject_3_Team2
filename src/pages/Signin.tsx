@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 
 import { css } from '@emotion/react';
 import { FirebaseError } from 'firebase/app';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth } from '@/api/index';
 import Button from '@/components/common/buttons/Button';
 import InputForm from '@/components/common/Input';
-import GoogleLoginButton from '@/components/signin/GoogleLogin';
+import GoogleLoginButton from '@/components/page/signin/GoogleLogin';
 import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
@@ -55,9 +55,14 @@ const SignIn = () => {
       }
     }
   };
+  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' && isFormValid) {
+      handleSignIn();
+    }
+  };
 
   return (
-    <div css={container}>
+    <div css={container} onKeyDown={handleKeyDown}>
       <img src='/logo.svg' alt='Logo' css={logoStyle} />
       <InputForm onInputChange={handleInputChange} />
       {isFormValid ? (

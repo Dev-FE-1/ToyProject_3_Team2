@@ -1,66 +1,74 @@
 import { useState, useEffect } from 'react';
 
 import { css } from '@emotion/react';
-import { collection, getDocs } from 'firebase/firestore';
+import { GoStarFill } from 'react-icons/go';
 
-import { db } from '@/api/index';
+import { getForkedPlaylists } from '@/api/endpoints/playlistFetch';
+import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
-import PlaylistBox from '@/components/playlist/PlaylistBox';
-import { Playlist } from '@/mock/data';
-import { useToastStore } from '@/store/useToastStore';
-import { useToggleStore } from '@/store/useToggleStore';
+import PlaylistBox from '@/components/page/playlist/PlaylistBox';
+import { PLAYLIST } from '@/constants/playlist';
 import theme from '@/styles/theme';
+import { PlaylistModel } from '@/types/playlist';
+import { getUserIdBySession } from '@/utils/user';
 
 const Subscriptions: React.FC = () => {
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const { isToggled, toggle } = useToggleStore();
-  const { showToast } = useToastStore();
+  const [forkedPlaylists, setForkedPlaylist] = useState<PlaylistModel[]>([]);
+  // const { isToggled, toggle } = useToggleStore();
+  // const { showToast } = useToastStore();
 
-  const fetchPlaylists = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'playlists'));
-      const playlistsData = querySnapshot.docs.map((doc) => doc.data() as Playlist);
-      setPlaylists(playlistsData);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const useId = getUserIdBySession();
 
   useEffect(() => {
-    fetchPlaylists();
-  }, []);
+    const fetchForkedPlaylists = async (useId: string) => {
+      const forkedPlaylists = await getForkedPlaylists(useId);
+      setForkedPlaylist(forkedPlaylists);
+    };
 
-  const handleSubBtnClick = (playlistId: Playlist) => {
-    toggle();
-    isToggled
-      ? showToast(`"${playlistId.title}" 이(가) 구독 목록에서 해제되었습니다.`)
-      : showToast(`"${playlistId.title}" 이(가) 구독 목록에 추가되었습니다.`);
-  };
+    fetchForkedPlaylists(useId);
+  }, [useId]);
 
   return (
-    <div>
+    <div css={containerStyle}>
       <header css={header}>
         <p>내가 구독중인 플레이리스트</p>
       </header>
-      {playlists.map((playlist) => (
-        <PlaylistBox
-          key={playlist.playlistId}
-          isSubscribed={isToggled}
-          onClick={() => handleSubBtnClick(playlist)}
-          nickname={playlist.userId}
-          imageUrl={playlist.thumbnailUrl}
-          playlistTitle={playlist.title}
-          category={playlist.category}
-          videoCount={playlist.videoCount}
-          forkCount={playlist.forkCount}
-          likeCount={playlist.likeCount}
-          commentCount={playlist.commentCount}
-        />
-      ))}
+
+      {forkedPlaylists && forkedPlaylists.length > 0 ? (
+        forkedPlaylists.map((playlist) => (
+          <PlaylistBox
+            key={playlist.playlistId}
+            userId={playlist.userId}
+            playlistId={playlist.playlistId}
+            userName={playlist.userName}
+            imageUrl={playlist.thumbnailUrl}
+            playlistTitle={playlist.title}
+            category={playlist.category}
+            videoCount={playlist.videoCount}
+            forkCount={playlist.forkCount}
+            likeCount={playlist.likeCount}
+            commentCount={playlist.commentCount}
+          />
+        ))
+      ) : (
+        <div css={noResultContainerStyle}>
+          {/* 아이콘 표시 */}
+          <IconButton Icon={GoStarFill} />
+          {/* 메시지 표시 */}
+          <div css={noResultStyle}>
+            {PLAYLIST.fork.no_result}
+            <div css={descriptionStyle}>{PLAYLIST.fork.description}</div>
+          </div>
+        </div>
+      )}
       <Toast />
     </div>
   );
 };
+
+const containerStyle = css`
+  padding-bottom: 160px;
+`;
 
 const header = css`
   display: flex;
@@ -76,6 +84,31 @@ const header = css`
     font-size: ${theme.fontSizes.large};
     font-weight: 700;
   }
+`;
+
+const noResultContainerStyle = css`
+  padding-top: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const noResultStyle = css`
+  font-size: ${theme.fontSizes.xlarge};
+  font-weight: 600;
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+`;
+
+const descriptionStyle = css`
+  font-size: ${theme.fontSizes.normal};
+  font-weight: 400;
+  padding-top: 1.5rem;
 `;
 
 export default Subscriptions;
