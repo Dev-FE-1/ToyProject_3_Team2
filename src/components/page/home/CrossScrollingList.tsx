@@ -58,7 +58,7 @@ const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlist
               type='main1'
               thumURL={playlist.thumbnailUrl}
               title={playlist.title}
-              likes={+formatNumberToK(playlist.likeCount)}
+              likes={formatNumberToK(playlist.likeCount)}
               uploader={playlist.userName}
               listnum={playlist.videoCount}
             />

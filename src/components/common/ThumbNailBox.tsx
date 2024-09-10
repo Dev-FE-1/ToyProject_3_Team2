@@ -13,7 +13,7 @@ interface ThumbNailBoxProps {
   subtitle?: string;
   update?: string;
   uploader?: string;
-  likes?: number;
+  likes?: string;
   comments?: number;
   listnum?: number;
   type: 'main1' | 'main2' | 'details' | 'recent';
