@@ -26,7 +26,7 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
   const [lastVisible, setLastVisible] = useState<QueryDocumentSnapshot<DocumentData> | null>(null); // 페이지네이션을 위한 마지막 문서 스냅샷
 
   const loadMoreItems = async () => {
-    if (isLoading) return;
+    if (isLoading || !hasMore) return;
 
     setIsLoading(true);
     try {
@@ -37,17 +37,13 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
 
       const publicPlaylists = playlists.filter((playlist) => playlist.isPublic === true);
 
-      // 불러온 데이터가 있으면 상태 업데이트
       if (publicPlaylists.length > 0) {
         setVisiblePlaylists((prev) => [...prev, ...publicPlaylists]);
       }
-
-      // 데이터를 다 가져왔을 경우 처음부터 다시 시작
+      // 마지막 문서가 존재하지 않으면 데이터가 더 이상 없다고 판단
       if (!newLastVisible) {
-        setLastVisible(null); // lastVisible을 초기화하여 처음부터 다시 가져오도록 설정
-        setHasMore(true); // 다시 처음부터 가져오기 위해 hasMore를 true로 설정
+        setHasMore(false);
       } else {
-        // 마지막 문서가 존재하면 업데이트
         setLastVisible(newLastVisible);
       }
     } catch (error) {
