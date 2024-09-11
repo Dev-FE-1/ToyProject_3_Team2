@@ -29,34 +29,32 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
     if (isLoading) return;
 
     setIsLoading(true);
-    setTimeout(async () => {
-      try {
-        const { playlists, lastVisible: newLastVisible } = await getPlaylistsWithPagination(
-          pageSize,
-          lastVisible
-        );
+    try {
+      const { playlists, lastVisible: newLastVisible } = await getPlaylistsWithPagination(
+        pageSize,
+        lastVisible
+      );
 
-        const publicPlaylists = playlists.filter((playlist) => playlist.isPublic === true);
+      const publicPlaylists = playlists.filter((playlist) => playlist.isPublic === true);
 
-        // 불러온 데이터가 있으면 상태 업데이트
-        if (publicPlaylists.length > 0) {
-          setVisiblePlaylists((prev) => [...prev, ...publicPlaylists]);
-        }
-
-        // 데이터를 다 가져왔을 경우 처음부터 다시 시작
-        if (!newLastVisible) {
-          setLastVisible(null); // lastVisible을 초기화하여 처음부터 다시 가져오도록 설정
-          setHasMore(true); // 다시 처음부터 가져오기 위해 hasMore를 true로 설정
-        } else {
-          // 마지막 문서가 존재하면 업데이트
-          setLastVisible(newLastVisible);
-        }
-      } catch (error) {
-        console.error('Error fetching playlists:', error);
-      } finally {
-        setIsLoading(false);
+      // 불러온 데이터가 있으면 상태 업데이트
+      if (publicPlaylists.length > 0) {
+        setVisiblePlaylists((prev) => [...prev, ...publicPlaylists]);
       }
-    }, 200); // 데이터 불러오는 속도가 너무 빨라서 딜레이
+
+      // 데이터를 다 가져왔을 경우 처음부터 다시 시작
+      if (!newLastVisible) {
+        setLastVisible(null); // lastVisible을 초기화하여 처음부터 다시 가져오도록 설정
+        setHasMore(true); // 다시 처음부터 가져오기 위해 hasMore를 true로 설정
+      } else {
+        // 마지막 문서가 존재하면 업데이트
+        setLastVisible(newLastVisible);
+      }
+    } catch (error) {
+      console.error('Error fetching playlists:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const targetRef = useInfiniteScroll(loadMoreItems, hasMore);
