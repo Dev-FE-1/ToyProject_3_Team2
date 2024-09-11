@@ -17,6 +17,11 @@ import theme from '@/styles/theme';
 import { Comment, PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
 
+const filterOptions = [
+  { value: 'latest', label: '최신순' },
+  { value: 'oldest', label: '오래된순' },
+];
+
 const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
   const [comments, setComments] = useState<Comment[]>([]); // 직접 comments 조작
@@ -28,10 +33,6 @@ const CommentList = () => {
   const location = useLocation();
 
   const { toastMessage, refetchComments } = location.state || {};
-  const filterOptions = [
-    { value: 'latest', label: '최신순' },
-    { value: 'oldest', label: '오래된순' },
-  ];
 
   const goToCommentForm = () => {
     navigate(`${PATH.COMMENT_ADD.replace(':playlistId', playlistId ?? '')}`, {
