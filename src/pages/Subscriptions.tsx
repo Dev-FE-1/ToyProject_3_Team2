@@ -8,14 +8,13 @@ import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/page/playlist/PlaylistBox';
 import { PLAYLIST } from '@/constants/playlist';
+import { PLAYLIST_TITLE } from '@/constants/title';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { getUserIdBySession } from '@/utils/user';
 
 const Subscriptions: React.FC = () => {
   const [forkedPlaylists, setForkedPlaylist] = useState<PlaylistModel[]>([]);
-  // const { isToggled, toggle } = useToggleStore();
-  // const { showToast } = useToastStore();
 
   const useId = getUserIdBySession();
 
@@ -31,7 +30,7 @@ const Subscriptions: React.FC = () => {
   return (
     <div css={containerStyle}>
       <header css={header}>
-        <p>내가 구독중인 플레이리스트</p>
+        <p>{PLAYLIST_TITLE}</p>
       </header>
 
       {forkedPlaylists && forkedPlaylists.length > 0 ? (
