@@ -6,6 +6,7 @@ import { PLAYLIST } from '@/constants/playlist';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
+import { formatNumberToK } from '@/utils/formatNumber';
 
 interface FilteredPlaylistsProps {
   displayedPlaylists: PlaylistModel[] | null | undefined;
@@ -16,7 +17,7 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
   const playlists = displayedPlaylists?.filter((playlist) => playlist.isPublic === true);
   return (
     <div>
-      {playlists && playlists.length > 0 ? (
+      {playlists?.length ? (
         playlists.map((playlist) => (
           <div
             key={playlist.playlistId}
@@ -31,7 +32,7 @@ const FilteredPlaylists: React.FC<FilteredPlaylistsProps> = ({ displayedPlaylist
               thumURL={playlist.thumbnailUrl}
               title={playlist.title}
               subtitle={playlist.description}
-              likes={playlist.likeCount}
+              likes={formatNumberToK(playlist.likeCount)}
               comments={playlist.commentCount}
               uploader={playlist.userName}
               update={formatTimeWithUpdated(playlist.updatedAt)}

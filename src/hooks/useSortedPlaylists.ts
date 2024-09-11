@@ -31,8 +31,8 @@ export const usePopularPlaylists = () => {
   const errorForAllForkedPlaylist = forkedPlaylistsQueries.find((query) => query.error);
   const allForkedPlaylists = forkedPlaylistsQueries
     .flatMap((query) => query.data || [])
-    .filter((playlist) => playlist.userId !== userId)
-    .filter((playlist) => playlist.isPublic === true);
+    .filter((playlist) => playlist.userId !== userId && playlist.isPublic === true);
+
   useEffect(() => {
     const fetchPlaylists = async () => {
       const playlistsByPopularity = sortPlaylistsByPopularity(allPlaylists as PlaylistModel[]);

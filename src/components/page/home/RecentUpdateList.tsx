@@ -11,6 +11,7 @@ import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatTimeWithUpdated } from '@/utils/formatDate';
+import { formatNumberToK } from '@/utils/formatNumber';
 
 interface RecentUpdateListProps {
   title: string;
@@ -78,7 +79,7 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
             thumURL={playlist.thumbnailUrl}
             title={playlist.title}
             subtitle={playlist.description}
-            likes={playlist.likeCount}
+            likes={formatNumberToK(playlist.likeCount)}
             comments={playlist.commentCount}
             uploader={playlist.userName}
             update={formatTimeWithUpdated(playlist.updatedAt)}
@@ -87,11 +88,11 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
         </div>
       ))}
 
-      {isLoading && (
+      {/* {isLoading && (
         <div css={spinnerStyle}>
           <Spinner />
         </div>
-      )}
+      )} */}
 
       {/* 무한 스크롤 트리거 요소 */}
       {hasMore && (
