@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
+import { PATH } from '@/constants/path';
 import { useDragToScroll } from '@/hooks/useDragToScroll';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
@@ -28,7 +29,7 @@ const CrossScrollingList: React.FC<CrossScrollingListProps> = ({ title, playlist
   const navigate = useNavigate();
 
   const handleMoreClick = () => {
-    navigate('/section-list', { state: { title, playlists } });
+    navigate(PATH.DETAIL_LIST, { state: { title, playlists } });
   };
   return (
     <div css={sectionStyle}>

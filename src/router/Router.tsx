@@ -92,7 +92,7 @@ export const router = createBrowserRouter([
               { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
             ],
           },
-          { path: '/section-list', element: <DetailList /> },
+          { path: PATH.DETAIL_LIST, element: <DetailList /> },
           {
             path: PATH.COMMENT,
             children: [

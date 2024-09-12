@@ -17,6 +17,7 @@ import Toast from '@/components/common/Toast';
 import NullBox from '@/components/page/playlistdetail/nullBox';
 import ThumbNailBoxDetail from '@/components/page/playlistdetail/ThumbNailBoxDetail';
 import VideoBoxDetail from '@/components/page/playlistdetail/VideoBoxDetail';
+import { PATH } from '@/constants/path';
 import usePlaylistData from '@/hooks/usePlaylistData';
 import Header from '@/layouts/layout/Header';
 import NotFoundPage from '@/pages/NotFound';
@@ -201,7 +202,7 @@ const PlaylistPage: React.FC = () => {
         customStyle={kebabStyle}
         onIcon={() => setIsBottomSheetOpen(true)}
         onBack={() =>
-          prevUrl === '/section-list'
+          prevUrl === PATH.DETAIL_LIST
             ? navigate(prevUrl, { state: { detailPagePlaylist } })
             : navigate(prevUrl)
         }
