@@ -1,5 +1,3 @@
-import { useRef, useState } from 'react';
-
 import { css } from '@emotion/react';
 
 import { PLAYLIST } from '@/constants/playlist';
