@@ -69,7 +69,12 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   };
 
   const handleProfileClick = (userId: string | undefined) => {
-    navigate('/mypage/' + userId);
+    const curUser = sessionStorage.getItem('userSession') as string;
+    const curUserId = JSON.parse(curUser).uid;
+
+    if (curUserId !== userId) {
+      navigate('/mypage/' + userId);
+    }
   };
 
   useEffect(() => {
@@ -79,7 +84,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
 
   return (
     <>
-      <div css={CommentListStyle}>
+      <div css={CommentListStyle(commentUserId === comments.userId)}>
         <div>
           <img
             src={comments.profileImg || defaultImg}
@@ -110,7 +115,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   );
 };
 
-const CommentListStyle = css`
+const CommentListStyle = (isClickable: boolean) => css`
   margin: 10px 0;
   display: flex;
   justify-content: space-between;
@@ -120,7 +125,7 @@ const CommentListStyle = css`
     justify-content: center;
 
     img {
-      cursor: pointer;
+      cursor: ${isClickable ? 'default' : 'pointer'};
     }
     div {
       margin-left: 8px;
