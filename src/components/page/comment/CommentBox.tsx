@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { RiCloseFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { deleteComment } from '@/api/endpoints/comment';
 import { getPlaylistById } from '@/api/endpoints/playlistFetch';
@@ -32,6 +33,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
   const { refetch } = useCommentsList(playlistId);
+  const navigate = useNavigate();
 
   const handleDelBtnClick = async (commentData: {
     playlistId: string | undefined;
@@ -66,6 +68,10 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     }
   };
 
+  const handleProfileClick = (userId: string | undefined) => {
+    navigate('/mypage/' + userId);
+  };
+
   useEffect(() => {
     const uid = getUserIdBySession();
     setCommentUserId(uid);
@@ -75,7 +81,11 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     <>
       <div css={CommentListStyle}>
         <div>
-          <img src={comments.profileImg || defaultImg} alt='profile' />
+          <img
+            src={comments.profileImg || defaultImg}
+            alt='profile'
+            onClick={() => handleProfileClick(comments.userId)}
+          />
           <div>
             <h1>{comments.userName}</h1>
             <h2>{formatTimeWithUpdated(comments.createdAt)}</h2>
@@ -109,6 +119,9 @@ const CommentListStyle = css`
     display: flex;
     justify-content: center;
 
+    img {
+      cursor: pointer;
+    }
     div {
       margin-left: 8px;
       display: flex;
