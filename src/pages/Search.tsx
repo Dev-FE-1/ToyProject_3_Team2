@@ -5,7 +5,9 @@ import CategoryButtons from '@/components/page/search/CategoryButtons';
 import FilteredPlaylists from '@/components/page/search/FilteredPlaylists';
 import Input from '@/components/page/search/Input';
 import { useFilteredPlaylists } from '@/hooks/useFilteredPlaylists';
+import NotFoundPage from '@/pages/NotFound';
 import theme from '@/styles/theme';
+import { getUserIdBySession } from '@/utils/user';
 
 const Search = () => {
   const {
@@ -18,6 +20,11 @@ const Search = () => {
     isLoading,
   } = useFilteredPlaylists();
 
+  const sessionUid = getUserIdBySession();
+
+  if (!sessionUid) {
+    return <NotFoundPage />;
+  }
   return (
     <div css={containerStyle}>
       <header css={headerStyle}>

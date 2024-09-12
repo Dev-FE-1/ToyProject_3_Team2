@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-import { onAuthStateChanged } from 'firebase/auth';
-import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router-dom';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { createBrowserRouter, Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 import { auth } from '@/api/index';
 import Spinner from '@/components/common/Spinner';
@@ -21,16 +21,40 @@ import Search from '@/pages/Search';
 import Settings from '@/pages/Settings';
 import SignIn from '@/pages/Signin';
 import Subscriptions from '@/pages/Subscriptions';
+
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
   const { pathname, search } = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOnboarding, setIsOnboarding] = useState(false);
 
+  const handleAuthLogout = useCallback(async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      sessionStorage.removeItem('userSession');
+      setIsLoggedIn(false);
+      navigate(PATH.SIGNIN);
+    }
+  }, [navigate]);
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setIsLoggedIn(!!user);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      const userSession = sessionStorage.getItem('userSession');
+      if (user) {
+        // 사용자가 인증되었지만 세션이 없는 경우
+        if (!userSession) {
+          await handleAuthLogout(); // 로그아웃 처리
+        } else {
+          setIsLoggedIn(true);
+        }
+      }
       setIsLoading(false);
     });
 
@@ -38,7 +62,7 @@ const AuthProtectedRoute = () => {
     setIsOnboarding(onboardingStatus);
 
     return () => unsubscribe();
-  }, []);
+  }, [handleAuthLogout, location]);
 
   if (isLoading) {
     return <Spinner />;
