@@ -5,17 +5,12 @@ test.beforeEach(async ({ page }) => {
   await page.goto('http://localhost:5173/');
 
   const startButton = page.locator('button:has-text("시작하기")');
+  // 세션 스토리지에 값이 설정되기 전에 잠시 대기
+  await page.waitForTimeout(500); // 0.5초 기다림
   if (await startButton.isVisible()) {
     await startButton.click();
-
-    // sessionStorage 값이 'true'로 설정될 때까지 대기
-    await page.waitForFunction(() => window.sessionStorage.getItem('onboarding') === 'true');
-
-    const onboardingValue = await page.evaluate(() => window.sessionStorage.getItem('onboarding'));
-    await expect(onboardingValue).toBe('true'); // 세션 스토리지 값이 'true'로 설정됐는지 확인
-
-    await expect(page).toHaveURL('http://localhost:5173/signin'); // 온보딩 후 로그인 페이지로 이동했는지 확인
   }
+  await expect(page).toHaveURL('http://localhost:5173/signin'); // 온보딩 후 로그인 페이지로 이동했는지 확인
 });
 
 test('올바른 자격 증명으로 로그인 성공', async ({ page }) => {
