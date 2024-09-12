@@ -5,7 +5,6 @@ import { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 
 import { getPlaylistsWithPagination } from '@/api/endpoints/playlistFetch';
-import Spinner from '@/components/common/Spinner';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
 import useInfiniteScroll from '@/hooks/useInfiniteScroll';
 import theme from '@/styles/theme';
@@ -81,12 +80,6 @@ const RecentUpdateList: React.FC<RecentUpdateListProps> = ({ title }) => {
         </div>
       ))}
 
-      {isLoading && (
-        <div css={spinnerStyle}>
-          <Spinner />
-        </div>
-      )}
-
       {/* 무한 스크롤 트리거 요소 */}
       {hasMore && (
         <div ref={targetRef} style={{ height: '20px', backgroundColor: 'transparent' }} />
@@ -101,12 +94,6 @@ const titleStyle = css`
   font-size: ${theme.fontSizes.normal};
   font-weight: 700;
   margin-left: 1rem;
-`;
-
-const spinnerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 export default RecentUpdateList;

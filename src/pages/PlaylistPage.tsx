@@ -187,12 +187,7 @@ const PlaylistPage: React.FC = () => {
     }
   };
 
-  if (isLoading)
-    return (
-      <div css={spinnerContainerStyle}>
-        <Spinner />
-      </div>
-    );
+  if (isLoading) return <Spinner />;
   if (error) return <div css={errorStyle}>Error: {error.message}</div>;
   if (!playlist || !user) return <NotFoundPage />;
   return (
@@ -303,13 +298,6 @@ const PlaylistPage: React.FC = () => {
 const containerStyle = css`
   position: relative;
   padding-bottom: 160px;
-`;
-
-const spinnerContainerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 `;
 
 const errorStyle = css`
