@@ -5,7 +5,6 @@ import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'r
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
 
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import Spinner from '@/components/common/Spinner';
@@ -190,8 +189,8 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   if (!updatedPlaylist) return null;
 
   return (
-    <div css={modalOverlayStyle(isMinimized, isClosing)}>
-      <div css={modalContentStyle(isMinimized, isClosing, isMaximizing, isOpen)}>
+    <div css={modalOverlayStyle(isMinimized)}>
+      <div css={modalContentStyle(isMinimized, isClosing)}>
         <div css={headerStyle(isMinimized)}>
           <Header LeftIcon={GoChevronDown} onBack={handleMinimize} />
         </div>
@@ -339,7 +338,7 @@ const playerContainerStyle = css`
   flex-direction: column;
 `;
 
-const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
+const modalOverlayStyle = (isMinimized: boolean) => css`
   position: ${isMinimized ? 'fixed' : 'sticky'};
   top: ${isMinimized ? 'auto' : '0'};
   left: 0;
@@ -357,17 +356,12 @@ const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
   margin: 0 auto;
 `;
 
-const modalContentStyle = (
-  isMinimized: boolean,
-  isClosing: boolean,
-  isMaximizing: boolean,
-  isOpen: boolean
-) => css`
+const modalContentStyle = (isMinimized: boolean, isClosing: boolean) => css`
   background-color: ${theme.colors.black};
   width: 498px;
   height: ${isMinimized ? '60px' : '100vh'};
   margin: 0 auto;
-  transform: translateY(${getTransformY(isMinimized, isClosing, isMaximizing)});
+  transform: translateY(${getTransformY(isMinimized, isClosing)});
   transition: all 300ms ease-out;
   display: flex;
   flex-direction: ${isMinimized ? 'row' : 'column'};
@@ -404,7 +398,7 @@ const modalContentStyle = (
   }
 `;
 
-const getTransformY = (isMinimized: boolean, isClosing: boolean, isMaximizing: boolean) => {
+const getTransformY = (isMinimized: boolean, isClosing: boolean) => {
   if (isClosing) return '100%';
   if (isMinimized) return 'calc(100% - 140px)';
   return '0';

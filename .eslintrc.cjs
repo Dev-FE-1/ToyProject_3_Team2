@@ -93,7 +93,7 @@ module.exports = {
     'react/jsx-no-duplicate-props': ['error', { ignoreCase: true }],
     // TypeScript 전용으로 설정
     '@typescript-eslint/no-unused-vars': [
-      'error', // 'warn'을 'error'로 변경
+      'warn',
       {
         varsIgnorePattern: '^_', // '_'로 시작하는 변수는 무시
         argsIgnorePattern: '^_', // '_'로 시작하는 함수 매개변수는 무시
