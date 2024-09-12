@@ -26,7 +26,6 @@ interface VideoModalProps {
   userId: string;
 }
 const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalProps) => {
-  const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMaximizing, setIsMaximizing] = useState(false); // 모달이 최대화 중 인지 추적
@@ -186,12 +185,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     // 여기서 스타일이나 위치 변화를 확인할 수 있습니다.
   };
 
-  if (isLoading)
-    return (
-      <div css={spinnerStyle}>
-        <Spinner />
-      </div>
-    );
+  if (isLoading) return <Spinner />;
   if (error) return <div>Error: {error.message}</div>;
   if (!updatedPlaylist) return null;
 
@@ -416,12 +410,6 @@ const getTransformY = (isMinimized: boolean, isClosing: boolean, isMaximizing: b
   return '0';
 };
 
-const getAnimation = (isClosing: boolean, isMaximizing: boolean, isOpen: boolean) => {
-  if (isClosing) return 'none';
-  if (isOpen) return 'slideUp';
-  return 'none';
-};
-
 const headerStyle = (isMinimized: boolean) => css`
   transition: opacity 300ms ease-in-out;
   opacity: ${isMinimized ? 0 : 1};
@@ -622,9 +610,5 @@ const iframeStyle = (loaded: boolean) => css`
   opacity: ${loaded ? 1 : 0};
   transition: opacity 300ms ease-in-out;
 `;
-const spinnerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+
 export default VideoModal;

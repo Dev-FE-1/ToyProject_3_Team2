@@ -6,7 +6,7 @@ export const useDragToScroll = () => {
   const [scrollLeft, setScrollLeft] = useState(0);
   const [dragDistance, setDragDistance] = useState(0);
 
-  const onMouseDown = (e: React.MouseEvent) => {
+  const onMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     setDragDistance(0);
     setStartX(e.pageX - e.currentTarget.offsetLeft);
@@ -14,7 +14,7 @@ export const useDragToScroll = () => {
     document.body.style.userSelect = 'none';
   };
 
-  const onMouseMove = (e: React.MouseEvent) => {
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     const x = e.pageX - e.currentTarget.offsetLeft;
     const walk = (x - startX) * 1;

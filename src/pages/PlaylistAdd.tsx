@@ -22,11 +22,7 @@ const PlaylistAdd = () => {
   const { data: userData, isLoading, error } = useUserData(userId);
 
   if (isLoading) {
-    return (
-      <div css={spinnerStyle}>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
   if (error) {
     showToast('사용자 데이터를 불러오는 데 실패했습니다.');
@@ -61,10 +57,5 @@ const PlaylistAdd = () => {
     </div>
   );
 };
-const spinnerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
+
 export default PlaylistAdd;

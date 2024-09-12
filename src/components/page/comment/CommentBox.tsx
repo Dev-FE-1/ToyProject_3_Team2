@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { RiCloseFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { deleteComment } from '@/api/endpoints/comment';
 import { getPlaylistById } from '@/api/endpoints/playlistFetch';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import Toast from '@/components/common/Toast';
+import { COMMENTS } from '@/constants/comment';
 import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -31,6 +33,9 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
   const { refetch } = useCommentsList(playlistId);
+  const navigate = useNavigate();
+  const curUser = sessionStorage.getItem('userSession') as string;
+  const curUserId = JSON.parse(curUser).uid;
 
   const handleDelBtnClick = async (commentData: {
     playlistId: string | undefined;
@@ -47,7 +52,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
 
     try {
       await deleteComment(commentData.playlistId, commentData.commentId);
-      showToast('댓글이 삭제되었습니다');
+      showToast(COMMENTS.toast.delete);
 
       const updatedPlaylistData = await getPlaylistById(commentData.playlistId);
 
@@ -65,6 +70,12 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     }
   };
 
+  const handleProfileClick = (userId: string | undefined) => {
+    if (curUserId !== userId) {
+      navigate('/mypage/' + userId);
+    }
+  };
+
   useEffect(() => {
     const uid = getUserIdBySession();
     setCommentUserId(uid);
@@ -72,9 +83,13 @@ const CommentBox: React.FC<CommentBoxProps> = ({
 
   return (
     <>
-      <div css={CommentListStyle}>
+      <div css={CommentListStyle(commentUserId === comments.userId)}>
         <div>
-          <img src={comments.profileImg || defaultImg} alt='미니 썸네일' />
+          <img
+            src={comments.profileImg || defaultImg}
+            alt='profile'
+            onClick={() => handleProfileClick(comments.userId)}
+          />
           <div>
             <h1>{comments.userName}</h1>
             <h2>{formatTimeWithUpdated(comments.createdAt)}</h2>
@@ -99,7 +114,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   );
 };
 
-const CommentListStyle = css`
+const CommentListStyle = (isClickable: boolean) => css`
   margin: 10px 0;
   display: flex;
   justify-content: space-between;
@@ -108,6 +123,9 @@ const CommentListStyle = css`
     display: flex;
     justify-content: center;
 
+    img {
+      cursor: ${isClickable ? 'default' : 'pointer'};
+    }
     div {
       margin-left: 8px;
       display: flex;

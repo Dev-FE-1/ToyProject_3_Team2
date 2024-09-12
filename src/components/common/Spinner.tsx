@@ -9,12 +9,19 @@ const spin = keyframes`
         transform: rotate(360deg);
     }
     `;
-const Spinner: React.FC = () => <div css={spinnerStyle}></div>;
+const Spinner: React.FC = () => (
+  <div css={spinnerContainerStyle}>
+    <div css={spinnerStyle}></div>
+  </div>
+);
 
+const spinnerContainerStyle = css`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
 const spinnerStyle = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
   border: 4px solid ${theme.colors.bgMypage};
   border-top: 4px solid ${theme.colors.primary};
   border-radius: 50%;
