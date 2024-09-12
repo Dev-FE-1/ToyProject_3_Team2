@@ -7,6 +7,7 @@ import { deleteComment } from '@/api/endpoints/comment';
 import { getPlaylistById } from '@/api/endpoints/playlistFetch';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import Toast from '@/components/common/Toast';
+import { COMMENTS } from '@/constants/comment';
 import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -47,7 +48,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
 
     try {
       await deleteComment(commentData.playlistId, commentData.commentId);
-      showToast('댓글이 삭제되었습니다');
+      showToast(COMMENTS.toast.delete);
 
       const updatedPlaylistData = await getPlaylistById(commentData.playlistId);
 
@@ -74,7 +75,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     <>
       <div css={CommentListStyle}>
         <div>
-          <img src={comments.profileImg || defaultImg} alt='미니 썸네일' />
+          <img src={comments.profileImg || defaultImg} alt='profile' />
           <div>
             <h1>{comments.userName}</h1>
             <h2>{formatTimeWithUpdated(comments.createdAt)}</h2>
