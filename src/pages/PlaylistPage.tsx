@@ -200,7 +200,10 @@ const PlaylistPage: React.FC = () => {
       <Header
         Icon={playlist.userId === userId ? GoKebabHorizontal : undefined}
         customStyle={kebabStyle}
-        onIcon={() => setIsBottomSheetOpen(true)}
+        onIcon={() => {
+          setBottomSheetContentType('deleteFromPlaylist');
+          setIsBottomSheetOpen(true);
+        }}
         onBack={() =>
           prevUrl === PATH.DETAIL_LIST
             ? navigate(prevUrl, { state: { detailPagePlaylist } })
