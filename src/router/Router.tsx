@@ -24,9 +24,8 @@ import Subscriptions from '@/pages/Subscriptions';
 
 const AuthProtectedRoute = () => {
   // 현재 경로와 URL쿼리 문자열 가져옴
-  const { pathname, search } = useLocation();
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,15 +44,12 @@ const AuthProtectedRoute = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       const userSession = sessionStorage.getItem('userSession');
-      if (user) {
-        // 사용자가 인증되었지만 세션이 없는 경우
-        if (!userSession) {
-          await handleAuthLogout(); // 로그아웃 처리
-        } else {
-          setIsLoggedIn(true);
-        }
+      if (user && !userSession) {
+        handleAuthLogout();
+      } else {
+        setIsLoggedIn(!!user);
       }
       setIsLoading(false);
     });
@@ -70,11 +66,11 @@ const AuthProtectedRoute = () => {
 
   if (!isOnboarding) {
     // 온보딩을 완료하지 않았다면 온보딩 페이지로 이동
-    return <Navigate to={PATH.ONBOARDING} replace state={pathname + search} />;
+    return <Navigate to={PATH.ONBOARDING} replace state={location.pathname + location.search} />;
   }
   if (!isLoggedIn) {
     // 로그인하지 않았다면 로그인 페이지로 이동
-    return <Navigate to={PATH.SIGNIN} replace state={pathname + search} />;
+    return <Navigate to={PATH.SIGNIN} replace state={location.pathname + location.search} />;
   }
 
   return <Outlet />;
