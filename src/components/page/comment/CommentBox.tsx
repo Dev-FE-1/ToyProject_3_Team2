@@ -34,6 +34,8 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   const { showToast } = useToastStore();
   const { refetch } = useCommentsList(playlistId);
   const navigate = useNavigate();
+  const curUser = sessionStorage.getItem('userSession') as string;
+  const curUserId = JSON.parse(curUser).uid;
 
   const handleDelBtnClick = async (commentData: {
     playlistId: string | undefined;
@@ -69,9 +71,6 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   };
 
   const handleProfileClick = (userId: string | undefined) => {
-    const curUser = sessionStorage.getItem('userSession') as string;
-    const curUserId = JSON.parse(curUser).uid;
-
     if (curUserId !== userId) {
       navigate('/mypage/' + userId);
     }
