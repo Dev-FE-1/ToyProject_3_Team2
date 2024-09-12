@@ -31,7 +31,6 @@ const SignIn = () => {
     if (isFormValid) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
-        console.log('로그인 성공:', userCredential.user.email);
         setErrorMessage('');
         sessionStorage.setItem(
           'userSession',
