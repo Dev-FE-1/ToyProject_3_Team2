@@ -8,6 +8,7 @@ import IconButton from '@/components/common/buttons/IconButton';
 import Toast from '@/components/common/Toast';
 import PlaylistBox from '@/components/page/playlist/PlaylistBox';
 import { PLAYLIST } from '@/constants/playlist';
+import { useToggleStore } from '@/store/useToggleStore';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { getUserIdBySession } from '@/utils/user';
