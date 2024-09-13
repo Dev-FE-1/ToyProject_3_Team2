@@ -5,6 +5,7 @@ export const COMMENT_FILTER_OPTIONS = [
 
 export const COMMENTS = {
   toast: {
-    delete: '해당 댓글이 삭제되었습니다.',
+    del_successed: '해당 댓글이 삭제되었습니다.',
+    del_failed: '댓글 삭제 중 오류가 발생했습니다!',
   },
 };
