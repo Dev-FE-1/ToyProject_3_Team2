@@ -22,7 +22,12 @@ export const useScrollWithArrows = (scrollRef: RefObject<HTMLDivElement>) => {
       setDragDistance(Math.abs(walk));
       e.currentTarget.scrollLeft = scrollLeft - walk;
     },
-    onMouseUpOrLeave: () => {
+    // 각각 분리
+    onMouseUp: () => {
+      setIsDragging(false);
+      document.body.style.userSelect = '';
+    },
+    onMouseLeave: () => {
       setIsDragging(false);
       document.body.style.userSelect = '';
     },
@@ -32,7 +37,6 @@ export const useScrollWithArrows = (scrollRef: RefObject<HTMLDivElement>) => {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
-  // useCallback을 사용하여 updateArrowVisibility를 메모이제이션
   const updateArrowVisibility = useCallback(() => {
     const scrollContainer = scrollRef.current;
     if (!scrollContainer) return;
@@ -51,12 +55,11 @@ export const useScrollWithArrows = (scrollRef: RefObject<HTMLDivElement>) => {
     },
   };
 
-  // 스크롤 이벤트 리스너를 위한 효과
   useEffect(() => {
     const scrollContainer = scrollRef.current;
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', updateArrowVisibility);
-      updateArrowVisibility(); // 초기 가시성 업데이트
+      setTimeout(updateArrowVisibility, 200); // 200ms 후에 가시성 업데이트
     }
     return () => {
       scrollContainer?.removeEventListener('scroll', updateArrowVisibility);
@@ -70,8 +73,8 @@ export const useScrollWithArrows = (scrollRef: RefObject<HTMLDivElement>) => {
     showRightArrow,
     handlers: {
       ...dragHandlers,
-      onMouseUp: dragHandlers.onMouseUpOrLeave,
-      onMouseLeave: dragHandlers.onMouseUpOrLeave,
+      onMouseUp: dragHandlers.onMouseUp,
+      onMouseLeave: dragHandlers.onMouseLeave,
     },
     scrollLeftFunc: scrollFunctions.scrollLeft,
     scrollRightFunc: scrollFunctions.scrollRight,
