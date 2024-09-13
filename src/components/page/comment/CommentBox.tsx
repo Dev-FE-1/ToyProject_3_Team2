@@ -20,7 +20,6 @@ interface CommentBoxProps extends Comment {
   comments: Comment;
   playlistId: string | undefined;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-  playlistData?: PlaylistModel | undefined;
   setPlaylistData?: React.Dispatch<React.SetStateAction<PlaylistModel | undefined>>;
 }
 
@@ -34,31 +33,20 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   const { showToast } = useToastStore();
   const { refetch } = useCommentsList(playlistId);
   const navigate = useNavigate();
-  const curUser = sessionStorage.getItem('userSession') as string;
-  const curUserId = JSON.parse(curUser).uid;
 
-  const handleDelBtnClick = async (commentData: {
-    playlistId: string | undefined;
-    commentId: string | undefined;
-  }) => {
-    if (!commentData.playlistId) {
-      console.error('playlistId가 없습니다.');
-      return;
-    }
-    if (!commentData.commentId) {
-      console.error('commnetId가 없습니다.');
+  const handleDelBtnClick = async () => {
+    if (!playlistId || !comments.commentId) {
+      console.error('Missing playlistId or commentId');
       return;
     }
 
     try {
-      await deleteComment(commentData.playlistId, commentData.commentId);
-      showToast(COMMENTS.toast.delete);
+      await deleteComment(playlistId, comments.commentId);
+      showToast(COMMENTS.toast.del_successed);
 
-      const updatedPlaylistData = await getPlaylistById(commentData.playlistId);
+      const updatedPlaylistData = await getPlaylistById(playlistId);
 
-      if (setPlaylistData && updatedPlaylistData) {
-        setPlaylistData(updatedPlaylistData);
-      } // playlist의 commentCount 갱신
+      setPlaylistData?.(updatedPlaylistData); // playlist의 commentCount 갱신
 
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.commentId !== comments.commentId)
@@ -67,12 +55,13 @@ const CommentBox: React.FC<CommentBoxProps> = ({
       await refetch();
     } catch (error) {
       console.error('댓글 삭제 중 오류 발생: ', error);
+      showToast(COMMENTS.toast.del_failed);
     }
   };
 
-  const handleProfileClick = (userId: string | undefined) => {
-    if (curUserId !== userId) {
-      navigate('/mypage/' + userId);
+  const handleProfileClick = () => {
+    if (commentUserId !== comments.userId) {
+      navigate(`/mypage/${comments.userId}`);
     }
   };
 
@@ -81,32 +70,20 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     setCommentUserId(uid);
   }, []);
 
+  const isMyComment = commentUserId === comments.userId;
+
   return (
     <>
-      <div css={CommentListStyle(commentUserId === comments.userId)}>
+      <div css={CommentListStyle(isMyComment)}>
         <div>
-          <img
-            src={comments.profileImg || defaultImg}
-            alt='profile'
-            onClick={() => handleProfileClick(comments.userId)}
-          />
+          <img src={comments.profileImg || defaultImg} alt='profile' onClick={handleProfileClick} />
           <div>
             <h1>{comments.userName}</h1>
             <h2>{formatTimeWithUpdated(comments.createdAt)}</h2>
             <h3>{comments.content}</h3>
           </div>
         </div>
-        {commentUserId === comments.userId && (
-          <RiCloseFill
-            css={deleteIconStyle}
-            onClick={() =>
-              handleDelBtnClick({
-                playlistId: comments.playlistId,
-                commentId: comments.commentId,
-              })
-            }
-          />
-        )}
+        {isMyComment && <RiCloseFill css={deleteIconStyle} onClick={handleDelBtnClick} />}
       </div>
       <hr css={CommentHorizonSytle} />
       <Toast />
