@@ -45,15 +45,14 @@ const CustomDialog: React.FC<DialogProps> = ({
   useEffect(() => {
     setIsConfirmDisabled(type !== 'alertConfirm' && !videoData);
 
-    if (setVideoData && videoData && youtubeUrl) {
-      setVideoData({
+    if (videoData)
+      setVideoData?.({
         ...videoData,
-        videoId: getVideoId(youtubeUrl),
+        videoId: getVideoId(youtubeUrl as string),
         videoUrl: youtubeUrl,
         duration: formatDurationISOToTime(videoData.duration),
       });
-    }
-  }, [videoData, youtubeUrl, setVideoData, type]);
+  }, [videoData, setVideoData, type, youtubeUrl]);
 
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
@@ -106,7 +105,7 @@ const CustomDialog: React.FC<DialogProps> = ({
                 css={inputStyle}
                 placeholder='영상 링크를 입력하세요'
                 value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl && setYoutubeUrl(e.target.value)}
+                onChange={(e) => setYoutubeUrl?.(e.target.value)}
               />
             </>
           ),

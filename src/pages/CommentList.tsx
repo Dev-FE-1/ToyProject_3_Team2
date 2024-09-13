@@ -16,7 +16,6 @@ import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { Comment, PlaylistModel } from '@/types/playlist';
-import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
@@ -118,14 +117,7 @@ const CommentList = () => {
         {comments.map((comment) => (
           <CommentBox
             key={comment.commentId}
-            commentId={comment.commentId}
-            profileImg={comment.profileImg}
-            playlistId={comment.playlistId}
-            userId={comment.userId}
-            userName={comment.userName}
-            content={comment.content}
-            createdAt={formatTimeWithUpdated(comment.createdAt)}
-            comments={comment}
+            comment={comment}
             setComments={setComments}
             setPlaylistData={setPlaylistData}
           />
