@@ -33,6 +33,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [currentVideoId, setCurrentVideoId] = useState(videoId);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const showToast = useToastStore((state) => state.showToast);
@@ -61,15 +62,44 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
       await handleDeleteVideo(updatedPlaylist.playlistId, selectedVideo.videoId);
       showToast('동영상이 성공적으로 삭제되었습니다.');
 
+      // 삭제된 비디오의 인덱스 찾기
+      const deletedIndex = updatedPlaylist.videos.findIndex(
+        (video) => video.videoId === selectedVideo.videoId
+      );
+
       // 삭제 후 플레이리스트 업데이트
-      if (currentVideoId === selectedVideo.videoId) {
-        const nextVideo = updatedPlaylist?.videos.find(
-          (video) => video.videoId !== selectedVideo.videoId
-        );
-        if (nextVideo) {
-          setCurrentVideoId(nextVideo.videoId || ''); // 다음 비디오로 전환: 다음 값이 있으면 다음 비디오로 전환
+      const updatedVideos = updatedPlaylist.videos.filter(
+        (video) => video.videoId !== selectedVideo.videoId
+      );
+      const newPlaylist = {
+        ...updatedPlaylist,
+        videos: updatedVideos,
+      };
+
+      setCurrentPlaylist(newPlaylist);
+
+      // 현재 재생 중인 비디오의 새 인덱스 찾기
+      const newCurrentVideoIndex = updatedVideos.findIndex(
+        (video) => video.videoId === currentVideoId
+      );
+
+      if (newCurrentVideoIndex !== -1) {
+        // 현재 재생 중인 비디오가 삭제되지 않았다면
+        setCurrentVideoIndex(newCurrentVideoIndex);
+      } else {
+        // 현재 재생 중인 비디오가 삭제되었다면
+        if (updatedVideos.length > 0) {
+          // 다음 비디오 재생 (또는 마지막 비디오였다면 첫 번째 비디오로)
+          const nextVideoIndex = Math.min(currentVideoIndex, updatedVideos.length - 1);
+          setCurrentVideoId(updatedVideos[nextVideoIndex].videoId || '');
+          setCurrentVideoIndex(nextVideoIndex);
         } else {
-          onClose(); // 마지막 비디오라면 모달을 닫음
+          // 모든 비디오가 삭제된 경우
+          setCurrentVideoId(''); // 비디오 ID 초기화
+          setCurrentVideoIndex(-1); // 비디오 인덱스 초기화
+          setIsVideoEnded(true); // 비디오 종료 상태로 변경
+          setIsPlaying(false); // 비디오 재생 중지
+          onClose(); // 모달 닫기
         }
       }
     } catch (error) {
@@ -125,6 +155,12 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     const index = playlist.videos.findIndex((video) => video.videoId === currentVideoId);
     setCurrentVideoIndex(index !== -1 ? index : 0);
   }, [currentVideoId, playlist.videos]);
+
+  // currentVideoId나 currentPlaylist가 변경될 때마다 currentVideoIndex 업데이트
+  useEffect(() => {
+    const index = currentPlaylist.videos.findIndex((video) => video.videoId === currentVideoId);
+    setCurrentVideoIndex(index !== -1 ? index : 0);
+  }, [currentVideoId, currentPlaylist.videos]);
 
   const handleIframeLoad = () => {
     setIframeLoaded(true);
@@ -214,7 +250,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
               <div css={playlistInfoStyle}>
                 <h1>{playlist.title}</h1>
                 <span css={videoCountStyle}>
-                  {currentVideoIndex + 1} / {playlist.videos.length}
+                  {currentPlaylist.videos.length > 0
+                    ? `${currentVideoIndex + 1} / ${currentPlaylist.videos.length}`
+                    : '0 / 0'}
                 </span>
               </div>
               <div css={userNameStyle}>{playlist.userName}</div>
@@ -266,7 +304,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                     ref={provided.innerRef}
                     css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
                   >
-                    {(updatedPlaylist?.videos || []).map(
+                    {(currentPlaylist.videos || []).map(
                       (
                         video,
                         index // 업데이트된 플레이리스트의 비디오 목록을 보여주거라
