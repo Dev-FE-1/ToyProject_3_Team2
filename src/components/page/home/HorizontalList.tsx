@@ -49,9 +49,9 @@ const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists })
       </div>
       <div css={scrollWrapperStyle}>
         {showLeftArrow && (
-          <button css={arrowButtonStyle('left')} onClick={scrollLeftFunc}>
+          <div css={arrowButtonStyle('left')} onClick={scrollLeftFunc}>
             <IconButton Icon={RiArrowLeftSLine} customStyle={iconButtonSize} />
-          </button>
+          </div>
         )}
         <div css={scrollContainerStyle(hasRightPadding)} ref={scrollRef} {...handlers}>
           {playlists.map((playlist) => (
@@ -136,7 +136,7 @@ const arrowButtonStyle = (position: 'left' | 'right') => css`
   cursor: pointer;
   z-index: 5;
   opacity: 0.8;
-  margin-${position === 'left' ? 'left' : 'right'}: 0.5rem;
+  ${position === 'left' ? 'margin-left' : 'margin-right'}: 0.5rem;
 `;
 
 const iconButtonSize = css`

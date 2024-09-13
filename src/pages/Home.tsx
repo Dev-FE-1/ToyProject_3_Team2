@@ -15,22 +15,21 @@ const Home = () => {
   return (
     <div css={containerStyle}>
       <img src='/logo.svg' alt={LOGO} css={logoStyle} />
-      <>
-        {interestedPlaylists.allForkedPlaylists.length > 0 && (
-          <HorizontalList
-            title={INTERESTED_PLAYLIST}
-            playlists={interestedPlaylists.allForkedPlaylists}
-          />
-        )}
+
+      {interestedPlaylists.allForkedPlaylists.length > 0 && (
         <HorizontalList
-          title={POPULAR_PLAYLIST}
-          playlists={popularAndRecentPlaylists.playlistsByPopularity}
+          title={INTERESTED_PLAYLIST}
+          playlists={interestedPlaylists.allForkedPlaylists}
         />
-        <RecentUpdateList
-          title={RECENTUPDATE_PLAYLIST}
-          playlists={popularAndRecentPlaylists.recentPlaylists}
-        />
-      </>
+      )}
+      <HorizontalList
+        title={POPULAR_PLAYLIST}
+        playlists={popularAndRecentPlaylists.playlistsByPopularity}
+      />
+      <RecentUpdateList
+        title={RECENTUPDATE_PLAYLIST}
+        playlists={popularAndRecentPlaylists.recentPlaylists}
+      />
     </div>
   );
 };
