@@ -29,7 +29,6 @@ const AuthProtectedRoute = () => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOnboarding, setIsOnboarding] = useState(false);
 
   const handleAuthLogout = useCallback(async () => {
     try {
@@ -54,9 +53,6 @@ const AuthProtectedRoute = () => {
       setIsLoading(false);
     });
 
-    const onboardingStatus = sessionStorage.getItem('onboarding') === 'true';
-    setIsOnboarding(onboardingStatus);
-
     return () => unsubscribe();
   }, [handleAuthLogout, location]);
 
@@ -64,10 +60,6 @@ const AuthProtectedRoute = () => {
     return <Spinner />;
   }
 
-  if (!isOnboarding) {
-    // 온보딩을 완료하지 않았다면 온보딩 페이지로 이동
-    return <Navigate to={PATH.ONBOARDING} replace state={location.pathname + location.search} />;
-  }
   if (!isLoggedIn) {
     // 로그인하지 않았다면 로그인 페이지로 이동
     return <Navigate to={PATH.SIGNIN} replace state={location.pathname + location.search} />;
@@ -76,56 +68,80 @@ const AuthProtectedRoute = () => {
   return <Outlet />;
 };
 
+const OnboardingRoute = () => {
+  const [isOnboarding, setIsOnboarding] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const onboardingStatus = sessionStorage.getItem('onboarding') === 'true';
+    setIsOnboarding(onboardingStatus);
+
+    // 온보딩이 완료되지 않았고, 현재 페이지가 온보딩 페이지가 아니라면 온보딩 페이지로 이동
+    if (!onboardingStatus && location.pathname !== PATH.ONBOARDING) {
+      navigate(PATH.ONBOARDING, { replace: true });
+    }
+  }, [location, navigate]);
+
+  // 온보딩이 완료되었거나 현재 온보딩 페이지라면 계속 진행
+  if (isOnboarding || location.pathname === PATH.ONBOARDING) {
+    return <Outlet />;
+  }
+};
+
 export const router = createBrowserRouter([
   {
     path: PATH.HOME,
     element: <RootLayout />,
     errorElement: <NotFoundPage />,
     children: [
-      // 공개 페이지
-      { path: PATH.SIGNIN, element: <SignIn /> },
-      { path: PATH.ONBOARDING, element: <Onboarding /> },
       {
-        //  <AuthProtectedRoute /> : 보호된 페이지
-        element: <AuthProtectedRoute />,
+        element: <OnboardingRoute />,
         children: [
-          // 해당라우트가 부모라우트의 자식이야(true)-> Home으로 가
-          // 부모라우트와 정확히 일치할 때 사용
-          { index: true, element: <HomePage /> },
-          { path: PATH.SEARCH, children: [{ index: true, element: <Search /> }] },
+          // 공개 페이지
+          { path: PATH.ONBOARDING, element: <Onboarding /> },
+          { path: PATH.SIGNIN, element: <SignIn /> },
           {
-            path: PATH.SUBSCRIPTIONS,
-            children: [{ index: true, element: <Subscriptions /> }],
-          },
-          {
-            path: PATH.MYPAGE,
+            //  <AuthProtectedRoute /> : 보호된 페이지
+            element: <AuthProtectedRoute />,
             children: [
-              { index: true, element: <MyPage /> },
-              { path: PATH.SETTINGS, element: <Settings /> },
-              { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
+              // 해당라우트가 부모라우트의 자식이야(true)-> Home으로 가
+              // 부모라우트와 정확히 일치할 때 사용
+              { index: true, element: <HomePage /> },
+              { path: PATH.SEARCH, children: [{ index: true, element: <Search /> }] },
+              {
+                path: PATH.SUBSCRIPTIONS,
+                children: [{ index: true, element: <Subscriptions /> }],
+              },
+              {
+                path: PATH.MYPAGE,
+                children: [
+                  { index: true, element: <MyPage /> },
+                  { path: PATH.SETTINGS, element: <Settings /> },
+                  { path: PATH.MYPAGE_ADD_PLAYLIST, element: <PlaylistAdd /> },
+                ],
+              },
+              {
+                path: PATH.PLAYLIST,
+                children: [
+                  { index: true, element: <PlaylistPage /> },
+                  { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
+                ],
+              },
+              { path: PATH.DETAIL_LIST, element: <DetailList /> },
+              {
+                path: PATH.COMMENT,
+                children: [
+                  { index: true, element: <CommentList /> },
+                  { path: PATH.COMMENT_ADD, element: <CommentAdd /> },
+                ],
+              },
+              { path: '*', element: <NotFoundPage /> },
             ],
           },
-          {
-            path: PATH.PLAYLIST,
-            children: [
-              { index: true, element: <PlaylistPage /> },
-              { path: PATH.PLAYLIST_EDIT, element: <PlaylistEdit /> },
-            ],
-          },
-          { path: PATH.DETAIL_LIST, element: <DetailList /> },
-          {
-            path: PATH.COMMENT,
-            children: [
-              { index: true, element: <CommentList /> },
-              { path: PATH.COMMENT_ADD, element: <CommentAdd /> },
-            ],
-          },
-          // Catch-all route for authenticated users
-          { path: '*', element: <NotFoundPage /> },
+          { path: '*', element: <Navigate to={PATH.SIGNIN} replace /> },
         ],
       },
-      // Catch-all route for unauthenticated users
-      { path: '*', element: <Navigate to={PATH.SIGNIN} replace /> },
     ],
   },
 ]);
