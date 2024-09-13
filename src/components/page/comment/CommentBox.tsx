@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import { css } from '@emotion/react';
 import { RiCloseFill } from 'react-icons/ri';
+import { useNavigate } from 'react-router-dom';
 
 import { deleteComment } from '@/api/endpoints/comment';
 import { getPlaylistById } from '@/api/endpoints/playlistFetch';
 import defaultImg from '@/assets/images/default-avatar-man.svg';
 import Toast from '@/components/common/Toast';
+import { COMMENTS } from '@/constants/comment';
 import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
@@ -18,7 +20,6 @@ interface CommentBoxProps extends Comment {
   comments: Comment;
   playlistId: string | undefined;
   setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
-  playlistData?: PlaylistModel | undefined;
   setPlaylistData?: React.Dispatch<React.SetStateAction<PlaylistModel | undefined>>;
 }
 
@@ -31,29 +32,21 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   const [commentUserId, setCommentUserId] = useState<string | null>(null);
   const { showToast } = useToastStore();
   const { refetch } = useCommentsList(playlistId);
+  const navigate = useNavigate();
 
-  const handleDelBtnClick = async (commentData: {
-    playlistId: string | undefined;
-    commentId: string | undefined;
-  }) => {
-    if (!commentData.playlistId) {
-      console.error('playlistId가 없습니다.');
-      return;
-    }
-    if (!commentData.commentId) {
-      console.error('commnetId가 없습니다.');
+  const handleDelBtnClick = async () => {
+    if (!playlistId || !comments.commentId) {
+      console.error('Missing playlistId or commentId');
       return;
     }
 
     try {
-      await deleteComment(commentData.playlistId, commentData.commentId);
-      showToast('댓글이 삭제되었습니다');
+      await deleteComment(playlistId, comments.commentId);
+      showToast(COMMENTS.toast.del_successed);
 
-      const updatedPlaylistData = await getPlaylistById(commentData.playlistId);
+      const updatedPlaylistData = await getPlaylistById(playlistId);
 
-      if (setPlaylistData && updatedPlaylistData) {
-        setPlaylistData(updatedPlaylistData);
-      } // playlist의 commentCount 갱신
+      setPlaylistData?.(updatedPlaylistData); // playlist의 commentCount 갱신
 
       setComments((prevComments) =>
         prevComments.filter((comment) => comment.commentId !== comments.commentId)
@@ -62,6 +55,13 @@ const CommentBox: React.FC<CommentBoxProps> = ({
       await refetch();
     } catch (error) {
       console.error('댓글 삭제 중 오류 발생: ', error);
+      showToast(COMMENTS.toast.del_failed);
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (commentUserId !== comments.userId) {
+      navigate(`/mypage/${comments.userId}`);
     }
   };
 
@@ -70,28 +70,20 @@ const CommentBox: React.FC<CommentBoxProps> = ({
     setCommentUserId(uid);
   }, []);
 
+  const isMyComment = commentUserId === comments.userId;
+
   return (
     <>
-      <div css={CommentListStyle}>
+      <div css={CommentListStyle(isMyComment)}>
         <div>
-          <img src={comments.profileImg || defaultImg} alt='미니 썸네일' />
+          <img src={comments.profileImg || defaultImg} alt='profile' onClick={handleProfileClick} />
           <div>
             <h1>{comments.userName}</h1>
             <h2>{formatTimeWithUpdated(comments.createdAt)}</h2>
             <h3>{comments.content}</h3>
           </div>
         </div>
-        {commentUserId === comments.userId && (
-          <RiCloseFill
-            css={deleteIconStyle}
-            onClick={() =>
-              handleDelBtnClick({
-                playlistId: comments.playlistId,
-                commentId: comments.commentId,
-              })
-            }
-          />
-        )}
+        {isMyComment && <RiCloseFill css={deleteIconStyle} onClick={handleDelBtnClick} />}
       </div>
       <hr css={CommentHorizonSytle} />
       <Toast />
@@ -99,7 +91,7 @@ const CommentBox: React.FC<CommentBoxProps> = ({
   );
 };
 
-const CommentListStyle = css`
+const CommentListStyle = (isClickable: boolean) => css`
   margin: 10px 0;
   display: flex;
   justify-content: space-between;
@@ -108,6 +100,9 @@ const CommentListStyle = css`
     display: flex;
     justify-content: center;
 
+    img {
+      cursor: ${isClickable ? 'default' : 'pointer'};
+    }
     div {
       margin-left: 8px;
       display: flex;

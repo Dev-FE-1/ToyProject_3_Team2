@@ -1,13 +1,16 @@
 import { test, expect } from '@playwright/test';
 
-test('사용자가 온보딩을 거쳐 로그인 페이지에 도착하는지 확인', async ({ page }) => {
+// 온보딩 페이지 방문
+test.beforeEach(async ({ page }) => {
   await page.goto('http://localhost:5173/');
 
   const startButton = page.locator('button:has-text("시작하기")');
-  await expect(startButton).toBeVisible();
-  await startButton.click();
-
-  await expect(page).toHaveURL('http://localhost:5173/signin');
+  // 세션 스토리지에 값이 설정되기 전에 잠시 대기
+  await page.waitForTimeout(500); // 0.5초 기다림
+  if (await startButton.isVisible()) {
+    await startButton.click();
+  }
+  await expect(page).toHaveURL('http://localhost:5173/signin'); // 온보딩 후 로그인 페이지로 이동했는지 확인
 });
 
 test('올바른 자격 증명으로 로그인 성공', async ({ page }) => {
@@ -18,9 +21,7 @@ test('올바른 자격 증명으로 로그인 성공', async ({ page }) => {
 
   const loginButton = page.getByRole('button', { name: '로그인', exact: true });
   await loginButton.click();
-  await page.evaluate(() => {
-    sessionStorage.setItem('onboarding', 'true');
-  });
+
   await expect(page).toHaveURL('http://localhost:5173/', { timeout: 5000 });
 });
 

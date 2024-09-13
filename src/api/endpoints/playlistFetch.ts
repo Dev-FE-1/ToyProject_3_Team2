@@ -89,7 +89,7 @@ export const getPlaylist = async (playlistId: string): Promise<PlaylistModel | n
 };
 
 // 플레이리스트 ID로 특정 플레이리스트 가져오기
-export const getPlaylistById = async (playlistId: string): Promise<PlaylistModel | null> => {
+export const getPlaylistById = async (playlistId: string): Promise<PlaylistModel | undefined> => {
   try {
     const playlistRef = doc(db, 'playlists', playlistId);
     const playlistDoc = await getDoc(playlistRef);

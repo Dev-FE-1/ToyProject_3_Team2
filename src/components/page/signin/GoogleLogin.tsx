@@ -37,15 +37,15 @@ const GoogleLoginButton: React.FC = () => {
         });
       }
 
-      await setDoc(
-        userPlaylistsDocRef,
-        {
+      const userPlaylistsDoc = await getDoc(userPlaylistsDocRef);
+
+      if (!userPlaylistsDoc.exists()) {
+        await setDoc(userPlaylistsDocRef, {
           created: [],
           forked: [],
           liked: [],
-        },
-        { merge: true }
-      );
+        });
+      }
 
       sessionStorage.setItem(
         'userSession',

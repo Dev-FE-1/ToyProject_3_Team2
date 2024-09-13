@@ -57,8 +57,8 @@ module.exports = {
     'prefer-const': 'error',
     // var 대신 let과 const 사용 강제
     'no-var': 'error',
-    // 사용하지 않는 변수 경고 (언더스코어로 시작하는 변수 제외)
-    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+    // 'no-unused-vars' 규칙 제거
+    'no-unused-vars': 'off',
     // === 와 !== 사용 강제(타입 강제 변환으로 인한 예기치 않은 동작을 방지)
     eqeqeq: 'error',
     // 객체 구조 분해 할당 권장(코드를 더 간결하고 읽기 쉽게 만들며, 필요한 속성만 명시적으로 사용할 수 있게 할 수 있음)
@@ -91,11 +91,12 @@ module.exports = {
     ],
     // JSX에서 중복된 props 방지(실수로 같은 prop을 여러 번 사용하는 것을 방지하여 버그를 예방)
     'react/jsx-no-duplicate-props': ['error', { ignoreCase: true }],
+    // TypeScript 전용으로 설정
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {
-        varsIgnorePattern: '^_',
-        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_', // '_'로 시작하는 변수는 무시
+        argsIgnorePattern: '^_', // '_'로 시작하는 함수 매개변수는 무시
       },
     ],
     // 빈 인터페이스를 허용
