@@ -60,9 +60,6 @@ const getVariantStyle = (variant: IconButtonVariant) => {
         font-weight: 500;
         color: ${theme.colors.white};
         padding: 16px 0;
-        position: fixed;
-        left: 1rem;
-        bottom: 8px;
         z-index: 100;
       `;
     case 'dark':

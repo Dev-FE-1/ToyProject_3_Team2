@@ -1,7 +1,5 @@
 import { css } from '@emotion/react';
 
-import Spinner from '@/components/common/Spinner';
-import CrossScrollingList from '@/components/page/home/CrossScrollingList';
 import HorizontalList from '@/components/page/home/HorizontalList';
 import RecentUpdateList from '@/components/page/home/RecentUpdateList';
 import { usePopularPlaylists } from '@/hooks/useSortedPlaylists';
@@ -14,34 +12,24 @@ const LOGO = 'BOMVI';
 const Home = () => {
   const { popularAndRecentPlaylists, interestedPlaylists } = usePopularPlaylists();
 
-  const isLoading =
-    popularAndRecentPlaylists.isLoadingForAllPlaylist &&
-    interestedPlaylists.isLoadingForAllForkedPlaylist;
-
   return (
     <div css={containerStyle}>
       <img src='/logo.svg' alt={LOGO} css={logoStyle} />
 
-      {isLoading ? (
-        <div css={spinnerStyle}>{/* <Spinner /> */}</div>
-      ) : (
-        <>
-          {interestedPlaylists.allForkedPlaylists.length > 0 && (
-            <HorizontalList
-              title={INTERESTED_PLAYLIST}
-              playlists={interestedPlaylists.allForkedPlaylists}
-            />
-          )}
-          <HorizontalList
-            title={POPULAR_PLAYLIST}
-            playlists={popularAndRecentPlaylists.playlistsByPopularity}
-          />
-          <RecentUpdateList
-            title={RECENTUPDATE_PLAYLIST}
-            playlists={popularAndRecentPlaylists.recentPlaylists}
-          />
-        </>
+      {interestedPlaylists.allForkedPlaylists.length > 0 && (
+        <HorizontalList
+          title={INTERESTED_PLAYLIST}
+          playlists={interestedPlaylists.allForkedPlaylists}
+        />
       )}
+      <HorizontalList
+        title={POPULAR_PLAYLIST}
+        playlists={popularAndRecentPlaylists.playlistsByPopularity}
+      />
+      <RecentUpdateList
+        title={RECENTUPDATE_PLAYLIST}
+        playlists={popularAndRecentPlaylists.recentPlaylists}
+      />
     </div>
   );
 };
