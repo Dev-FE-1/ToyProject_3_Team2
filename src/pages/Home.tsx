@@ -1,10 +1,8 @@
 import { css } from '@emotion/react';
 
-
 import Spinner from '@/components/common/Spinner';
-import HorizontalList from '@/components/page/home/HorizontalList';
-
 import CrossScrollingList from '@/components/page/home/CrossScrollingList';
+import HorizontalList from '@/components/page/home/HorizontalList';
 import RecentUpdateList from '@/components/page/home/RecentUpdateList';
 import { usePopularPlaylists } from '@/hooks/useSortedPlaylists';
 
@@ -15,11 +13,10 @@ const LOGO = 'BOMVI';
 
 const Home = () => {
   const { popularAndRecentPlaylists, interestedPlaylists } = usePopularPlaylists();
-    
+
   const isLoading =
     popularAndRecentPlaylists.isLoadingForAllPlaylist &&
     interestedPlaylists.isLoadingForAllForkedPlaylist;
-
 
   return (
     <div css={containerStyle}>
@@ -43,16 +40,8 @@ const Home = () => {
             title={RECENTUPDATE_PLAYLIST}
             playlists={popularAndRecentPlaylists.recentPlaylists}
           />
-        )}
-        <CrossScrollingList
-          title={POPULAR_PLAYLIST}
-          playlists={popularAndRecentPlaylists.playlistsByPopularity}
-        />
-        <RecentUpdateList
-          title={RECENTUPDATE_PLAYLIST}
-          playlists={popularAndRecentPlaylists.recentPlaylists}
-        />
-      </>
+        </>
+      )}
     </div>
   );
 };

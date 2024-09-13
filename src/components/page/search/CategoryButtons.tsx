@@ -1,7 +1,9 @@
+import { useRef } from 'react';
+
 import { css } from '@emotion/react';
 
 import { PLAYLIST } from '@/constants/playlist';
-import { useDragToScroll } from '@/hooks/useDragToScroll';
+import { useScrollWithArrows } from '@/hooks/useScrollWithArrows';
 import theme from '@/styles/theme';
 
 interface CategoryButtonsProps {
@@ -13,7 +15,8 @@ const CategoryButtons: React.FC<CategoryButtonsProps> = ({
   selectedCategory,
   handleButtonClick,
 }) => {
-  const { dragDistance, handlers } = useDragToScroll();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const { dragDistance, handlers } = useScrollWithArrows(scrollRef);
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     // 드래그가 아니었을 때만 클릭 이벤트 발생
