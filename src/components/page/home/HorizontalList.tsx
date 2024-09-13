@@ -101,6 +101,11 @@ const headerStyle = css`
   justify-content: space-between;
   align-items: center;
   margin: -0.5rem 1rem;
+  > button {
+    position: relative;
+    left: 0;
+    bottom: 0;
+  }
 `;
 
 const titleStyle = css`

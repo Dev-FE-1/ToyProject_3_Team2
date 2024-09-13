@@ -59,6 +59,9 @@ const getVariantStyle = (variant: IconButtonVariant) => {
         font-size: ${theme.fontSizes.small};
         font-weight: 500;
         color: ${theme.colors.white};
+        position: fixed;
+        left: 1rem;
+        bottom: 12px;
         padding: 16px 0;
         z-index: 100;
       `;
