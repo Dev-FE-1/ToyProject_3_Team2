@@ -1,13 +1,14 @@
 import React, { useRef } from 'react';
 
 import { css } from '@emotion/react';
-import { RiAddLargeLine, RiArrowRightSLine } from 'react-icons/ri';
+import { RiAddLargeLine, RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 
 import IconButton from '@/components/common/buttons/IconButton';
 import IconTextButton from '@/components/common/buttons/IconTextButton';
 import ThumbNailBox from '@/components/common/ThumbNailBox';
-import { useDragToScroll } from '@/hooks/useDragToScroll';
+import { PATH } from '@/constants/path';
+import { useScrollWithArrows } from '@/hooks/useScrollWithArrows';
 import theme from '@/styles/theme';
 import { PlaylistModel } from '@/types/playlist';
 import { formatNumberToK } from '@/utils/formatNumber';
@@ -24,12 +25,15 @@ const SEE = {
 
 const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { handlers } = useDragToScroll();
+  const { handlers, showLeftArrow, showRightArrow, scrollLeftFunc, scrollRightFunc } =
+    useScrollWithArrows(scrollRef);
   const navigate = useNavigate();
+  const hasRightPadding = playlists.length <= 8;
 
   const handleMoreClick = () => {
-    navigate('/section-list', { state: { title, playlists } });
+    navigate(PATH.DETAIL_LIST, { state: { title, playlists } });
   };
+
   return (
     <div css={sectionStyle}>
       <div css={headerStyle}>
@@ -43,32 +47,44 @@ const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists })
           {SEE.ALL}
         </IconTextButton>
       </div>
-      <div css={scrollContainerStyle} ref={scrollRef} {...handlers}>
-        {playlists.map((playlist) => (
-          <div
-            key={playlist.playlistId}
-            css={playlistItemStyle}
-            onClick={() =>
-              navigate(`/playlist/${playlist.playlistId}`, {
-                state: { previousPath: location.pathname },
-              })
-            }
-          >
-            <ThumbNailBox
-              type='main1'
-              thumURL={playlist.thumbnailUrl}
-              title={playlist.title}
-              likes={formatNumberToK(playlist.likeCount)}
-              uploader={playlist.userName}
-              listnum={playlist.videoCount}
-            />
-          </div>
-        ))}
-        {playlists.length > 8 && (
-          <div css={moreButtonStyle} onClick={handleMoreClick}>
-            <IconButton Icon={RiAddLargeLine} />
-            <p>{SEE.MORE}</p>
-          </div>
+      <div css={scrollWrapperStyle}>
+        {showLeftArrow && (
+          <button css={arrowButtonStyle('left')} onClick={scrollLeftFunc}>
+            <IconButton Icon={RiArrowLeftSLine} customStyle={iconButtonSize} />
+          </button>
+        )}
+        <div css={scrollContainerStyle(hasRightPadding)} ref={scrollRef} {...handlers}>
+          {playlists.map((playlist) => (
+            <div
+              key={playlist.playlistId}
+              css={playlistItemStyle}
+              onClick={() =>
+                navigate(`/playlist/${playlist.playlistId}`, {
+                  state: { previousPath: location.pathname },
+                })
+              }
+            >
+              <ThumbNailBox
+                type='main1'
+                thumURL={playlist.thumbnailUrl}
+                title={playlist.title}
+                likes={formatNumberToK(playlist.likeCount)}
+                uploader={playlist.userName}
+                listnum={playlist.videoCount}
+              />
+            </div>
+          ))}
+          {playlists.length > 8 && (
+            <div css={moreButtonStyle} onClick={handleMoreClick}>
+              <IconButton Icon={RiAddLargeLine} />
+              <p>{SEE.MORE}</p>
+            </div>
+          )}
+        </div>
+        {showRightArrow && (
+          <button css={arrowButtonStyle('right')} onClick={scrollRightFunc}>
+            <IconButton Icon={RiArrowRightSLine} customStyle={iconButtonSize} />
+          </button>
         )}
       </div>
     </div>
@@ -76,6 +92,7 @@ const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists })
 };
 
 const sectionStyle = css`
+  position: relative;
   margin-bottom: 1rem;
 `;
 
@@ -86,7 +103,7 @@ const headerStyle = css`
   margin: -0.5rem 1rem;
 `;
 
-export const titleStyle = css`
+const titleStyle = css`
   display: flex;
   align-items: center;
   font-size: ${theme.fontSizes.normal};
@@ -94,7 +111,6 @@ export const titleStyle = css`
 `;
 
 const customButtonStyle = css`
-  position: static;
   cursor: pointer;
   transition: color 0.2s ease;
 
@@ -103,22 +119,52 @@ const customButtonStyle = css`
   }
 `;
 
-const scrollContainerStyle = css`
+const scrollWrapperStyle = css`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const arrowButtonStyle = (position: 'left' | 'right') => css`
+  position: absolute;
+  ${position}: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: ${theme.colors.white};
+  cursor: pointer;
+  z-index: 5;
+  opacity: 0.8;
+  margin-${position === 'left' ? 'left' : 'right'}: 0.5rem;
+`;
+
+const iconButtonSize = css`
+  width: ${theme.heights.short};
+  height: ${theme.heights.short};
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+const scrollContainerStyle = (hasRightPadding: boolean) => css`
   display: flex;
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x;
   scrollbar-width: none;
+  padding-right: ${hasRightPadding ? '1rem' : '0'};
   &::-webkit-scrollbar {
     display: none;
   }
-  user-select: none; /* 텍스트 드래그 방지 */
+  user-select: none;
 `;
 
 const playlistItemStyle = css`
   margin-right: 0;
-  user-select: none; /* 텍스트 드래그 방지 */
+  user-select: none;
 `;
 
 const moreButtonStyle = css`
