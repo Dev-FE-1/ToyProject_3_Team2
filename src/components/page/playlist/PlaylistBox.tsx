@@ -55,7 +55,7 @@ const PlaylistBox: React.FC<PlaylistBoxProps> = ({
     };
 
     fetchUserData();
-  }, []);
+  }, [playlistUserId]);
 
   useEffect(() => {
     const fetchInitialForkedState = async () => {

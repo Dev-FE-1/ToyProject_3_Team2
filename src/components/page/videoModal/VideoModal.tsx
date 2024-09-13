@@ -5,7 +5,6 @@ import { DragDropContext, Draggable, DragUpdate, Droppable, DropResult } from 'r
 import { GoX, GoChevronDown } from 'react-icons/go';
 import { MdDragHandle } from 'react-icons/md';
 import { RiPauseLine, RiPlayFill } from 'react-icons/ri';
-import { useNavigate } from 'react-router-dom';
 
 import BottomSheet from '@/components/common/modals/BottomSheet';
 import Spinner from '@/components/common/Spinner';
@@ -26,7 +25,6 @@ interface VideoModalProps {
   userId: string;
 }
 const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalProps) => {
-  const navigate = useNavigate();
   const [isMinimized, setIsMinimized] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMaximizing, setIsMaximizing] = useState(false); // 모달이 최대화 중 인지 추적
@@ -34,6 +32,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
   const [currentPlaylist, setCurrentPlaylist] = useState(playlist);
   const [currentVideoId, setCurrentVideoId] = useState(videoId);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const showToast = useToastStore((state) => state.showToast);
@@ -62,15 +61,44 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
       await handleDeleteVideo(updatedPlaylist.playlistId, selectedVideo.videoId);
       showToast('동영상이 성공적으로 삭제되었습니다.');
 
+      // 삭제된 비디오의 인덱스 찾기
+      const deletedIndex = updatedPlaylist.videos.findIndex(
+        (video) => video.videoId === selectedVideo.videoId
+      );
+
       // 삭제 후 플레이리스트 업데이트
-      if (currentVideoId === selectedVideo.videoId) {
-        const nextVideo = updatedPlaylist?.videos.find(
-          (video) => video.videoId !== selectedVideo.videoId
-        );
-        if (nextVideo) {
-          setCurrentVideoId(nextVideo.videoId || ''); // 다음 비디오로 전환: 다음 값이 있으면 다음 비디오로 전환
+      const updatedVideos = updatedPlaylist.videos.filter(
+        (video) => video.videoId !== selectedVideo.videoId
+      );
+      const newPlaylist = {
+        ...updatedPlaylist,
+        videos: updatedVideos,
+      };
+
+      setCurrentPlaylist(newPlaylist);
+
+      // 현재 재생 중인 비디오의 새 인덱스 찾기
+      const newCurrentVideoIndex = updatedVideos.findIndex(
+        (video) => video.videoId === currentVideoId
+      );
+
+      if (newCurrentVideoIndex !== -1) {
+        // 현재 재생 중인 비디오가 삭제되지 않았다면
+        setCurrentVideoIndex(newCurrentVideoIndex);
+      } else {
+        // 현재 재생 중인 비디오가 삭제되었다면
+        if (updatedVideos.length > 0) {
+          // 다음 비디오 재생 (또는 마지막 비디오였다면 첫 번째 비디오로)
+          const nextVideoIndex = Math.min(currentVideoIndex, updatedVideos.length - 1);
+          setCurrentVideoId(updatedVideos[nextVideoIndex].videoId || '');
+          setCurrentVideoIndex(nextVideoIndex);
         } else {
-          onClose(); // 마지막 비디오라면 모달을 닫음
+          // 모든 비디오가 삭제된 경우
+          setCurrentVideoId(''); // 비디오 ID 초기화
+          setCurrentVideoIndex(-1); // 비디오 인덱스 초기화
+          setIsVideoEnded(true); // 비디오 종료 상태로 변경
+          setIsPlaying(false); // 비디오 재생 중지
+          onClose(); // 모달 닫기
         }
       }
     } catch (error) {
@@ -126,6 +154,12 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     const index = playlist.videos.findIndex((video) => video.videoId === currentVideoId);
     setCurrentVideoIndex(index !== -1 ? index : 0);
   }, [currentVideoId, playlist.videos]);
+
+  // currentVideoId나 currentPlaylist가 변경될 때마다 currentVideoIndex 업데이트
+  useEffect(() => {
+    const index = currentPlaylist.videos.findIndex((video) => video.videoId === currentVideoId);
+    setCurrentVideoIndex(index !== -1 ? index : 0);
+  }, [currentVideoId, currentPlaylist.videos]);
 
   const handleIframeLoad = () => {
     setIframeLoaded(true);
@@ -186,18 +220,13 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
     // 여기서 스타일이나 위치 변화를 확인할 수 있습니다.
   };
 
-  if (isLoading)
-    return (
-      <div css={spinnerStyle}>
-        <Spinner />
-      </div>
-    );
+  if (isLoading) return <Spinner />;
   if (error) return <div>Error: {error.message}</div>;
   if (!updatedPlaylist) return null;
 
   return (
-    <div css={modalOverlayStyle(isMinimized, isClosing)}>
-      <div css={modalContentStyle(isMinimized, isClosing, isMaximizing, isOpen)}>
+    <div css={modalOverlayStyle(isMinimized)}>
+      <div css={modalContentStyle(isMinimized, isClosing)}>
         <div css={headerStyle(isMinimized)}>
           <Header LeftIcon={GoChevronDown} onBack={handleMinimize} />
         </div>
@@ -220,7 +249,9 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
               <div css={playlistInfoStyle}>
                 <h1>{playlist.title}</h1>
                 <span css={videoCountStyle}>
-                  {currentVideoIndex + 1} / {playlist.videos.length}
+                  {currentPlaylist.videos.length > 0
+                    ? `${currentVideoIndex + 1} / ${currentPlaylist.videos.length}`
+                    : '0 / 0'}
                 </span>
               </div>
               <div css={userNameStyle}>{playlist.userName}</div>
@@ -272,7 +303,7 @@ const VideoModal = ({ isOpen, onClose, videoId, playlist, userId }: VideoModalPr
                     ref={provided.innerRef}
                     css={[playlistContainerStyle, userId === playlist.userId ? '' : extraStyle]}
                   >
-                    {(updatedPlaylist?.videos || []).map(
+                    {(currentPlaylist.videos || []).map(
                       (
                         video,
                         index // 업데이트된 플레이리스트의 비디오 목록을 보여주거라
@@ -345,7 +376,7 @@ const playerContainerStyle = css`
   flex-direction: column;
 `;
 
-const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
+const modalOverlayStyle = (isMinimized: boolean) => css`
   position: ${isMinimized ? 'fixed' : 'sticky'};
   top: ${isMinimized ? 'auto' : '0'};
   left: 0;
@@ -363,17 +394,12 @@ const modalOverlayStyle = (isMinimized: boolean, isClosing: boolean) => css`
   margin: 0 auto;
 `;
 
-const modalContentStyle = (
-  isMinimized: boolean,
-  isClosing: boolean,
-  isMaximizing: boolean,
-  isOpen: boolean
-) => css`
+const modalContentStyle = (isMinimized: boolean, isClosing: boolean) => css`
   background-color: ${theme.colors.black};
   width: 498px;
   height: ${isMinimized ? '60px' : '100vh'};
   margin: 0 auto;
-  transform: translateY(${getTransformY(isMinimized, isClosing, isMaximizing)});
+  transform: translateY(${getTransformY(isMinimized, isClosing)});
   transition: all 300ms ease-out;
   display: flex;
   flex-direction: ${isMinimized ? 'row' : 'column'};
@@ -410,16 +436,10 @@ const modalContentStyle = (
   }
 `;
 
-const getTransformY = (isMinimized: boolean, isClosing: boolean, isMaximizing: boolean) => {
+const getTransformY = (isMinimized: boolean, isClosing: boolean) => {
   if (isClosing) return '100%';
   if (isMinimized) return 'calc(100% - 140px)';
   return '0';
-};
-
-const getAnimation = (isClosing: boolean, isMaximizing: boolean, isOpen: boolean) => {
-  if (isClosing) return 'none';
-  if (isOpen) return 'slideUp';
-  return 'none';
 };
 
 const headerStyle = (isMinimized: boolean) => css`
@@ -622,9 +642,5 @@ const iframeStyle = (loaded: boolean) => css`
   opacity: ${loaded ? 1 : 0};
   transition: opacity 300ms ease-in-out;
 `;
-const spinnerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+
 export default VideoModal;

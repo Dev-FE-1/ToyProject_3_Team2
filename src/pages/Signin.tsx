@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent } from 'react';
+import { useState } from 'react';
 
 import { css } from '@emotion/react';
 import { FirebaseError } from 'firebase/app';
@@ -13,25 +13,22 @@ import { PATH } from '@/constants/path';
 import theme from '@/styles/theme';
 
 const SignIn = () => {
-  const [isFormValid, setIsFormValid] = useState(false);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleInputChange = (isValid: boolean, newUsername: string, newPassword: string) => {
-    setIsFormValid(isValid);
+  const isFormValid = username.length > 0 && password.length >= 8;
+
+  const handleInputChange = (newUsername: string, newPassword: string) => {
     setUsername(newUsername);
     setPassword(newPassword);
   };
 
-  const handleSignIn = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-
+  const handleSignIn = async () => {
     if (isFormValid) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, username, password);
-        console.log('로그인 성공:', userCredential.user.email);
         setErrorMessage('');
         sessionStorage.setItem(
           'userSession',
@@ -55,16 +52,22 @@ const SignIn = () => {
       }
     }
   };
-  const handleKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Enter' && isFormValid) {
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && isFormValid) {
       handleSignIn();
     }
   };
 
   return (
-    <div css={container} onKeyDown={handleKeyDown}>
+    <div css={container}>
       <img src='/logo.svg' alt='Logo' css={logoStyle} />
-      <InputForm onInputChange={handleInputChange} />
+      <InputForm
+        username={username}
+        password={password}
+        onInputChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+      />
       {isFormValid ? (
         <Button customStyle={buttonStyle} onClick={handleSignIn}>
           로그인

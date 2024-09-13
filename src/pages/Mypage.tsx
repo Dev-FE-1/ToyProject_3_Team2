@@ -48,11 +48,7 @@ const MyPage = () => {
   };
 
   if (isUserLoading || isPlaylistsLoading) {
-    return (
-      <div css={spinnerStyle}>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (userError || playlistsError) {
@@ -106,10 +102,5 @@ const floatAddButtonStyle = css`
     transform: translateY(-2px);
   }
 `;
-const spinnerStyle = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-`;
+
 export default MyPage;

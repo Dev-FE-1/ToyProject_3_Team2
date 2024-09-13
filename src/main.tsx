@@ -1,5 +1,3 @@
-import { StrictMode } from 'react';
-
 import { ThemeProvider } from '@emotion/react';
 import { createRoot } from 'react-dom/client';
 

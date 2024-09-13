@@ -9,29 +9,25 @@ import IconTextButton from '@/components/common/buttons/IconTextButton';
 import SelectBox from '@/components/common/SelectBox';
 import Toast from '@/components/common/Toast';
 import CommentBox from '@/components/page/comment/CommentBox';
+import { COMMENT_FILTER_OPTIONS } from '@/constants/comment';
 import { PATH } from '@/constants/path';
 import { useCommentsList } from '@/hooks/queries/useCommentsQueries';
 import Header from '@/layouts/layout/Header';
 import { useToastStore } from '@/store/useToastStore';
 import theme from '@/styles/theme';
 import { Comment, PlaylistModel } from '@/types/playlist';
-import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 const CommentList = () => {
   const { playlistId } = useParams<{ playlistId: string | undefined }>();
   const [comments, setComments] = useState<Comment[]>([]); // 직접 comments 조작
   const [playlistData, setPlaylistData] = useState<PlaylistModel | undefined>();
   const [selectedFilter, setSelectedFilter] = useState<string>('latest');
-  const [originalComments, setOriginalComments] = useState<Comment[]>([]); // sort 전 마지막 comments를 저장하는 용도
   const showToast = useToastStore((state) => state.showToast);
   const navigate = useNavigate();
   const location = useLocation();
-
   const { toastMessage, refetchComments } = location.state || {};
-  const filterOptions = [
-    { value: 'latest', label: '최신순' },
-    { value: 'oldest', label: '오래된순' },
-  ];
+
+  const filterOptions = COMMENT_FILTER_OPTIONS;
 
   const goToCommentForm = () => {
     navigate(`${PATH.COMMENT_ADD.replace(':playlistId', playlistId ?? '')}`, {
@@ -46,24 +42,7 @@ const CommentList = () => {
 
   const handleFilterChange = (value: string) => {
     setSelectedFilter(value);
-    switch (value) {
-      case 'latest':
-        setComments(
-          [...originalComments].sort(
-            (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          )
-        );
-        break;
-      case 'oldest':
-        setComments(
-          [...comments].sort(
-            (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          )
-        );
-        break;
-      default:
-        break;
-    }
+    setComments([...comments].reverse());
   }; // 댓글 필터링
 
   const { data: commentsData, error, refetch } = useCommentsList(playlistId);
@@ -71,7 +50,6 @@ const CommentList = () => {
   useEffect(() => {
     if (commentsData) {
       setComments(commentsData);
-      setOriginalComments(commentsData);
     }
 
     async function fetchPlaylistData() {
@@ -116,7 +94,7 @@ const CommentList = () => {
       <Toast />
       <div css={CommentTabStyle}>
         <div>
-          <img src={playlistData?.thumbnailUrl} alt='미니 썸네일' />
+          <img src={playlistData?.thumbnailUrl} alt='playlist' />
           <div>
             <p>{playlistData?.title}</p>
             <p>{playlistData?.userName}</p>
@@ -133,23 +111,14 @@ const CommentList = () => {
       </div>
       <div css={CommentListDivStyle}>
         <div css={CommentListTopStyle}>
-          {/* 댓글 수 / 필터 div */}
           <p>댓글 수 {playlistData?.commentCount}</p>
           <SelectBox items={filterOptions} value={selectedFilter} onChange={handleFilterChange} />
         </div>
         {comments.map((comment) => (
           <CommentBox
             key={comment.commentId}
-            commentId={comment.commentId}
-            profileImg={comment.profileImg}
-            playlistId={comment.playlistId}
-            userId={comment.userId}
-            userName={comment.userName}
-            content={comment.content}
-            createdAt={formatTimeWithUpdated(comment.createdAt)}
-            comments={comment}
+            comment={comment}
             setComments={setComments}
-            playlistData={playlistData}
             setPlaylistData={setPlaylistData}
           />
         ))}

@@ -13,7 +13,7 @@ interface ThumbNailBoxProps {
   subtitle?: string;
   update?: string;
   uploader?: string;
-  likes?: number;
+  likes?: string;
   comments?: number;
   listnum?: number;
   type: 'main1' | 'main2' | 'details' | 'recent';
@@ -34,102 +34,98 @@ const ThumbNailBox: React.FC<ThumbNailBoxProps> = ({
   type,
   listnum,
 }) => {
-  const renderContent = () => {
-    switch (type) {
-      case 'main1':
-        return (
-          <div css={[mainStyle, main1Style]} onClick={onClick}>
-            <div css={thumbnailContainerStyle}>
-              <div className='thumbnail' css={thumbnailStyle(thumURL)}>
-                <Badge text='동영상' position='corner' suffix='개'>
-                  {listnum}
-                </Badge>
-              </div>
-              <div css={thumbnailBackdropStyle}></div>
+  switch (type) {
+    case 'main1':
+      return (
+        <div css={[mainStyle, main1Style]} onClick={onClick}>
+          <div css={thumbnailContainerStyle}>
+            <div className='thumbnail' css={thumbnailStyle(thumURL)}>
+              <Badge text='동영상' position='corner' suffix='개'>
+                {listnum}
+              </Badge>
             </div>
+            <div css={thumbnailBackdropStyle}></div>
+          </div>
+          <div className='title'>{title}</div>
+          <div className='info'>
+            <span css={infoItemStyle}>{uploader} </span>
+            <span css={infoItemStyle}>좋아요 {likes}</span>
+          </div>
+        </div>
+      );
+    case 'main2':
+      return (
+        <div css={[mainStyle, main2Style]} onClick={onClick}>
+          <div css={thumbnailContainerStyle}>
+            <div className='thumbnail' css={thumbnailStyle(thumURL)}>
+              <Badge Icon={GoVideo} position='corner' suffix='개'>
+                {listnum}
+              </Badge>
+            </div>
+            <div css={thumbnailBackdropStyle}></div>
+          </div>
+          <div className='content'>
             <div className='title'>{title}</div>
             <div className='info'>
-              <span css={infoItemStyle}>{uploader} </span>
+              <span css={infoItemStyle}>{uploader}</span>
               <span css={infoItemStyle}>좋아요 {likes}</span>
             </div>
+            <div className='update'>{update}</div>
           </div>
-        );
-      case 'main2':
-        return (
-          <div css={[mainStyle, main2Style]} onClick={onClick}>
-            <div css={thumbnailContainerStyle}>
-              <div className='thumbnail' css={thumbnailStyle(thumURL)}>
-                <Badge Icon={GoVideo} position='corner' suffix='개'>
-                  {listnum}
-                </Badge>
-              </div>
-              <div css={thumbnailBackdropStyle}></div>
+        </div>
+      );
+    case 'details':
+      return (
+        <div css={[mainStyle, detailsStyle]} onClick={onClick}>
+          <div css={thumbnailContainerStyle}>
+            <div className='thumbnail' css={thumbnailStyle(thumURL)}>
+              <Badge text='동영상' position='corner' suffix='개'>
+                {listnum}
+              </Badge>
             </div>
-            <div className='content'>
-              <div className='title'>{title}</div>
-              <div className='info'>
-                <span css={infoItemStyle}>{uploader}</span>
-                <span css={infoItemStyle}>좋아요 {likes}</span>
-              </div>
-              <div className='update'>{update}</div>
-            </div>
+            <div css={thumbnailBackdropStyle}></div>
           </div>
-        );
-      case 'details':
-        return (
-          <div css={[mainStyle, detailsStyle]} onClick={onClick}>
-            <div css={thumbnailContainerStyle}>
-              <div className='thumbnail' css={thumbnailStyle(thumURL)}>
-                <Badge text='동영상' position='corner' suffix='개'>
-                  {listnum}
-                </Badge>
-              </div>
-              <div css={thumbnailBackdropStyle}></div>
+          <div className='content'>
+            <div className='title'>{title}</div>
+            <div className='subtitle'>{subtitle}</div>
+            <div className='info'>
+              <span css={infoItemStyle}>{uploader}</span>
+              <span css={infoItemStyle}>
+                {LIKES} {likes}
+              </span>
+              <span css={infoItemStyle}>
+                {COMMENTS} {comments}
+              </span>
             </div>
-            <div className='content'>
-              <div className='title'>{title}</div>
-              <div className='subtitle'>{subtitle}</div>
-              <div className='info'>
-                <span css={infoItemStyle}>{uploader}</span>
-                <span css={infoItemStyle}>
-                  {LIKES} {likes}
-                </span>
-                <span css={infoItemStyle}>
-                  {COMMENTS} {comments}
-                </span>
-              </div>
-              <div className='update'>{update}</div>
-            </div>
+            <div className='update'>{update}</div>
           </div>
-        );
-      case 'recent':
-        return (
-          <div css={[mainStyle, detailsStyle]} onClick={onClick}>
-            <div css={thumbnailContainerStyle}>
-              <div className='thumbnail' css={thumbnailStyle(thumURL)}>
-                <Badge text='동영상' position='corner' suffix='개'>
-                  {listnum}
-                </Badge>
-              </div>
-              <div css={thumbnailBackdropStyle}></div>
+        </div>
+      );
+    case 'recent':
+      return (
+        <div css={[mainStyle, detailsStyle]} onClick={onClick}>
+          <div css={thumbnailContainerStyle}>
+            <div className='thumbnail' css={thumbnailStyle(thumURL)}>
+              <Badge text='동영상' position='corner' suffix='개'>
+                {listnum}
+              </Badge>
             </div>
-            <div className='content'>
-              <div className='title'>{title}</div>
-              <div className='subtitle'>{subtitle}</div>
-              <div className='info'>
-                <span css={infoItemStyle}>{uploader}</span>
-                <span css={infoItemStyle}>
-                  {LIKES} {likes}
-                </span>
-              </div>
-              <div className='update'>{update}</div>
-            </div>
+            <div css={thumbnailBackdropStyle}></div>
           </div>
-        );
-    }
-  };
-
-  return renderContent();
+          <div className='content'>
+            <div className='title'>{title}</div>
+            <div className='subtitle'>{subtitle}</div>
+            <div className='info'>
+              <span css={infoItemStyle}>{uploader}</span>
+              <span css={infoItemStyle}>
+                {LIKES} {likes}
+              </span>
+            </div>
+            <div className='update'>{update}</div>
+          </div>
+        </div>
+      );
+  }
 };
 
 const mainStyle = css`

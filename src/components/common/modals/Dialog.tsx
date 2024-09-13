@@ -22,8 +22,8 @@ interface DialogProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   setVideoData?: Dispatch<SetStateAction<Partial<Video> | undefined>>;
-  youtubeUrl: string;
-  setYoutubeUrl: Dispatch<SetStateAction<string>>;
+  youtubeUrl?: string;
+  setYoutubeUrl?: Dispatch<SetStateAction<string>>;
 }
 
 const CustomDialog: React.FC<DialogProps> = ({
@@ -40,19 +40,19 @@ const CustomDialog: React.FC<DialogProps> = ({
   const [isConfirmDisabled, setIsConfirmDisabled] = useState(true);
 
   // videoData를 상위 컴포넌트(Playlist)로 넘기기 위한 커스텀훅 사용
-  const { data: videoData } = useVideoData(youtubeUrl as string);
+  const { data: videoData } = useVideoData(youtubeUrl || '');
 
   useEffect(() => {
     setIsConfirmDisabled(type !== 'alertConfirm' && !videoData);
 
-    if (setVideoData && videoData)
-      setVideoData({
+    if (videoData)
+      setVideoData?.({
         ...videoData,
-        videoId: getVideoId(youtubeUrl),
+        videoId: getVideoId(youtubeUrl as string),
         videoUrl: youtubeUrl,
         duration: formatDurationISOToTime(videoData.duration),
       });
-  }, [videoData]);
+  }, [videoData, setVideoData, type, youtubeUrl]);
 
   const getModalContent = (type: DialogProps['type']) => {
     switch (type) {
@@ -105,7 +105,7 @@ const CustomDialog: React.FC<DialogProps> = ({
                 css={inputStyle}
                 placeholder='영상 링크를 입력하세요'
                 value={youtubeUrl}
-                onChange={(e) => setYoutubeUrl(e.target.value)}
+                onChange={(e) => setYoutubeUrl?.(e.target.value)}
               />
             </>
           ),
