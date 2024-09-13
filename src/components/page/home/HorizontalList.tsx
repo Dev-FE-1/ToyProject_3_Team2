@@ -82,9 +82,9 @@ const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists })
           )}
         </div>
         {showRightArrow && (
-          <button css={arrowButtonStyle('right')} onClick={scrollRightFunc}>
+          <div css={arrowButtonStyle('right')} onClick={scrollRightFunc}>
             <IconButton Icon={RiArrowRightSLine} customStyle={iconButtonSize} />
-          </button>
+          </div>
         )}
       </div>
     </div>
@@ -137,6 +137,10 @@ const arrowButtonStyle = (position: 'left' | 'right') => css`
   z-index: 5;
   opacity: 0.8;
   ${position === 'left' ? 'margin-left' : 'margin-right'}: 0.5rem;
+  transition: opacity 0.2s ease-in-out;
+  &:hover {
+    opacity: 1; // 마우스 오버 시 좀 더 선명하게 보이게
+  }
 `;
 
 const iconButtonSize = css`
