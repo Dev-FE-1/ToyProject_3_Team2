@@ -35,7 +35,7 @@ const MyProfile: React.FC<MyProfileProps> = ({ userData, playlists }) => {
   if (!userData) {
     return null;
   }
-  const hasBadge = userData.totalLikes >= 1000; // 좋아요 1000개 이상이면 뱃지 표시
+  const hasBadge = totalLikesCount ?? 0 >= 1000; //`좋아요` 1000개 이상일 때 뱃지 표시
 
   return (
     <div css={containerStyle}>
@@ -134,7 +134,7 @@ const a11yStyle = css`
   white-space: nowrap;
   border-width: 0;
 `;
-const bgStyle = (hasBadge: boolean) => css`
+const bgStyle = (hasBadge: number | boolean) => css`
   position: relative;
   top: 112px;
   left: 50%;
