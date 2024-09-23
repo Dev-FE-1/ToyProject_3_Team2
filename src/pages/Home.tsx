@@ -19,12 +19,12 @@ const Home = () => {
       {interestedPlaylists.allForkedPlaylists.length > 0 && (
         <HorizontalList
           title={INTERESTED_PLAYLIST}
-          playlists={interestedPlaylists.allForkedPlaylists}
+          detailPagePlaylists={interestedPlaylists.allForkedPlaylists}
         />
       )}
       <HorizontalList
         title={POPULAR_PLAYLIST}
-        playlists={popularAndRecentPlaylists.playlistsByPopularity}
+        detailPagePlaylists={popularAndRecentPlaylists.playlistsByPopularity}
       />
       <RecentUpdateList
         title={RECENTUPDATE_PLAYLIST}

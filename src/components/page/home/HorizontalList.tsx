@@ -15,7 +15,7 @@ import { formatNumberToK } from '@/utils/formatNumber';
 
 interface CrossScrollingListProps {
   title: string;
-  playlists: PlaylistModel[];
+  detailPagePlaylists: PlaylistModel[];
 }
 
 const SEE = {
@@ -23,15 +23,15 @@ const SEE = {
   ALL: '전체보기',
 };
 
-const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists }) => {
+const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, detailPagePlaylists }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { handlers, showLeftArrow, showRightArrow, scrollLeftFunc, scrollRightFunc } =
     useScrollWithArrows(scrollRef);
   const navigate = useNavigate();
-  const hasRightPadding = playlists.length <= 8;
+  const hasRightPadding = detailPagePlaylists.length <= 8;
 
   const handleMoreClick = () => {
-    navigate(PATH.DETAIL_LIST, { state: { title, playlists } });
+    navigate(PATH.DETAIL_LIST, { state: { title, detailPagePlaylists } });
   };
 
   return (
@@ -54,7 +54,7 @@ const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists })
           </div>
         )}
         <div css={scrollContainerStyle(hasRightPadding)} ref={scrollRef} {...handlers}>
-          {playlists.map((playlist) => (
+          {detailPagePlaylists.map((playlist) => (
             <div
               key={playlist.playlistId}
               css={playlistItemStyle}
@@ -74,7 +74,7 @@ const HorizontalList: React.FC<CrossScrollingListProps> = ({ title, playlists })
               />
             </div>
           ))}
-          {playlists.length > 8 && (
+          {detailPagePlaylists.length > 8 && (
             <div css={moreButtonStyle} onClick={handleMoreClick}>
               <IconButton Icon={RiAddLargeLine} />
               <p>{SEE.MORE}</p>
