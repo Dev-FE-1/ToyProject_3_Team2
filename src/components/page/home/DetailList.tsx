@@ -11,26 +11,25 @@ import { formatTimeWithUpdated } from '@/utils/formatDate';
 
 interface LocationState {
   title: string;
-  playlists: PlaylistModel[];
+  detailPagePlaylists: PlaylistModel[];
 }
 
 const DetailList: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { title, playlists } = location.state as LocationState;
+  const { title, detailPagePlaylists } = location.state as LocationState;
 
   const handleThumbNailBoxClick = (playlist: PlaylistModel) => {
     navigate(`/playlist/${playlist.playlistId}`, {
-      state: { playlist, previousPath: location.pathname },
+      state: { detailPagePlaylists, previousPath: location.pathname },
     });
   };
-
   return (
     <div>
-      <Header onBack={() => navigate(-1)} />
+      <Header onBack={() => navigate('/')} />
       <div css={listStyle}>
         <h2 css={titleStyle}>{title}</h2>
-        {playlists.map((playlist) => (
+        {detailPagePlaylists.map((playlist) => (
           <ThumbNailBox
             key={playlist.playlistId}
             type='details'

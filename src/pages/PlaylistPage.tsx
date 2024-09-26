@@ -39,7 +39,7 @@ const PlaylistPage: React.FC = () => {
   const userId = getUserIdBySession();
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const { prevUrl, setPrevUrl } = usePrevUrlStore();
-  const { detailPagePlaylist, setDetailPagePlaylist } = usePrevUrlStore();
+  const { detailPagePlaylists, setDetailPagePlaylist } = usePrevUrlStore();
 
   const {
     playlist,
@@ -70,8 +70,8 @@ const PlaylistPage: React.FC = () => {
     if (location.state && !location.state.previousPath.includes('comment'))
       setPrevUrl(location.state.previousPath);
 
-    if (!location.state.playlist) return;
-    setDetailPagePlaylist(location.state.playlist);
+    if (!location.state.detailPagePlaylists) return;
+    setDetailPagePlaylist(location.state.detailPagePlaylists);
   }, []);
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const PlaylistPage: React.FC = () => {
         }}
         onBack={() =>
           prevUrl === PATH.DETAIL_LIST
-            ? navigate(prevUrl, { state: { detailPagePlaylist } })
+            ? navigate(prevUrl, { state: { detailPagePlaylists } })
             : navigate(prevUrl)
         }
       />
